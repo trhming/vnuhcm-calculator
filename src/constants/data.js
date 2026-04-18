@@ -7,7 +7,7 @@ export const SCHOOLS = [
   { id: 'uel', slug: 'uel', name: 'Trường Đại học Kinh tế - Luật', acronym: 'UEL', icon: BookOpen, color: 'text-indigo-600', bg: 'bg-indigo-50' },
   { id: 'hcmussh', slug: 'hcmussh', name: 'Trường Đại học KHXH&NV', acronym: 'HCMUSSH', icon: Globe, color: 'text-emerald-600', bg: 'bg-emerald-50' },
   { id: 'iu', slug: 'iu', name: 'Trường Đại học Quốc tế', acronym: 'IU', icon: Microchip, color: 'text-red-600', bg: 'bg-red-50' },
-  { id: 'uhs', slug: 'uhs', name: 'Khoa Y', acronym: 'UHS', icon: HeartPulse, color: 'text-rose-500', bg: 'bg-rose-50' },
+  { id: 'uhs', slug: 'uhs', name: 'Trường Đại học Khoa học Sức khỏe', acronym: 'UHS', icon: HeartPulse, color: 'text-rose-500', bg: 'bg-rose-50' },
 ];
 
 export const KHU_VUC = [

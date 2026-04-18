@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { SCHOOLS } from '../constants/data';
+import { SCHOOLS } from '../constants/hcmus';
 import { ChevronRight } from 'lucide-react';
 
 export const Home = () => {

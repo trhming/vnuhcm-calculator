@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useHcmusCalculator } from '../hooks/useHcmusCalculator';
 import { CardSection } from '../components/hcmus/CardSection';
 import { Settings, BookOpen, PenTool, Award, Info, Calculator, AlertTriangle, CheckCircle2, X } from 'lucide-react';
-import { KHU_VUC, DOI_TUONG, NGOAI_NGU_CONVERSION } from '../constants/data';
+import { KHU_VUC, DOI_TUONG, NGOAI_NGU_CONVERSION } from '../constants/hcmus';
 
 export const HcmusCalculator = () => {
   const { state, results } = useHcmusCalculator();
@@ -10,12 +10,14 @@ export const HcmusCalculator = () => {
   const [showMobileResultModal, setShowMobileResultModal] = useState(false);
   
   const handleHocBaChange = (index, val) => {
+    if (val !== '' && parseFloat(val) > 10) val = '10';
     const newHocBa = [...state.hocBa];
     newHocBa[index] = val;
     state.setHocBa(newHocBa);
   };
 
   const handleThptChange = (index, val) => {
+    if (val !== '' && parseFloat(val) > 10) val = '10';
     const newThpt = [...state.thpt];
     newThpt[index] = val;
     state.setThpt(newThpt);
@@ -265,9 +267,14 @@ export const HcmusCalculator = () => {
                   <div>
                     <label className="block text-sm text-slate-600 mb-1">Điểm thi ĐGNL</label>
                     <input
-                      type="number" min="0"
+                      type="number" min="0" max={state.maxDgnl || 1200}
                       value={state.dgnl}
-                      onChange={(e) => state.setDgnl(e.target.value)}
+                      onChange={(e) => {
+                         let val = e.target.value;
+                         let maxVal = parseFloat(state.maxDgnl) || 1200;
+                         if (val !== '' && parseFloat(val) > maxVal) val = maxVal.toString();
+                         state.setDgnl(val);
+                      }}
                       className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium text-lg"
                       placeholder="VD: 850"
                     />
@@ -275,9 +282,13 @@ export const HcmusCalculator = () => {
                   <div>
                     <label className="block text-sm text-slate-600 mb-1">Max ĐGNL dự kiến</label>
                     <input
-                      type="number" min="0"
+                      type="number" min="0" max="1200"
                       value={state.maxDgnl}
-                      onChange={(e) => state.setMaxDgnl(e.target.value)}
+                      onChange={(e) => {
+                         let val = e.target.value;
+                         if (val !== '' && parseFloat(val) > 1200) val = '1200';
+                         state.setMaxDgnl(val);
+                      }}
                       className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>

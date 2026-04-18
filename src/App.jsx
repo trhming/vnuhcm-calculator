@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Layout } from './components/layout/Layout';
 import { Home } from './pages/Home';
 import { HcmusCalculator } from './pages/HcmusCalculator';
+import { HcmutCalculator } from './pages/HcmutCalculator';
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="hcmus" element={<HcmusCalculator />} />
+          <Route path="hcmut" element={<HcmutCalculator />} />
           {/* Default fallback for other routes */}
           <Route path="*" element={
             <div className="text-center py-20">

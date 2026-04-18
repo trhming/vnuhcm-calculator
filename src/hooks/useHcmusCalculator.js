@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import { KHU_VUC, DOI_TUONG, NGOAI_NGU_CONVERSION } from '../constants/hcmus';
+import { NGOAI_NGU_CONVERSION } from '../constants/hcmus';
+import { KHU_VUC, DOI_TUONG } from '../constants/common';
 
 export const useHcmusCalculator = () => {
   // Trọng số

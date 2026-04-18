@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { convertHcmutEnglish, convertIntlCert } from '../constants/hcmut';
-import { KHU_VUC, DOI_TUONG } from '../constants/hcmus';
+import { KHU_VUC, DOI_TUONG } from '../constants/common';
 
 export const useHcmutCalculator = () => {
   // Trọng số

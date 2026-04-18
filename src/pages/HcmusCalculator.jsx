@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { useHcmusCalculator } from '../hooks/useHcmusCalculator';
 import { CardSection } from '../components/hcmus/CardSection';
 import { Settings, BookOpen, PenTool, Award, Info, Calculator, AlertTriangle, CheckCircle2, X } from 'lucide-react';
-import { KHU_VUC, DOI_TUONG, NGOAI_NGU_CONVERSION } from '../constants/hcmus';
+import { NGOAI_NGU_CONVERSION } from '../constants/hcmus';
+import { KHU_VUC, DOI_TUONG } from '../constants/common';
 
 export const HcmusCalculator = () => {
   const { state, results } = useHcmusCalculator();

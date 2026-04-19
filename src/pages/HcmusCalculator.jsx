@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useHcmusCalculator } from '../hooks/useHcmusCalculator';
 import { CardSection } from '../components/hcmus/CardSection';
-import { Settings, BookOpen, PenTool, Award, Info, Calculator, AlertTriangle, CheckCircle2, X } from 'lucide-react';
+import { Settings, BookOpen, PenTool, Award, Info, Calculator, AlertTriangle, CheckCircle2, X, GraduationCap } from 'lucide-react';
 import { NGOAI_NGU_CONVERSION } from '../constants/hcmus';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 
@@ -28,7 +28,7 @@ export const HcmusCalculator = () => {
     <div className="max-w-7xl mx-auto animate-in fade-in duration-500 pb-28">
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold text-blue-900 tracking-tight flex items-center gap-3">
-          <Calculator className="w-8 h-8 text-blue-700" />
+          <GraduationCap className="w-8 h-8 text-blue-700" />
           Máy tính điểm HCMUS 2026
         </h1>
         <p className="text-slate-500 mt-2">Phương thức 2: Kết hợp nhiều tiêu chí - Đại học Khoa học Tự nhiên</p>
@@ -438,26 +438,32 @@ export const HcmusCalculator = () => {
 
                 <div className="h-px w-full bg-slate-100"></div>
 
-                {/* Phân tích điểm cộng */}
+                {/* Phân tích điểm cộng & ưu tiên */}
                 <div>
-                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Phân tích ưu tiên & cộng</h3>
-                  <div className="space-y-3 text-sm">
-                    <div className="flex justify-between items-center">
-                      <span className="text-slate-600">Ưu tiên KV & ĐT (Gốc)</span>
-                      <span className="font-medium text-slate-900">+{results.uuTienGoc.toFixed(2)}</span>
+                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Điểm cộng & Ưu tiên</h3>
+                  <div className="space-y-4 text-sm">
+                    {/* Điểm cộng */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between items-center text-slate-600">
+                        <span>Điểm cộng (Gốc)</span>
+                        <span>+{results.congGoc.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between items-center bg-amber-50 p-2 rounded text-amber-900 border border-amber-100">
+                        <span>Cộng thực nhận</span>
+                        <span className="font-bold text-amber-700">+{results.congThuc.toFixed(2)}</span>
+                      </div>
                     </div>
-                    <div className="flex justify-between items-center bg-amber-50 p-2 rounded text-amber-900 border border-amber-100">
-                      <span>Ưu tiên thực nhận</span>
-                      <span className="font-bold text-amber-700">+{results.uuTienThuc.toFixed(2)}</span>
-                    </div>
-                    
-                    <div className="flex justify-between items-center mt-3 pt-3 border-t border-slate-100">
-                      <span className="text-slate-600">Điểm cộng (Gốc)</span>
-                      <span className="font-medium text-slate-900">+{results.congGoc.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between items-center bg-amber-50 p-2 rounded text-amber-900 border border-amber-100">
-                      <span>Điểm cộng thực nhận</span>
-                      <span className="font-bold text-amber-700">+{results.congThuc.toFixed(2)}</span>
+
+                    {/* Ưu tiên */}
+                    <div className="space-y-1">
+                      <div className="flex justify-between items-center text-slate-600">
+                        <span>Ưu tiên KV/ĐT (Gốc)</span>
+                        <span>+{results.uuTienGoc.toFixed(2)}</span>
+                      </div>
+                      <div className="flex justify-between items-center bg-emerald-50 p-2 rounded text-emerald-900 border border-emerald-100">
+                        <span>Ưu tiên thực nhận</span>
+                        <span className="font-bold text-emerald-700">+{results.uuTienThuc.toFixed(2)}</span>
+                      </div>
                     </div>
                   </div>
                 </div>

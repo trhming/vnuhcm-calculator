@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useHcmutCalculator } from '../hooks/useHcmutCalculator';
 import { CardSection } from '../components/hcmus/CardSection';
-import { Settings, BookOpen, PenTool, Award, Info, Calculator, CheckCircle2, X, GraduationCap } from 'lucide-react';
+import { Settings, BookOpen, PenTool, Award, Info, Calculator, CheckCircle2, X, Building2 } from 'lucide-react';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { DOI_TUONG_HCMUT, INTL_CERT_TYPES } from '../constants/hcmut';
 
@@ -28,7 +28,7 @@ export const HcmutCalculator = () => {
     <div className="max-w-7xl mx-auto animate-in fade-in duration-500 pb-28">
       <div className="mb-8">
         <h1 className="text-3xl font-extrabold text-blue-900 tracking-tight flex items-center gap-3">
-          <Building2Icon className="w-8 h-8 text-blue-800" />
+          <Building2 className="w-8 h-8 text-blue-800" />
           Máy tính điểm HCMUT 2026
         </h1>
         <p className="text-slate-500 mt-2">Phương thức Tổng hợp - Đại học Bách Khoa (Thang 100)</p>
@@ -364,12 +364,12 @@ export const HcmutCalculator = () => {
                <div className="h-px w-full bg-slate-100"></div>
 
                <div>
-                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Phân tích Giảm Trừ</h3>
+                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Điểm cộng & Ưu tiên</h3>
                   <div className="space-y-4 text-sm">
-                    {/* Thành tích */}
+                    {/* Điểm cộng */}
                     <div className="space-y-1">
                       <div className="flex justify-between items-center text-slate-600">
-                        <span>Tổng cộng thưởng (Gốc)</span>
+                        <span>Điểm cộng (Gốc)</span>
                         <span>+{results.tongCongGoc.toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between items-center bg-amber-50 p-2 rounded text-amber-900 font-medium">
@@ -381,7 +381,7 @@ export const HcmutCalculator = () => {
                     {/* Ưu tiên */}
                     <div className="space-y-1">
                       <div className="flex justify-between items-center text-slate-600">
-                        <span>Ưu tiên KV/ĐT (Quy đổi)</span>
+                        <span>Ưu tiên KV/ĐT (Gốc)</span>
                         <span>+{results.uuTienQuyDoi.toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between items-center bg-emerald-50 p-2 rounded text-emerald-900 font-medium">

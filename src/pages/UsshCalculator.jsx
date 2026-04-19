@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useUsshCalculator } from '../hooks/useUsshCalculator';
-import { CardSection } from '../components/hcmus/CardSection';
+import { CardSection } from '../components/common/CardSection';
 import { Settings, BookOpen, PenTool, Award, Info, Calculator, X, Globe } from 'lucide-react';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 

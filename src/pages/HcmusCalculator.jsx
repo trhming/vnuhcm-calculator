@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useHcmusCalculator } from '../hooks/useHcmusCalculator';
-import { CardSection } from '../components/hcmus/CardSection';
+import { CardSection } from '../components/common/CardSection';
 import { Settings, BookOpen, PenTool, Award, Info, Calculator, AlertTriangle, CheckCircle2, X, GraduationCap } from 'lucide-react';
 import { NGOAI_NGU_CONVERSION } from '../constants/hcmus';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';

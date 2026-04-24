@@ -1,5 +1,5 @@
 # 🎓 Web Tính Điểm ĐHQG-HCM 2026 (AI GEN)
-**Web với repo này mình chỉ dùng để học git thôi nên cái đống readme dưới này cũng là AI 🥹
+**Web với repo này mình chỉ dùng để học git thôi nên cái đống readme dưới này cũng là AI 🥹**
 **Web Tính Điểm ĐHQG-HCM 2026** là một ứng dụng web Single Page Application (SPA) hiện đại, giúp thí sinh và phụ huynh tính toán, dự kiến điểm xét tuyển vào các trường thành viên thuộc Đại học Quốc gia TP.HCM (VNU-HCM). Dự án được thiết kế để giải quyết bài toán tuyển sinh phức tạp theo phương hướng mới của năm 2026.
 
 ## ✨ Tính năng nổi bật

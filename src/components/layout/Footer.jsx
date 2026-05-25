@@ -15,7 +15,7 @@ export const Footer = () => {
     <footer className="bg-white border-t border-slate-200 mt-auto">
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
         <p className="text-center text-sm font-medium text-slate-600">
-          &copy; 2026 ĐHQG-HCM Admission Portal
+          &copy; Web Tính Điểm ĐHQG-HCM 2026
         </p>
         <p className="mt-1 text-center text-sm text-slate-500">
           Công cụ tham khảo, không phải thông tin chính thức từ ĐHQG-HCM.

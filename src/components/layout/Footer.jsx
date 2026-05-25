@@ -14,8 +14,11 @@ export const Footer = () => {
   return (
     <footer className="bg-white border-t border-slate-200 mt-auto">
       <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-        <p className="text-center text-sm text-slate-500">
-          &copy; 2026 VNU-HCM Admission Portal. Prototype for Demo Purposes.
+        <p className="text-center text-sm font-medium text-slate-600">
+          &copy; 2026 ĐHQG-HCM Admission Portal
+        </p>
+        <p className="mt-1 text-center text-sm text-slate-500">
+          Công cụ tham khảo, không phải thông tin chính thức từ ĐHQG-HCM.
         </p>
         <div className="mt-3 flex flex-wrap items-center justify-center gap-3 text-sm">
           <a
@@ -25,7 +28,7 @@ export const Footer = () => {
             className="inline-flex items-center gap-1.5 font-medium text-slate-600 transition-colors hover:text-sky-700 hover:underline"
           >
             <GithubIcon className="h-4 w-4" />
-            GitHub
+            GitHub trhming
           </a>
           <span className="text-slate-300">|</span>
           <a
@@ -35,7 +38,7 @@ export const Footer = () => {
             className="inline-flex items-center gap-1.5 font-medium text-slate-600 transition-colors hover:text-sky-700 hover:underline"
           >
             <ThreadsIcon className="h-4 w-4" />
-            Threads
+            Threads @trhming_
           </a>
         </div>
       </div>

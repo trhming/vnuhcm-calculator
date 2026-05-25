@@ -1,5 +1,4 @@
-import { Link, Outlet } from 'react-router-dom';
-import { BookOpen } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export const Navbar = () => {
   return (
@@ -20,10 +19,6 @@ export const Navbar = () => {
             <Link to="/" className="text-slate-600 hover:text-slate-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">
               Trang chủ
             </Link>
-            <a href="#" className="flex items-center gap-1 text-slate-600 hover:text-slate-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-              <BookOpen className="w-4 h-4" />
-              <span>Hướng dẫn</span>
-            </a>
           </div>
         </div>
       </div>

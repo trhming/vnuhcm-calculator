@@ -28,7 +28,7 @@ export const Footer = () => {
             className="inline-flex items-center gap-1.5 font-medium text-slate-600 transition-colors hover:text-sky-700 hover:underline"
           >
             <GithubIcon className="h-4 w-4" />
-            GitHub trhming
+            GitHub
           </a>
           <span className="text-slate-300">|</span>
           <a
@@ -38,7 +38,7 @@ export const Footer = () => {
             className="inline-flex items-center gap-1.5 font-medium text-slate-600 transition-colors hover:text-sky-700 hover:underline"
           >
             <ThreadsIcon className="h-4 w-4" />
-            Threads @trhming_
+            Threads
           </a>
         </div>
       </div>

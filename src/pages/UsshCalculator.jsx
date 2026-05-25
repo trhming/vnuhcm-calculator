@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useUsshCalculator } from '../hooks/useUsshCalculator';
 import { CardSection } from '../components/common/CardSection';
-import { Settings, BookOpen, PenTool, Award, Info, Calculator, X, Globe } from 'lucide-react';
+import { Settings, BookOpen, PenTool, Award, Info, Calculator, X, Globe, ExternalLink } from 'lucide-react';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 
 export const UsshCalculator = () => {
@@ -29,7 +29,16 @@ export const UsshCalculator = () => {
           <Globe className="w-8 h-8 text-emerald-700" />
           Máy tính điểm USSH 2026
         </h1>
-        <p className="text-slate-500 mt-2">Phương thức Tổng hợp - ĐH KHXH&NV (Thang 100)</p>
+        <p className="text-slate-500 mt-2">Phương thức tổng hợp của Trường Đại học Khoa học Xã hội và Nhân văn - ĐHQG-HCM.</p>
+        <a
+          href="https://hcmussh.edu.vn/tin-tuc/thong-tin-tuyen-sinh-dai-hoc-chinh-quy"
+          target="_blank"
+          rel="noreferrer"
+          className="mt-4 inline-flex items-center gap-2 rounded-lg border border-emerald-100 bg-emerald-50 px-3 py-2 text-sm font-medium text-emerald-800 transition-colors hover:border-emerald-200 hover:bg-emerald-100"
+        >
+          Xem phương thức tuyển sinh USSH
+          <ExternalLink className="h-4 w-4" />
+        </a>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">

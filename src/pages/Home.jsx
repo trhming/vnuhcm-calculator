@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { SCHOOLS } from '../constants/common';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, ExternalLink } from 'lucide-react';
 
 export const Home = () => {
   return (
@@ -18,12 +18,10 @@ export const Home = () => {
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {SCHOOLS.map((school) => {
           const Icon = school.icon;
-          return (
-            <Link
-              key={school.id}
-              to={`/${school.slug}`}
-              className="group relative flex flex-col items-center justify-center p-6 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-blue-200 transition-all duration-200 ease-in-out hover:-translate-y-1"
-            >
+          const isUit = school.id === 'uit';
+          const cardClass = "group relative flex flex-col items-center justify-center p-6 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-lg hover:border-blue-200 transition-all duration-200 ease-in-out hover:-translate-y-1";
+          const content = (
+            <>
               <div className={`p-4 rounded-xl ${school.bg} ${school.color} mb-4 group-hover:scale-110 transition-transform duration-200`}>
                 <Icon className="w-8 h-8" />
               </div>
@@ -33,10 +31,42 @@ export const Home = () => {
               <p className="text-sm text-slate-500 text-center line-clamp-2">
                 {school.name}
               </p>
-              
+              {isUit && (
+                <span className="mt-3 rounded-full bg-sky-50 px-3 py-1 text-xs font-medium text-sky-700">
+                  Thông tin tuyển sinh
+                </span>
+              )}
               <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                <ChevronRight className="w-5 h-5 text-slate-400" />
+                {isUit ? (
+                  <ExternalLink className="w-5 h-5 text-slate-400" />
+                ) : (
+                  <ChevronRight className="w-5 h-5 text-slate-400" />
+                )}
               </div>
+            </>
+          );
+
+          if (isUit) {
+            return (
+              <a
+                key={school.id}
+                href="https://tuyensinh.uit.edu.vn/2026-thong-tin-tuyen-sinh-dai-hoc-chinh-quy-2026"
+                target="_blank"
+                rel="noreferrer"
+                className={cardClass}
+              >
+                {content}
+              </a>
+            );
+          }
+
+          return (
+            <Link
+              key={school.id}
+              to={`/${school.slug}`}
+              className={cardClass}
+            >
+              {content}
             </Link>
           );
         })}

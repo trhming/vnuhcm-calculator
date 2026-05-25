@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useUelCalculator } from '../hooks/useUelCalculator';
 import { CardSection } from '../components/common/CardSection';
-import { Settings, BookOpen, PenTool, Award, Calculator, X, BookHeart, GraduationCap, Info } from 'lucide-react';
+import { Settings, BookOpen, PenTool, Award, Calculator, X, BookHeart, GraduationCap, Info, ExternalLink } from 'lucide-react';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { UEL_ENGLISH_BONUS, CCQT_TYPES, UEL_ENGLISH_CERT_TYPES, UEL_CCQT_TABLE } from '../constants/uel';
 
@@ -40,7 +40,16 @@ export const UelCalculator = () => {
           <BookOpen className="w-8 h-8 text-indigo-600" />
           Máy tính điểm UEL 2026
         </h1>
-        <p className="text-slate-500 mt-2">Đại học Kinh tế - Luật (Thang 100)</p>
+        <p className="text-slate-500 mt-2">Phương thức tổng hợp của Trường Đại học Kinh tế - Luật - ĐHQG-HCM.</p>
+        <a
+          href="https://tuyensinh.uel.edu.vn/thong-tin-tuyen-sinh-dai-hoc-chinh-quy-2026/"
+          target="_blank"
+          rel="noreferrer"
+          className="mt-4 inline-flex items-center gap-2 rounded-lg border border-indigo-100 bg-indigo-50 px-3 py-2 text-sm font-medium text-indigo-800 transition-colors hover:border-indigo-200 hover:bg-indigo-100"
+        >
+          Xem phương thức tuyển sinh UEL
+          <ExternalLink className="h-4 w-4" />
+        </a>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useHcmusCalculator } from '../hooks/useHcmusCalculator';
 import { CardSection } from '../components/common/CardSection';
-import { Settings, BookOpen, PenTool, Award, Info, Calculator, AlertTriangle, CheckCircle2, X, GraduationCap } from 'lucide-react';
+import { Settings, BookOpen, PenTool, Award, Info, Calculator, AlertTriangle, CheckCircle2, X, GraduationCap, ExternalLink } from 'lucide-react';
 import { NGOAI_NGU_CONVERSION } from '../constants/hcmus';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 
@@ -31,7 +31,16 @@ export const HcmusCalculator = () => {
           <GraduationCap className="w-8 h-8 text-blue-700" />
           Máy tính điểm HCMUS 2026
         </h1>
-        <p className="text-slate-500 mt-2">Phương thức 2: Kết hợp nhiều tiêu chí - Đại học Khoa học Tự nhiên</p>
+        <p className="text-slate-500 mt-2">Phương thức tổng hợp của Trường Đại học Khoa học Tự nhiên - ĐHQG-HCM.</p>
+        <a
+          href="https://tuyensinh.hcmus.edu.vn/2026-thong-tin-tuyen-sinh/"
+          target="_blank"
+          rel="noreferrer"
+          className="mt-4 inline-flex items-center gap-2 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-800 transition-colors hover:border-blue-200 hover:bg-blue-100"
+        >
+          Xem phương thức tuyển sinh HCMUS
+          <ExternalLink className="h-4 w-4" />
+        </a>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">

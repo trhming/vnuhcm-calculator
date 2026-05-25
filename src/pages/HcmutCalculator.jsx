@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useHcmutCalculator } from '../hooks/useHcmutCalculator';
 import { CardSection } from '../components/common/CardSection';
-import { Settings, BookOpen, PenTool, Award, Info, Calculator, CheckCircle2, X, Building2 } from 'lucide-react';
+import { Settings, BookOpen, PenTool, Award, Info, Calculator, CheckCircle2, X, Building2, ExternalLink } from 'lucide-react';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { DOI_TUONG_HCMUT, INTL_CERT_TYPES } from '../constants/hcmut';
 
@@ -31,7 +31,16 @@ export const HcmutCalculator = () => {
           <Building2 className="w-8 h-8 text-blue-800" />
           Máy tính điểm HCMUT 2026
         </h1>
-        <p className="text-slate-500 mt-2">Phương thức Tổng hợp - Đại học Bách Khoa (Thang 100)</p>
+        <p className="text-slate-500 mt-2">Phương thức tổng hợp của Trường Đại học Bách khoa - ĐHQG-HCM.</p>
+        <a
+          href="https://hcmut.edu.vn/tuyen-sinh/dai-hoc-chinh-quy/phuong-thuc-tuyen-sinh/xet-tuyen-tong-hop-2026"
+          target="_blank"
+          rel="noreferrer"
+          className="mt-4 inline-flex items-center gap-2 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-800 transition-colors hover:border-blue-200 hover:bg-blue-100"
+        >
+          Xem phương thức tuyển sinh HCMUT
+          <ExternalLink className="h-4 w-4" />
+        </a>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">

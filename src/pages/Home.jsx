@@ -8,7 +8,7 @@ export const Home = () => {
       <div className="text-center space-y-4 max-w-3xl mx-auto py-12">
         <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl md:text-6xl">
           <span className="block">Tính điểm xét tuyển</span>
-          <span className="block text-blue-700">VNU-HCM 2026</span>
+          <span className="block text-blue-700">ĐHQG-HCM 2026</span>
         </h1>
         <p className="mt-3 max-w-md mx-auto text-base text-slate-500 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
           Công cụ hỗ trợ tính toán điểm xét tuyển vào các trường đại học thành viên thuộc Đại học Quốc gia TP.HCM theo phương thức tổng hợp năm 2026.

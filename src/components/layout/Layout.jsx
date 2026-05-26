@@ -1,8 +1,22 @@
-import { Outlet } from 'react-router-dom';
+import { useEffect, useLayoutEffect } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
+import { BackToTop } from './BackToTop';
 
 export const Layout = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+  }, []);
+
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
   return (
     <div className="min-h-screen flex flex-col font-sans">
       <Navbar />
@@ -10,6 +24,7 @@ export const Layout = () => {
         <Outlet />
       </main>
       <Footer />
+      <BackToTop />
     </div>
   );
 };

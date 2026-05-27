@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
-import { UHS_LANG_TYPES, UHS_MAJORS, roundUhs } from '../constants/uhs';
+import { UHS_LANG_TYPES, roundUhs } from '../constants/uhs';
 
 const parseNumber = (value) => {
   const number = parseFloat(value);
@@ -8,8 +8,6 @@ const parseNumber = (value) => {
 };
 
 export const useUhsCalculator = () => {
-  const [major, setMajor] = useState('Y_KHOA');
-  const [combination, setCombination] = useState('B00');
   const [a, setA] = useState(50);
   const [b, setB] = useState(30);
 
@@ -131,12 +129,8 @@ export const useUhsCalculator = () => {
     dt,
   ]);
 
-  const selectedMajor = UHS_MAJORS.find((item) => item.id === major) || UHS_MAJORS[0];
-
   return {
     state: {
-      major, setMajor,
-      combination, setCombination,
       a, setA,
       b, setB,
       dgnl, setDgnl,
@@ -154,7 +148,6 @@ export const useUhsCalculator = () => {
       kv, setKv,
       dt, setDt,
     },
-    selectedMajor,
     results,
   };
 };

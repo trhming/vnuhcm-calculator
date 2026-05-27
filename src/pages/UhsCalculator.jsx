@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   Award,
   Calculator,
@@ -7,13 +7,12 @@ import {
   HeartPulse,
   Info,
   PenTool,
-  Settings,
   SlidersHorizontal,
   X,
 } from 'lucide-react';
 import { CardSection } from '../components/common/CardSection';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
-import { UHS_LANG_TYPES, UHS_MAJORS, UHS_SUBJECT_COMBINATIONS } from '../constants/uhs';
+import { UHS_LANG_TYPES } from '../constants/uhs';
 import { useUhsCalculator } from '../hooks/useUhsCalculator';
 
 const clampInput = (value, max) => {
@@ -30,18 +29,12 @@ const clampNumber = (value, min, max) => {
 };
 
 export const UhsCalculator = () => {
-  const { state, selectedMajor, results } = useUhsCalculator();
+  const { state, results } = useUhsCalculator();
   const [showMobileResultModal, setShowMobileResultModal] = useState(false);
 
-  const subjects = UHS_SUBJECT_COMBINATIONS[state.combination];
+  const subjects = ['Môn 1', 'Môn 2', 'Môn 3'];
   const computedC = 100 - state.a - state.b;
   const isWeightValid = computedC >= 0 && computedC <= 25 && state.a >= 40 && state.b <= 35;
-
-  useEffect(() => {
-    if (!selectedMajor.combinations.includes(state.combination)) {
-      state.setCombination(selectedMajor.combinations[0]);
-    }
-  }, [selectedMajor, state]);
 
   const updateArrayValue = (values, setter, index, value, max) => {
     const nextValues = [...values];
@@ -157,38 +150,7 @@ export const UhsCalculator = () => {
 
       <div className="flex flex-col gap-8 lg:flex-row">
         <div className="flex-1 space-y-6">
-          <CardSection title="1. Ngành học & tổ hợp" icon={Settings}>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-sm font-medium text-slate-700">Ngành học</label>
-                <select
-                  value={state.major}
-                  onChange={(event) => state.setMajor(event.target.value)}
-                  className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700"
-                >
-                  {UHS_MAJORS.map((major) => (
-                    <option key={major.id} value={major.id}>{major.name}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="mb-2 block text-sm font-medium text-slate-700">Tổ hợp môn</label>
-                <select
-                  value={state.combination}
-                  onChange={(event) => state.setCombination(event.target.value)}
-                  className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700"
-                >
-                  {selectedMajor.combinations.map((combination) => (
-                    <option key={combination} value={combination}>
-                      {combination} ({UHS_SUBJECT_COMBINATIONS[combination].join(', ')})
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </CardSection>
-
-          <CardSection title="2. Trọng số a, b, c" icon={SlidersHorizontal}>
+          <CardSection title="1. Trọng số a, b, c" icon={SlidersHorizontal}>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               {[
                 ['a', 'ĐGNL', state.a, '>= 40%'],
@@ -243,7 +205,7 @@ export const UhsCalculator = () => {
             </div>
           </CardSection>
 
-          <CardSection title="3. Điểm thành phần" icon={PenTool}>
+          <CardSection title="2. Điểm thành phần" icon={PenTool}>
             <div className="space-y-6">
               <div>
                 <h4 className="mb-3 font-semibold text-slate-800">Đánh giá năng lực</h4>
@@ -264,7 +226,7 @@ export const UhsCalculator = () => {
 
               <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <div>
-                  <h4 className="mb-3 font-semibold text-slate-800">THPT theo tổ hợp {state.combination}</h4>
+                  <h4 className="mb-3 font-semibold text-slate-800">Điểm THPT 3 môn</h4>
                   <div className="space-y-3">
                     {subjects.map((subject, index) => (
                       <div key={`thpt-${subject}`} className="flex items-center gap-3">
@@ -289,7 +251,7 @@ export const UhsCalculator = () => {
                 </div>
 
                 <div>
-                  <h4 className="mb-3 font-semibold text-slate-800">Học bạ theo tổ hợp {state.combination}</h4>
+                  <h4 className="mb-3 font-semibold text-slate-800">Học bạ 3 môn</h4>
                   <div className="overflow-x-auto">
                     <table className="w-full text-sm">
                       <thead className="bg-slate-50 text-slate-600">
@@ -335,7 +297,7 @@ export const UhsCalculator = () => {
             </div>
           </CardSection>
 
-          <CardSection title="4. Điểm cộng tích lũy" icon={Award}>
+          <CardSection title="3. Điểm cộng tích lũy" icon={Award}>
             <div className="space-y-4">
               <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3">
                 <input
@@ -448,7 +410,7 @@ export const UhsCalculator = () => {
             </div>
           </CardSection>
 
-          <CardSection title="5. Ưu tiên khu vực & đối tượng" icon={Info}>
+          <CardSection title="4. Ưu tiên khu vực & đối tượng" icon={Info}>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
                 <label className="mb-2 block text-sm font-medium text-slate-700">Khu vực</label>

@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Analytics } from '@vercel/analytics/react';
 import { Layout } from './components/layout/Layout';
 import { Home } from './pages/Home';
 import { HcmusCalculator } from './pages/HcmusCalculator';
@@ -30,7 +29,6 @@ function App() {
           } />
         </Route>
       </Routes>
-      <Analytics />
     </BrowserRouter>
   );
 }

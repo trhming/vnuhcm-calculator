@@ -469,11 +469,11 @@ export const HcmutCalculator = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">≥ 110</td><td className="py-2 font-semibold text-blue-700">10.0</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">102 - 109</td><td className="py-2 font-semibold text-blue-700">9.5</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">94 - 101</td><td className="py-2 font-semibold text-blue-700">9.0</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">79 - 93</td><td className="py-2 font-semibold text-blue-700">8.5</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">60 - 78</td><td className="py-2 font-semibold text-blue-700">8.0</td></tr>
+                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">≥ 110</td><td className="py-2 font-semibold text-emerald-700">10.0</td></tr>
+                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">102 - 109</td><td className="py-2 font-semibold text-emerald-700">9.5</td></tr>
+                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">94 - 101</td><td className="py-2 font-semibold text-emerald-700">9.0</td></tr>
+                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">79 - 93</td><td className="py-2 font-semibold text-emerald-700">8.5</td></tr>
+                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">60 - 78</td><td className="py-2 font-semibold text-emerald-700">8.0</td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -487,11 +487,11 @@ export const HcmutCalculator = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">≥ 79</td><td className="py-2 font-semibold text-blue-700">10.0</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">71 - 78</td><td className="py-2 font-semibold text-blue-700">9.5</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">63 - 70</td><td className="py-2 font-semibold text-blue-700">9.0</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">55 - 62</td><td className="py-2 font-semibold text-blue-700">8.5</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">47 - 54</td><td className="py-2 font-semibold text-blue-700">8.0</td></tr>
+                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">≥ 79</td><td className="py-2 font-semibold text-indigo-700">10.0</td></tr>
+                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">71 - 78</td><td className="py-2 font-semibold text-indigo-700">9.5</td></tr>
+                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">63 - 70</td><td className="py-2 font-semibold text-indigo-700">9.0</td></tr>
+                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">55 - 62</td><td className="py-2 font-semibold text-indigo-700">8.5</td></tr>
+                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">47 - 54</td><td className="py-2 font-semibold text-indigo-700">8.0</td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -505,11 +505,11 @@ export const HcmutCalculator = () => {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">≥ 905 + 390</td><td className="py-2 font-semibold text-blue-700">10.0</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">835 + 380</td><td className="py-2 font-semibold text-blue-700">9.5</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">785 + 360</td><td className="py-2 font-semibold text-blue-700">9.0</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">685 + 330</td><td className="py-2 font-semibold text-blue-700">8.5</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">570 + 310</td><td className="py-2 font-semibold text-blue-700">8.0</td></tr>
+                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">≥ 905 + 390</td><td className="py-2 font-semibold text-amber-700">10.0</td></tr>
+                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">835 + 380</td><td className="py-2 font-semibold text-amber-700">9.5</td></tr>
+                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">785 + 360</td><td className="py-2 font-semibold text-amber-700">9.0</td></tr>
+                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">685 + 330</td><td className="py-2 font-semibold text-amber-700">8.5</td></tr>
+                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">570 + 310</td><td className="py-2 font-semibold text-amber-700">8.0</td></tr>
                     </tbody>
                   </table>
                 </div>
@@ -521,48 +521,39 @@ export const HcmutCalculator = () => {
 
       {/* Modal Bảng Quy Đổi Chứng Chỉ Quốc Tế HCMUT */}
       {showIntlCertTable && (
-        <div className="fixed inset-0 z-[70] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col animate-in zoom-in-95">
-            <div className="flex justify-between items-center p-6 border-b border-slate-100">
-              <h3 className="text-xl font-bold text-slate-800">Bảng Quy Đổi Chứng Chỉ Quốc Tế HCMUT</h3>
-              <button onClick={() => setShowIntlCertTable(false)} className="text-slate-400 hover:text-slate-600 bg-slate-50 hover:bg-slate-100 p-2 rounded-full transition-colors">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
+              <h3 className="text-lg font-bold text-slate-800">Bảng Quy Đổi Chứng Chỉ Quốc Tế HCMUT</h3>
+              <button onClick={() => setShowIntlCertTable(false)} className="text-slate-400 hover:text-slate-600">
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="p-6 overflow-y-auto">
-              <div className="overflow-x-auto rounded-xl border border-slate-200">
-                <table className="w-full text-sm text-center">
-                  <thead className="bg-slate-100 text-slate-700 sticky top-0 shadow-sm">
-                    <tr>
-                      <th className="px-4 py-3 font-semibold border-b border-slate-200">Điểm SAT</th>
-                      <th className="px-4 py-3 font-semibold border-b border-slate-200 border-l">Điểm ACT</th>
-                      <th className="px-4 py-3 font-semibold border-b border-slate-200 border-l">Điểm IB</th>
-                      <th className="px-4 py-3 font-semibold border-b border-slate-200 border-l">Hạng A-Level</th>
-                      <th className="px-4 py-3 font-bold text-indigo-700 bg-indigo-50 border-b border-indigo-100 border-l">Quy đổi (100)</th>
+            <div className="p-6 overflow-y-auto max-h-[70vh]">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm text-center border-collapse">
+                  <thead>
+                    <tr className="border-b-2 border-slate-200 text-slate-600">
+                      <th className="px-4 py-2 font-medium">Điểm SAT</th>
+                      <th className="px-4 py-2 font-medium">Điểm ACT</th>
+                      <th className="px-4 py-2 font-medium">Điểm IB</th>
+                      <th className="px-4 py-2 font-medium">Hạng A-Level</th>
+                      <th className="px-4 py-2 font-medium">Quy đổi</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {HCMUT_CCQT_TABLE.map((row, index) => (
-                      <tr key={`${row.point}-${index}`} className={index % 2 === 0 ? 'bg-white hover:bg-slate-50' : 'bg-slate-50/50 hover:bg-slate-100/50'}>
-                        <td className="px-4 py-2 font-medium text-slate-700">{row.sat}</td>
-                        <td className="px-4 py-2 font-medium text-slate-700 border-l border-slate-100">{row.act || '-'}</td>
-                        <td className="px-4 py-2 font-medium text-slate-700 border-l border-slate-100">{row.ib || '-'}</td>
-                        <td className="px-4 py-2 font-medium text-slate-700 border-l border-slate-100">{row.aLevel || '-'}</td>
-                        <td className="px-4 py-2 font-bold text-indigo-700 bg-indigo-50/30 border-l border-indigo-100">{row.point}</td>
+                      <tr key={`${row.point}-${index}`} className="hover:bg-slate-50">
+                        <td className="px-4 py-2 text-slate-700">{row.sat}</td>
+                        <td className="px-4 py-2 text-slate-700">{row.act || '-'}</td>
+                        <td className="px-4 py-2 text-slate-700">{row.ib || '-'}</td>
+                        <td className="px-4 py-2 text-slate-700">{row.aLevel || '-'}</td>
+                        <td className="px-4 py-2 font-semibold text-blue-700">{row.point}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-            </div>
-
-            <div className="p-4 border-t border-slate-100 bg-slate-50 text-right rounded-b-2xl">
-              <button
-                onClick={() => setShowIntlCertTable(false)}
-                className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors"
-              >
-                Đóng
-              </button>
             </div>
           </div>
         </div>

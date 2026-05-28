@@ -542,31 +542,31 @@ export const UelCalculator = () => {
 
       {/* Modal Bảng Quy đổi */}
       {showConversionTable && (
-        <div className="fixed inset-0 z-[70] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col animate-in zoom-in-95">
-            <div className="flex justify-between items-center p-6 border-b border-slate-100">
-              <h3 className="text-xl font-bold text-slate-800">Bảng quy đổi Chứng chỉ Ngoại ngữ (UEL)</h3>
-              <button onClick={() => setShowConversionTable(false)} className="text-slate-400 hover:text-slate-600 bg-slate-50 hover:bg-slate-100 p-2 rounded-full transition-colors">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
+              <h3 className="text-lg font-bold text-slate-800">Bảng quy đổi Chứng chỉ Ngoại ngữ (UEL)</h3>
+              <button onClick={() => setShowConversionTable(false)} className="text-slate-400 hover:text-slate-600">
                 <X className="w-5 h-5" />
               </button>
             </div>
             
-            <div className="p-6 overflow-y-auto">
+            <div className="p-6 overflow-y-auto max-h-[70vh]">
               <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left">
-                  <thead className="bg-slate-50 text-slate-700">
-                    <tr>
-                      <th className="px-4 py-3 font-semibold rounded-tl-lg">Điểm cộng</th>
-                      <th className="px-4 py-3 font-semibold border-l border-white/50">IELTS</th>
-                      <th className="px-4 py-3 font-semibold border-l border-white/50">Linguaskill B1</th>
-                      <th className="px-4 py-3 font-semibold border-l border-white/50">Linguaskill B2</th>
-                      <th className="px-4 py-3 font-semibold border-l border-white/50">TOEIC NĐ</th>
-                      <th className="px-4 py-3 font-semibold border-l border-white/50">TOEIC NV</th>
-                      <th className="px-4 py-3 font-semibold border-l border-white/50 rounded-tr-lg">TOEFL iBT</th>
+                <table className="w-full text-sm text-left border-collapse">
+                  <thead>
+                    <tr className="border-b-2 border-slate-200 text-slate-600">
+                      <th className="px-4 py-2 font-medium">Điểm cộng</th>
+                      <th className="px-4 py-2 font-medium">IELTS</th>
+                      <th className="px-4 py-2 font-medium">Linguaskill B1</th>
+                      <th className="px-4 py-2 font-medium">Linguaskill B2</th>
+                      <th className="px-4 py-2 font-medium">TOEIC NĐ</th>
+                      <th className="px-4 py-2 font-medium">TOEIC NV</th>
+                      <th className="px-4 py-2 font-medium">TOEFL iBT</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    {UEL_ENGLISH_BONUS.map((row, i) => {
+                    {UEL_ENGLISH_BONUS.map((row) => {
                        const parts = row.desc.split('|').map(p => p.trim());
                        const getPart = (keyword) => {
                          const match = parts.find(p => p.includes(keyword));
@@ -575,14 +575,14 @@ export const UelCalculator = () => {
                        };
 
                        return (
-                         <tr key={row.id} className={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'}>
-                           <td className="px-4 py-3 font-bold text-indigo-700 whitespace-nowrap">+{row.point.toFixed(1)}</td>
-                           <td className="px-4 py-3 border-l border-slate-100">{getPart('IELTS')}</td>
-                           <td className="px-4 py-3 border-l border-slate-100">{getPart('Linguaskill/B1')}</td>
-                           <td className="px-4 py-3 border-l border-slate-100">{getPart('Linguaskill/B2')}</td>
-                           <td className="px-4 py-3 border-l border-slate-100">{getPart('TOEIC NĐ')}</td>
-                           <td className="px-4 py-3 border-l border-slate-100">{getPart('TOEIC NV')}</td>
-                           <td className="px-4 py-3 border-l border-slate-100">{getPart('TOEFL iBT')}</td>
+                         <tr key={row.id} className="hover:bg-slate-50">
+                           <td className="px-4 py-2 font-semibold text-blue-700 whitespace-nowrap">+{row.point.toFixed(1)}</td>
+                           <td className="px-4 py-2 text-slate-700">{getPart('IELTS')}</td>
+                           <td className="px-4 py-2 text-slate-700">{getPart('Linguaskill/B1')}</td>
+                           <td className="px-4 py-2 text-slate-700">{getPart('Linguaskill/B2')}</td>
+                           <td className="px-4 py-2 text-slate-700">{getPart('TOEIC NĐ')}</td>
+                           <td className="px-4 py-2 text-slate-700">{getPart('TOEIC NV')}</td>
+                           <td className="px-4 py-2 text-slate-700">{getPart('TOEFL iBT')}</td>
                          </tr>
                        );
                     })}
@@ -590,64 +590,46 @@ export const UelCalculator = () => {
                 </table>
               </div>
             </div>
-            
-            <div className="p-4 border-t border-slate-100 bg-slate-50 text-right rounded-b-2xl">
-              <button 
-                onClick={() => setShowConversionTable(false)}
-                className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors"
-              >
-                Đóng
-              </button>
-            </div>
           </div>
         </div>
       )}
 
       {/* Modal Bảng Quy đổi CCQT */}
       {showCcqtConversionTable && (
-        <div className="fixed inset-0 z-[70] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col animate-in zoom-in-95">
-            <div className="flex justify-between items-center p-6 border-b border-slate-100">
-              <h3 className="text-xl font-bold text-slate-800">Bảng quy đổi Chứng chỉ Quốc tế ra Thang điểm 100</h3>
-              <button onClick={() => setShowCcqtConversionTable(false)} className="text-slate-400 hover:text-slate-600 bg-slate-50 hover:bg-slate-100 p-2 rounded-full transition-colors">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
+              <h3 className="text-lg font-bold text-slate-800">Bảng quy đổi Chứng chỉ Quốc tế ra Thang điểm 100</h3>
+              <button onClick={() => setShowCcqtConversionTable(false)} className="text-slate-400 hover:text-slate-600">
                 <X className="w-5 h-5" />
               </button>
             </div>
             
-            <div className="p-6 overflow-y-auto">
-              <div className="overflow-x-auto rounded-xl border border-slate-200">
-                <table className="w-full text-sm text-center">
-                  <thead className="bg-slate-100 text-slate-700 sticky top-0 shadow-sm">
-                    <tr>
-                      <th className="px-4 py-3 font-semibold border-b border-slate-200">Điểm SAT</th>
-                      <th className="px-4 py-3 font-semibold border-b border-slate-200 border-l">Điểm ACT</th>
-                      <th className="px-4 py-3 font-semibold border-b border-slate-200 border-l">Điểm IB</th>
-                      <th className="px-4 py-3 font-semibold border-b border-slate-200 border-l">Hạng A-Level</th>
-                      <th className="px-4 py-3 font-bold text-indigo-700 bg-indigo-50 border-b border-indigo-100 border-l">Quy đổi (100)</th>
+            <div className="p-6 overflow-y-auto max-h-[70vh]">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm text-center border-collapse">
+                  <thead>
+                    <tr className="border-b-2 border-slate-200 text-slate-600">
+                      <th className="px-4 py-2 font-medium">Điểm SAT</th>
+                      <th className="px-4 py-2 font-medium">Điểm ACT</th>
+                      <th className="px-4 py-2 font-medium">Điểm IB</th>
+                      <th className="px-4 py-2 font-medium">Hạng A-Level</th>
+                      <th className="px-4 py-2 font-medium">Quy đổi</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {UEL_CCQT_TABLE.map((row, i) => (
-                      <tr key={i} className={i % 2 === 0 ? 'bg-white hover:bg-slate-50' : 'bg-slate-50/50 hover:bg-slate-100/50'}>
-                        <td className="px-4 py-2 font-medium text-slate-700">{row.sat || '-'}</td>
-                        <td className="px-4 py-2 font-medium text-slate-700 border-l border-slate-100">{row.act || '-'}</td>
-                        <td className="px-4 py-2 font-medium text-slate-700 border-l border-slate-100">{row.ib || '-'}</td>
-                        <td className="px-4 py-2 font-medium text-slate-700 border-l border-slate-100">{row.aLevel || '-'}</td>
-                        <td className="px-4 py-2 font-bold text-indigo-700 bg-indigo-50/30 border-l border-indigo-100">{row.point}</td>
+                      <tr key={i} className="hover:bg-slate-50">
+                        <td className="px-4 py-2 text-slate-700">{row.sat || '-'}</td>
+                        <td className="px-4 py-2 text-slate-700">{row.act || '-'}</td>
+                        <td className="px-4 py-2 text-slate-700">{row.ib || '-'}</td>
+                        <td className="px-4 py-2 text-slate-700">{row.aLevel || '-'}</td>
+                        <td className="px-4 py-2 font-semibold text-blue-700">{row.point}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-            </div>
-            
-            <div className="p-4 border-t border-slate-100 bg-slate-50 text-right rounded-b-2xl">
-              <button 
-                onClick={() => setShowCcqtConversionTable(false)}
-                className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors"
-              >
-                Đóng
-              </button>
             </div>
           </div>
         </div>

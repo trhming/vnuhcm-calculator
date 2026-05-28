@@ -340,7 +340,7 @@ export const IuCalculator = () => {
                           onClick={() => setShowEnglishConversionTable(true)}
                           className="text-xs font-medium text-blue-700 hover:text-blue-900 hover:underline"
                         >
-                          Bảng quy đổi CCNN
+                          Bảng quy đổi
                         </button>
                       </div>
                       {state.useEnglishCertificate && (
@@ -556,19 +556,19 @@ export const IuCalculator = () => {
       )}
 
       {showEnglishConversionTable && (
-        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm animate-in fade-in">
-          <div className="flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-xl animate-in zoom-in-95">
-            <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-6 py-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-5xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
               <h3 className="text-lg font-bold text-slate-800">Bảng quy đổi chứng chỉ ngoại ngữ IU</h3>
               <button
                 type="button"
                 onClick={() => setShowEnglishConversionTable(false)}
-                className="rounded-full p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
+                className="text-slate-400 hover:text-slate-600"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <div className="overflow-y-auto p-6">
+            <div className="p-6 overflow-y-auto max-h-[70vh]">
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1.45fr_1fr]">
                 {[
                   {
@@ -653,15 +653,6 @@ export const IuCalculator = () => {
               <div className="mt-4 rounded-lg border border-amber-100 bg-amber-50 p-4 text-sm text-amber-800">
                 Nếu đã dùng chứng chỉ ngoại ngữ để thay thế môn tiếng Anh trong tổ hợp THPT, chứng chỉ đó không được tính thêm vào điểm khuyến khích.
               </div>
-            </div>
-            <div className="border-t border-slate-100 bg-slate-50 p-4 text-right">
-              <button
-                type="button"
-                onClick={() => setShowEnglishConversionTable(false)}
-                className="rounded-xl bg-blue-800 px-6 py-2 font-medium text-white transition-colors hover:bg-blue-900"
-              >
-                Đóng
-              </button>
             </div>
           </div>
         </div>

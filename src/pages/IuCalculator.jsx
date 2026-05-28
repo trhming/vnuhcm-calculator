@@ -460,46 +460,49 @@ export const IuCalculator = () => {
               </div>
             </div>
 
-            <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
-              <div>
-                <label className="mb-2 block text-sm font-medium text-slate-700">Điểm thưởng</label>
-                <input
-                  type="number"
-                  min="0"
-                  max="10"
-                  step="0.1"
-                  value={state.achievementBonus}
-                  onChange={(event) => state.setAchievementBonus(clampInput(event.target.value, 10))}
-                  className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
-                  placeholder="0.0"
-                />
-              </div>
-              <div>
-                <label className="mb-2 block text-sm font-medium text-slate-700">Xét thưởng</label>
-                <input
-                  type="number"
-                  min="0"
-                  max="10"
-                  step="0.1"
-                  value={state.awardBonus}
-                  onChange={(event) => state.setAwardBonus(clampInput(event.target.value, 10))}
-                  className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
-                  placeholder="0.0"
-                />
-              </div>
-              <div>
-                <label className="mb-2 block text-sm font-medium text-slate-700">Khuyến khích NN</label>
-                <input
-                  type="number"
-                  min="0"
-                  max="10"
-                  step="0.1"
-                  value={state.englishBonus}
-                  onChange={(event) => state.setEnglishBonus(clampInput(event.target.value, 10))}
-                  disabled={state.useEnglishCertificate}
-                  className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:bg-slate-100 disabled:text-slate-400"
-                  placeholder="0.0"
-                />
+            <div className="mt-6">
+              <h4 className="mb-4 font-semibold text-slate-800">Điểm cộng (Max 10)</h4>
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-slate-700">Điểm thưởng (Max 10)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="10"
+                    step="0.1"
+                    value={state.achievementBonus}
+                    onChange={(event) => state.setAchievementBonus(clampInput(event.target.value, 10))}
+                    className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                    placeholder="0.0"
+                  />
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-slate-700">Xét thưởng (Max 5)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    value={state.awardBonus}
+                    onChange={(event) => state.setAwardBonus(clampInput(event.target.value, 5))}
+                    className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                    placeholder="0.0"
+                  />
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-slate-700">Khuyến khích NN (Max 5)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    value={state.englishBonus}
+                    onChange={(event) => state.setEnglishBonus(clampInput(event.target.value, 5))}
+                    disabled={state.useEnglishCertificate}
+                    className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:bg-slate-100 disabled:text-slate-400"
+                    placeholder="0.0"
+                  />
+                </div>
               </div>
             </div>
 
@@ -512,10 +515,6 @@ export const IuCalculator = () => {
               </div>
             )}
 
-            <div className="mt-5 flex gap-3 rounded-lg border border-slate-100 bg-slate-50 p-4 text-sm text-slate-600">
-              <Info className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
-              <p>Điểm cộng được chặn trần 10 điểm. Điểm ưu tiên quy đổi về thang 100 và giảm dần khi ĐHL + ĐC từ 75 trở lên.</p>
-            </div>
           </CardSection>
         </div>
 

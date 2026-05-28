@@ -61,8 +61,8 @@ export const IuCalculator = () => {
         <div className="absolute right-0 top-0 p-4 opacity-10">
           <Calculator className="h-24 w-24" />
         </div>
-        <p className="text-sm font-medium text-red-100">Điểm xét tuyển IU</p>
-        <div className="mt-2 text-5xl font-extrabold tracking-tight">
+        <h2 className="mb-1 text-lg font-medium text-red-100">Điểm xét tuyển</h2>
+        <div className="mb-2 text-5xl font-extrabold tracking-tight">
           {results.total.toFixed(2)}
           <span className="text-xl font-normal text-red-100"> / 100</span>
         </div>
@@ -105,23 +105,27 @@ export const IuCalculator = () => {
         <div className="h-px bg-slate-100" />
 
         <div>
-          <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Cộng & ưu tiên</h3>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-slate-600">Điểm cộng gốc</span>
-              <span className="font-semibold text-slate-900">+{results.bonusRaw.toFixed(2)}</span>
+          <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Điểm cộng & Ưu tiên</h3>
+          <div className="space-y-4 text-sm">
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-slate-600">
+                <span>Điểm cộng (Gốc)</span>
+                <span>+{results.bonusRaw.toFixed(2)}</span>
+              </div>
+              <div className="flex items-center justify-between rounded bg-amber-50 p-2 font-medium text-amber-900 border border-amber-100">
+                <span>Cộng thực nhận</span>
+                <span className="font-bold text-amber-700">+{results.bonusEffective.toFixed(2)}</span>
+              </div>
             </div>
-            <div className="flex justify-between rounded-lg bg-amber-50 p-2 text-amber-900">
-              <span>Cộng thực nhận</span>
-              <span className="font-bold">+{results.bonusEffective.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-600">Ưu tiên quy đổi</span>
-              <span className="font-semibold text-slate-900">+{results.priority100.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between rounded-lg bg-emerald-50 p-2 text-emerald-900">
-              <span>Ưu tiên thực nhận</span>
-              <span className="font-bold">+{results.priorityAccepted.toFixed(2)}</span>
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-slate-600">
+                <span>Ưu tiên KV/ĐT (Gốc)</span>
+                <span>+{results.priority100.toFixed(2)}</span>
+              </div>
+              <div className="flex items-center justify-between rounded bg-emerald-50 p-2 font-medium text-emerald-900 border border-emerald-100">
+                <span>Ưu tiên thực nhận</span>
+                <span className="font-bold text-emerald-700">+{results.priorityAccepted.toFixed(2)}</span>
+              </div>
             </div>
           </div>
         </div>

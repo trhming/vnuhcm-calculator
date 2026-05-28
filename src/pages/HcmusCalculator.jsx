@@ -397,7 +397,7 @@ export const HcmusCalculator = () => {
                 <div className="absolute top-0 right-0 p-4 opacity-10">
                   <Calculator className="w-24 h-24" />
                 </div>
-                <h2 className="text-lg font-medium text-blue-100 mb-1">Kết Quả</h2>
+                <h2 className="mb-1 text-lg font-medium text-blue-100">Điểm xét tuyển</h2>
                 <div className="text-5xl font-extrabold tracking-tight mb-2">
                   {results.base100.toFixed(2)} <span className="text-xl font-normal text-blue-200">/ 100</span>
                 </div>

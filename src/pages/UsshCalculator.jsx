@@ -225,7 +225,7 @@ export const UsshCalculator = () => {
               <div className="absolute top-0 right-0 p-4 opacity-10">
                 <Calculator className="w-24 h-24" />
               </div>
-              <h2 className="text-lg font-medium text-emerald-100 mb-1">Kết Quả (Max)</h2>
+              <h2 className="mb-1 text-lg font-medium text-emerald-100">Điểm xét tuyển</h2>
               <div className="text-5xl font-extrabold tracking-tight mb-2">
                 {results.total.toFixed(2)} <span className="text-xl font-normal text-emerald-200">/ 100</span>
               </div>
@@ -271,9 +271,9 @@ export const UsshCalculator = () => {
                         <span>Điểm cộng (Gốc)</span>
                         <span>+{results.dcGoc.toFixed(2)}</span>
                       </div>
-                      <div className="flex justify-between items-center bg-amber-50 p-2 rounded text-amber-900 font-medium">
+                      <div className="flex justify-between items-center bg-amber-50 p-2 rounded text-amber-900 font-medium border border-amber-100">
                         <span>Cộng thực nhận</span>
-                        <span className="font-bold">+{results.dcThucNhan.toFixed(2)}</span>
+                        <span className="font-bold text-amber-700">+{results.dcThucNhan.toFixed(2)}</span>
                       </div>
                     </div>
 
@@ -283,9 +283,9 @@ export const UsshCalculator = () => {
                         <span>Ưu tiên KV/ĐT (Gốc)</span>
                         <span>+{results.uuTien100.toFixed(2)}</span>
                       </div>
-                      <div className="flex justify-between items-center bg-emerald-50 p-2 rounded text-emerald-900 font-medium">
+                      <div className="flex justify-between items-center bg-emerald-50 p-2 rounded text-emerald-900 font-medium border border-emerald-100">
                         <span>Ưu tiên thực nhận</span>
-                        <span className="font-bold">+{results.uuTienThucNhan.toFixed(2)}</span>
+                        <span className="font-bold text-emerald-700">+{results.uuTienThucNhan.toFixed(2)}</span>
                       </div>
                     </div>
                   </div>

@@ -1,7 +1,6 @@
 export const DOI_TUONG_HCMUT = [
   { id: '2.1', name: 'ĐT 2.1: Có thi ĐGNL 2026' },
   { id: '2.2', name: 'ĐT 2.2: Không thi ĐGNL 2026 (Chỉ THPT)' },
-  { id: '2.3', name: 'ĐT 2.3: THPT Nước ngoài' },
   { id: '2.4', name: 'ĐT 2.4: Có Chứng chỉ Quốc tế (SAT, ACT, IB, A-Level)' },
 ];
 

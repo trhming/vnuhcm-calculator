@@ -8,8 +8,8 @@ const parseNumber = (value) => {
 };
 
 export const useUhsCalculator = () => {
-  const [a, setA] = useState(50);
-  const [b, setB] = useState(30);
+  const [a, setA] = useState(40);
+  const [b, setB] = useState(35);
 
   const [dgnl, setDgnl] = useState('');
   const [thpt, setThpt] = useState(['', '', '']);

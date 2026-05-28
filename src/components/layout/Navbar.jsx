@@ -13,9 +13,7 @@ export const Navbar = () => {
         <div className="flex justify-between h-16">
           <div className="flex">
             <Link to="/" onClick={scrollHomeToTop} className="flex-shrink-0 flex items-center gap-2">
-              <div className="w-8 h-8 bg-blue-700 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">VNU</span>
-              </div>
+              <img src="/favicon.svg" alt="Web Tính Điểm ĐHQG-HCM" className="h-8 w-8 rounded-lg" />
               <span className="font-bold text-xl text-slate-900 hidden sm:block">
                 Web Tính Điểm ĐHQG-HCM 2026
               </span>

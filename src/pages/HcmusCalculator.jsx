@@ -5,6 +5,12 @@ import { Settings, BookOpen, PenTool, Award, Info, Calculator, AlertTriangle, Ch
 import { NGOAI_NGU_CONVERSION } from '../constants/hcmus';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 
+const clampWeight = (value) => {
+  const number = parseFloat(value);
+  if (Number.isNaN(number)) return 0.7;
+  return Math.min(Math.max(number, 0.7), 0.9);
+};
+
 export const HcmusCalculator = () => {
   const { state, results } = useHcmusCalculator();
   const [showConversionTable, setShowConversionTable] = useState(false);
@@ -58,7 +64,17 @@ export const HcmusCalculator = () => {
                   <div>
                     <div className="flex justify-between mb-1">
                       <span className="text-sm text-slate-500">w1 (THPT)</span>
-                      <span className="text-sm font-bold text-blue-700">{state.w1.toFixed(2)}</span>
+                      <div className="flex items-center gap-1">
+                        <input
+                          type="number"
+                          min="0.7"
+                          max="0.9"
+                          step="0.01"
+                          value={state.w1.toFixed(2)}
+                          onChange={(e) => state.setW1(clampWeight(e.target.value))}
+                          className="w-16 rounded-md border border-blue-200 px-2 py-1 text-right text-sm font-bold text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
                     </div>
                     <input 
                       type="range" min="0.7" max="0.9" step="0.01" 
@@ -81,7 +97,17 @@ export const HcmusCalculator = () => {
                   <div>
                     <div className="flex justify-between mb-1">
                       <span className="text-sm text-slate-500">w3 (ĐGNL)</span>
-                      <span className="text-sm font-bold text-blue-700">{state.w3.toFixed(2)}</span>
+                      <div className="flex items-center gap-1">
+                        <input
+                          type="number"
+                          min="0.7"
+                          max="0.9"
+                          step="0.01"
+                          value={state.w3.toFixed(2)}
+                          onChange={(e) => state.setW3(clampWeight(e.target.value))}
+                          className="w-16 rounded-md border border-blue-200 px-2 py-1 text-right text-sm font-bold text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                      </div>
                     </div>
                     <input 
                       type="range" min="0.7" max="0.9" step="0.01" 

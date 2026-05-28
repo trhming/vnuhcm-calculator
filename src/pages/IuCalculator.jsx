@@ -61,8 +61,8 @@ export const IuCalculator = () => {
         <div className="absolute right-0 top-0 p-4 opacity-10">
           <Calculator className="h-24 w-24" />
         </div>
-        <p className="text-sm font-medium text-red-100">Điểm xét tuyển IU</p>
-        <div className="mt-2 text-5xl font-extrabold tracking-tight">
+        <h2 className="mb-1 text-lg font-medium text-red-100">Điểm xét tuyển</h2>
+        <div className="mb-2 text-5xl font-extrabold tracking-tight">
           {results.total.toFixed(2)}
           <span className="text-xl font-normal text-red-100"> / 100</span>
         </div>
@@ -105,23 +105,27 @@ export const IuCalculator = () => {
         <div className="h-px bg-slate-100" />
 
         <div>
-          <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Cộng & ưu tiên</h3>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-slate-600">Điểm cộng gốc</span>
-              <span className="font-semibold text-slate-900">+{results.bonusRaw.toFixed(2)}</span>
+          <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Điểm cộng & Ưu tiên</h3>
+          <div className="space-y-4 text-sm">
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-slate-600">
+                <span>Điểm cộng (Gốc)</span>
+                <span>+{results.bonusRaw.toFixed(2)}</span>
+              </div>
+              <div className="flex items-center justify-between rounded bg-amber-50 p-2 font-medium text-amber-900 border border-amber-100">
+                <span>Cộng thực nhận</span>
+                <span className="font-bold text-amber-700">+{results.bonusEffective.toFixed(2)}</span>
+              </div>
             </div>
-            <div className="flex justify-between rounded-lg bg-amber-50 p-2 text-amber-900">
-              <span>Cộng thực nhận</span>
-              <span className="font-bold">+{results.bonusEffective.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-600">Ưu tiên quy đổi</span>
-              <span className="font-semibold text-slate-900">+{results.priority100.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between rounded-lg bg-emerald-50 p-2 text-emerald-900">
-              <span>Ưu tiên thực nhận</span>
-              <span className="font-bold">+{results.priorityAccepted.toFixed(2)}</span>
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-slate-600">
+                <span>Ưu tiên KV/ĐT (Gốc)</span>
+                <span>+{results.priority100.toFixed(2)}</span>
+              </div>
+              <div className="flex items-center justify-between rounded bg-emerald-50 p-2 font-medium text-emerald-900 border border-emerald-100">
+                <span>Ưu tiên thực nhận</span>
+                <span className="font-bold text-emerald-700">+{results.priorityAccepted.toFixed(2)}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -456,46 +460,49 @@ export const IuCalculator = () => {
               </div>
             </div>
 
-            <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-3">
-              <div>
-                <label className="mb-2 block text-sm font-medium text-slate-700">Điểm thưởng</label>
-                <input
-                  type="number"
-                  min="0"
-                  max="10"
-                  step="0.1"
-                  value={state.achievementBonus}
-                  onChange={(event) => state.setAchievementBonus(clampInput(event.target.value, 10))}
-                  className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
-                  placeholder="0.0"
-                />
-              </div>
-              <div>
-                <label className="mb-2 block text-sm font-medium text-slate-700">Xét thưởng</label>
-                <input
-                  type="number"
-                  min="0"
-                  max="10"
-                  step="0.1"
-                  value={state.awardBonus}
-                  onChange={(event) => state.setAwardBonus(clampInput(event.target.value, 10))}
-                  className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
-                  placeholder="0.0"
-                />
-              </div>
-              <div>
-                <label className="mb-2 block text-sm font-medium text-slate-700">Khuyến khích NN</label>
-                <input
-                  type="number"
-                  min="0"
-                  max="10"
-                  step="0.1"
-                  value={state.englishBonus}
-                  onChange={(event) => state.setEnglishBonus(clampInput(event.target.value, 10))}
-                  disabled={state.useEnglishCertificate}
-                  className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:bg-slate-100 disabled:text-slate-400"
-                  placeholder="0.0"
-                />
+            <div className="mt-6">
+              <h4 className="mb-4 font-semibold text-slate-800">Điểm cộng (Max 10)</h4>
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-slate-700">Điểm thưởng (Max 10)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="10"
+                    step="0.1"
+                    value={state.achievementBonus}
+                    onChange={(event) => state.setAchievementBonus(clampInput(event.target.value, 10))}
+                    className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                    placeholder="0.0"
+                  />
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-slate-700">Xét thưởng (Max 5)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    value={state.awardBonus}
+                    onChange={(event) => state.setAwardBonus(clampInput(event.target.value, 5))}
+                    className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                    placeholder="0.0"
+                  />
+                </div>
+                <div>
+                  <label className="mb-2 block text-sm font-medium text-slate-700">Khuyến khích NN (Max 5)</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    value={state.englishBonus}
+                    onChange={(event) => state.setEnglishBonus(clampInput(event.target.value, 5))}
+                    disabled={state.useEnglishCertificate}
+                    className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:bg-slate-100 disabled:text-slate-400"
+                    placeholder="0.0"
+                  />
+                </div>
               </div>
             </div>
 
@@ -508,10 +515,6 @@ export const IuCalculator = () => {
               </div>
             )}
 
-            <div className="mt-5 flex gap-3 rounded-lg border border-slate-100 bg-slate-50 p-4 text-sm text-slate-600">
-              <Info className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
-              <p>Điểm cộng được chặn trần 10 điểm. Điểm ưu tiên quy đổi về thang 100 và giảm dần khi ĐHL + ĐC từ 75 trở lên.</p>
-            </div>
           </CardSection>
         </div>
 

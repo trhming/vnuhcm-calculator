@@ -345,18 +345,6 @@ export const HcmusCalculator = () => {
                 />
               </div>
             </div>
-            
-            {/* Note về công thức giảm tuyến tính */}
-            <div className="mt-6 flex gap-3 p-4 bg-amber-50 rounded-lg border border-amber-100">
-              <Info className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
-              <div className="text-sm text-amber-800">
-                <p className="font-semibold mb-1">Quy định giảm trừ ưu tiên (Tuyến tính):</p>
-                <ul className="list-disc pl-4 space-y-1 text-amber-700/80">
-                  <li>Tổng điểm Học lực &gt; 22.5: Mức ưu tiên sẽ giảm dần về 0.</li>
-                  <li>Tổng điểm Học lực &gt; 28.5: Mức điểm cộng sẽ giảm dần về 0.</li>
-                </ul>
-              </div>
-            </div>
           </CardSection>
 
         </div>
@@ -397,7 +385,7 @@ export const HcmusCalculator = () => {
                 <div className="absolute top-0 right-0 p-4 opacity-10">
                   <Calculator className="w-24 h-24" />
                 </div>
-                <h2 className="text-lg font-medium text-blue-100 mb-1">Kết Quả</h2>
+                <h2 className="mb-1 text-lg font-medium text-blue-100">Điểm xét tuyển</h2>
                 <div className="text-5xl font-extrabold tracking-tight mb-2">
                   {results.base100.toFixed(2)} <span className="text-xl font-normal text-blue-200">/ 100</span>
                 </div>

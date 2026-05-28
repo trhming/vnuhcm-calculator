@@ -442,7 +442,7 @@ export const UelCalculator = () => {
               <div className="absolute top-0 right-0 p-4 opacity-10">
                 <Calculator className="w-24 h-24" />
               </div>
-              <h2 className="text-lg font-medium text-indigo-100 mb-1">Kết Quả ĐXT</h2>
+              <h2 className="mb-1 text-lg font-medium text-indigo-100">Điểm xét tuyển</h2>
               <div className="text-5xl font-extrabold tracking-tight mb-2">
                 {results.total.toFixed(2)} <span className="text-xl font-normal text-indigo-200">/ 100</span>
               </div>

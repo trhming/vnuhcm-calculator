@@ -11,6 +11,45 @@ export const INTL_CERT_TYPES = [
   { id: 'ALEVEL', name: 'A-Level' },
 ];
 
+export const HCMUT_CCQT_TABLE = [
+  { sat: 1600, act: 36, ib: 45, aLevel: '', point: 100 },
+  { sat: 1590, act: '', ib: '', aLevel: '', point: 99 },
+  { sat: 1580, act: '', ib: '', aLevel: '', point: 98 },
+  { sat: 1570, act: '', ib: '', aLevel: '', point: 97 },
+  { sat: 1560, act: 35, ib: 44, aLevel: '', point: 96 },
+  { sat: 1550, act: '', ib: '', aLevel: 'A*', point: 95 },
+  { sat: 1540, act: '', ib: '', aLevel: '', point: 94 },
+  { sat: 1530, act: '', ib: 43, aLevel: '', point: 93 },
+  { sat: 1520, act: 34, ib: '', aLevel: '', point: 92 },
+  { sat: 1510, act: '', ib: '', aLevel: '', point: 91 },
+  { sat: 1500, act: '', ib: 42, aLevel: '', point: 90 },
+  { sat: 1490, act: '', ib: '', aLevel: '', point: 89 },
+  { sat: 1480, act: 33, ib: '', aLevel: '', point: 88 },
+  { sat: 1470, act: '', ib: 41, aLevel: '', point: 87 },
+  { sat: 1460, act: '', ib: '', aLevel: '', point: 86 },
+  { sat: 1450, act: '', ib: '', aLevel: 'A', point: 85 },
+  { sat: 1440, act: 32, ib: 40, aLevel: '', point: 84 },
+  { sat: 1430, act: '', ib: '', aLevel: '', point: 83 },
+  { sat: 1420, act: '', ib: '', aLevel: '', point: 82 },
+  { sat: 1410, act: 31, ib: 39, aLevel: '', point: 81 },
+  { sat: 1400, act: '', ib: '', aLevel: '', point: 80 },
+  { sat: 1390, act: '', ib: '', aLevel: '', point: 79 },
+  { sat: 1380, act: 30, ib: 38, aLevel: '', point: 78 },
+  { sat: 1370, act: '', ib: '', aLevel: '', point: 77 },
+  { sat: 1360, act: '', ib: '', aLevel: '', point: 76 },
+  { sat: 1350, act: 29, ib: 37, aLevel: 'B', point: 75 },
+  { sat: 1340, act: '', ib: '', aLevel: '', point: 74 },
+  { sat: 1330, act: '', ib: '', aLevel: '', point: 73 },
+  { sat: 1320, act: 28, ib: 36, aLevel: '', point: 72 },
+  { sat: 1310, act: '', ib: '', aLevel: '', point: 71 },
+  { sat: 1300, act: '', ib: '', aLevel: '', point: 70 },
+  { sat: 1280, act: 27, ib: 35, aLevel: '', point: 69 },
+  { sat: 1260, act: '', ib: '', aLevel: '', point: 68 },
+  { sat: 1240, act: 26, ib: 34, aLevel: '', point: 67 },
+  { sat: 1220, act: '', ib: '', aLevel: '', point: 66 },
+  { sat: 1200, act: 25, ib: 33, aLevel: 'C', point: 65 },
+];
+
 export const convertHcmutEnglish = (type, score, toeicLr = 0, toeicSw = 0) => {
   if (type === 'IELTS') {
     if (score >= 8.0) return 10;

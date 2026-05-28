@@ -3,7 +3,7 @@ import { useHcmutCalculator } from '../hooks/useHcmutCalculator';
 import { CardSection } from '../components/common/CardSection';
 import { Settings, BookOpen, PenTool, Award, Info, Calculator, CheckCircle2, X, Building2, ExternalLink } from 'lucide-react';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
-import { DOI_TUONG_HCMUT, INTL_CERT_TYPES } from '../constants/hcmut';
+import { DOI_TUONG_HCMUT, INTL_CERT_TYPES, HCMUT_CCQT_TABLE } from '../constants/hcmut';
 
 export const HcmutCalculator = () => {
   const { state, results } = useHcmutCalculator();
@@ -521,95 +521,48 @@ export const HcmutCalculator = () => {
 
       {/* Modal Bảng Quy Đổi Chứng Chỉ Quốc Tế HCMUT */}
       {showIntlCertTable && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
-              <h3 className="text-lg font-bold text-slate-800">Bảng Quy Đổi Chứng Chỉ Quốc Tế HCMUT</h3>
-              <button onClick={() => setShowIntlCertTable(false)} className="text-slate-400 hover:text-slate-600">
+        <div className="fixed inset-0 z-[70] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col animate-in zoom-in-95">
+            <div className="flex justify-between items-center p-6 border-b border-slate-100">
+              <h3 className="text-xl font-bold text-slate-800">Bảng Quy Đổi Chứng Chỉ Quốc Tế HCMUT</h3>
+              <button onClick={() => setShowIntlCertTable(false)} className="text-slate-400 hover:text-slate-600 bg-slate-50 hover:bg-slate-100 p-2 rounded-full transition-colors">
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="p-6 overflow-y-auto max-h-[70vh]">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div>
-                  <h4 className="font-bold text-blue-800 mb-3 text-center bg-blue-50 py-2 rounded-lg">SAT</h4>
-                  <table className="w-full text-sm text-center border-collapse">
-                    <thead>
-                      <tr className="border-b-2 border-slate-200 text-slate-600">
-                        <th className="py-2 font-medium">Điểm</th>
-                        <th className="py-2 font-medium">Quy đổi</th>
+            <div className="p-6 overflow-y-auto">
+              <div className="overflow-x-auto rounded-xl border border-slate-200">
+                <table className="w-full text-sm text-center">
+                  <thead className="bg-slate-100 text-slate-700 sticky top-0 shadow-sm">
+                    <tr>
+                      <th className="px-4 py-3 font-semibold border-b border-slate-200">Điểm SAT</th>
+                      <th className="px-4 py-3 font-semibold border-b border-slate-200 border-l">Điểm ACT</th>
+                      <th className="px-4 py-3 font-semibold border-b border-slate-200 border-l">Điểm IB</th>
+                      <th className="px-4 py-3 font-semibold border-b border-slate-200 border-l">Hạng A-Level</th>
+                      <th className="px-4 py-3 font-bold text-indigo-700 bg-indigo-50 border-b border-indigo-100 border-l">Quy đổi (100)</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {HCMUT_CCQT_TABLE.map((row, index) => (
+                      <tr key={`${row.point}-${index}`} className={index % 2 === 0 ? 'bg-white hover:bg-slate-50' : 'bg-slate-50/50 hover:bg-slate-100/50'}>
+                        <td className="px-4 py-2 font-medium text-slate-700">{row.sat}</td>
+                        <td className="px-4 py-2 font-medium text-slate-700 border-l border-slate-100">{row.act || '-'}</td>
+                        <td className="px-4 py-2 font-medium text-slate-700 border-l border-slate-100">{row.ib || '-'}</td>
+                        <td className="px-4 py-2 font-medium text-slate-700 border-l border-slate-100">{row.aLevel || '-'}</td>
+                        <td className="px-4 py-2 font-bold text-indigo-700 bg-indigo-50/30 border-l border-indigo-100">{row.point}</td>
                       </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">1600</td><td className="py-2 font-semibold text-blue-700">100</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">1500</td><td className="py-2 font-semibold text-blue-700">90</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">1400</td><td className="py-2 font-semibold text-blue-700">80</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">1300</td><td className="py-2 font-semibold text-blue-700">70</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">1200</td><td className="py-2 font-semibold text-blue-700">60</td></tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div>
-                  <h4 className="font-bold text-emerald-800 mb-3 text-center bg-emerald-50 py-2 rounded-lg">ACT</h4>
-                  <table className="w-full text-sm text-center border-collapse">
-                    <thead>
-                      <tr className="border-b-2 border-slate-200 text-slate-600">
-                        <th className="py-2 font-medium">Điểm</th>
-                        <th className="py-2 font-medium">Quy đổi</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      {[
-                        ['36', '100'], ['35', '96'], ['34', '92'], ['33', '88'],
-                        ['32', '84'], ['31', '81'], ['30', '78'], ['29', '75'],
-                        ['28', '72'], ['27', '69'], ['26', '67'], ['25', '65'],
-                      ].map(([score, point]) => (
-                        <tr key={score} className="hover:bg-slate-50"><td className="py-2 text-slate-700">{score}</td><td className="py-2 font-semibold text-blue-700">{point}</td></tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                <div>
-                  <h4 className="font-bold text-indigo-800 mb-3 text-center bg-indigo-50 py-2 rounded-lg">IB</h4>
-                  <table className="w-full text-sm text-center border-collapse">
-                    <thead>
-                      <tr className="border-b-2 border-slate-200 text-slate-600">
-                        <th className="py-2 font-medium">Điểm</th>
-                        <th className="py-2 font-medium">Quy đổi</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      {[
-                        ['45', '100'], ['44', '96'], ['43', '93'], ['42', '90'],
-                        ['41', '87'], ['40', '84'], ['39', '81'], ['38', '78'],
-                        ['37', '75'], ['36', '72'], ['35', '69'], ['34', '67'], ['33', '65'],
-                      ].map(([score, point]) => (
-                        <tr key={score} className="hover:bg-slate-50"><td className="py-2 text-slate-700">{score}</td><td className="py-2 font-semibold text-blue-700">{point}</td></tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                <div>
-                  <h4 className="font-bold text-amber-800 mb-3 text-center bg-amber-50 py-2 rounded-lg">A-Level</h4>
-                  <table className="w-full text-sm text-center border-collapse">
-                    <thead>
-                      <tr className="border-b-2 border-slate-200 text-slate-600">
-                        <th className="py-2 font-medium">Hạng</th>
-                        <th className="py-2 font-medium">Quy đổi</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">A*</td><td className="py-2 font-semibold text-blue-700">95</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">A</td><td className="py-2 font-semibold text-blue-700">85</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">B</td><td className="py-2 font-semibold text-blue-700">75</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">C</td><td className="py-2 font-semibold text-blue-700">65</td></tr>
-                    </tbody>
-                  </table>
-                </div>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-              <div className="mt-5 rounded-lg border border-blue-100 bg-blue-50 p-4 text-sm text-blue-900">
-                SAT quy đổi tuyến tính theo công thức trong hệ thống: từ 1200 điểm trở lên, mỗi 10 điểm SAT tăng 1 điểm quy đổi, tối đa 100.
-              </div>
+            </div>
+
+            <div className="p-4 border-t border-slate-100 bg-slate-50 text-right rounded-b-2xl">
+              <button
+                onClick={() => setShowIntlCertTable(false)}
+                className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors"
+              >
+                Đóng
+              </button>
             </div>
           </div>
         </div>

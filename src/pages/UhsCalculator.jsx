@@ -11,8 +11,9 @@ import {
   X,
 } from 'lucide-react';
 import { CardSection } from '../components/common/CardSection';
+import { QuickScoreInput } from '../components/common/QuickScoreInput';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
-import { UHS_LANG_TYPES } from '../constants/uhs';
+import { UHS_LANG_MAX, UHS_LANG_TYPES } from '../constants/uhs';
 import { useUhsCalculator } from '../hooks/useUhsCalculator';
 
 const clampInput = (value, max) => {
@@ -20,6 +21,11 @@ const clampInput = (value, max) => {
   const number = parseFloat(value);
   if (Number.isNaN(number)) return value;
   return Math.min(Math.max(number, 0), max).toString();
+};
+
+const UHS_TOEIC_MAX = {
+  lr: 990,
+  sw: 400,
 };
 
 const clampNumber = (value, min, max) => {
@@ -42,6 +48,12 @@ export const UhsCalculator = () => {
     setter(nextValues);
   };
 
+  const hasThptDetail = state.thpt.some((value) => value !== '');
+  const hasThptQuickTotal = state.thptQuickTotal !== '';
+  const hasHocBaDetail = state.hocBa.some((value) => value !== '');
+  const hasHocBaQuickTotal = state.hocBaQuickTotal !== '';
+  const setQuickTotal = (setter, value) => setter(clampInput(value, 30));
+
   const updateWeight = (key, value) => {
     if (key === 'a') state.setA(clampNumber(value, 40, 100));
     if (key === 'b') state.setB(clampNumber(value, 0, 35));
@@ -63,6 +75,13 @@ export const UhsCalculator = () => {
 
       <div className="space-y-5 p-6">
         <div>
+          <div className="mb-3 rounded-xl bg-blue-50 p-3 text-sm text-blue-900">
+            <div className="font-semibold">ĐHL = ĐGNL x a + THPT x b + Học bạ x c</div>
+            <div className="mt-2 flex justify-between font-bold">
+              <span>ĐHL</span>
+              <span>{results.dhl.toFixed(1)}</span>
+            </div>
+          </div>
           <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Điểm học lực</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
@@ -76,13 +95,6 @@ export const UhsCalculator = () => {
             <div className="flex justify-between">
               <span className="text-slate-600">Học bạ ({results.cWeight}%)</span>
               <span className="font-semibold">{results.hocBa100.toFixed(1)}</span>
-            </div>
-          </div>
-          <div className="mt-3 rounded-xl bg-blue-50 p-3 text-sm text-blue-900">
-            <div className="font-semibold">ĐHL = ĐGNL x a + THPT x b + Học bạ x c</div>
-            <div className="mt-2 flex justify-between font-bold">
-              <span>ĐHL</span>
-              <span>{results.dhl.toFixed(1)}</span>
             </div>
           </div>
         </div>
@@ -204,7 +216,62 @@ export const UhsCalculator = () => {
             </div>
           </CardSection>
 
-          <CardSection title="2. Điểm thành phần" icon={PenTool}>
+          <CardSection title="2. Học bạ" icon={PenTool}>
+            <div className="space-y-4">
+              <h4 className="mb-3 font-semibold text-slate-800">Học bạ 3 môn</h4>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead className="bg-slate-50 text-slate-600">
+                    <tr>
+                      <th className="rounded-tl-lg px-3 py-2 text-left font-semibold">Môn</th>
+                      <th className="px-3 py-2 font-semibold">Lớp 10</th>
+                      <th className="px-3 py-2 font-semibold">Lớp 11</th>
+                      <th className="rounded-tr-lg px-3 py-2 font-semibold">Lớp 12</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {subjects.map((subject, subjectIndex) => (
+                      <tr key={`hocba-${subject}`}>
+                        <td className="px-3 py-2 font-medium text-slate-700">{subject}</td>
+                        {[0, 1, 2].map((yearIndex) => {
+                          const cellIndex = subjectIndex * 3 + yearIndex;
+                          return (
+                            <td key={cellIndex} className="px-1 py-2">
+                              <input
+                                type="number"
+                                min="0"
+                                max="10"
+                                step="0.1"
+                                value={state.hocBa[cellIndex]}
+                                onChange={(event) => updateArrayValue(state.hocBa, state.setHocBa, cellIndex, event.target.value, 10)}
+                                disabled={hasHocBaQuickTotal}
+                                className={`w-full rounded-md border border-slate-200 px-2 py-2 text-center focus:outline-none focus:ring-2 focus:ring-blue-700 ${hasHocBaQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`}
+                                placeholder="0.0"
+                              />
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <div className="hidden">
+                <label className="mb-2 block text-sm font-semibold text-slate-700">Nhập nhanh tổng học bạ</label>
+                <input type="number" min="0" max="30" step="0.1" value={hasHocBaDetail ? results.hocBaTotal.toFixed(1) : state.hocBaQuickTotal} onChange={(event) => setQuickTotal(state.setHocBaQuickTotal, event.target.value)} disabled={hasHocBaDetail} className={`w-full rounded-md border px-3 py-2 text-right font-bold focus:outline-none focus:ring-2 focus:ring-blue-700 ${hasHocBaDetail ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-500' : 'border-slate-200 bg-white text-blue-800'}`} placeholder="0.0" />
+              </div>
+              <QuickScoreInput
+                title="Nhập nhanh tổng học bạ"
+                value={hasHocBaDetail ? results.hocBaTotal.toFixed(2) : state.hocBaQuickTotal}
+                onChange={(event) => setQuickTotal(state.setHocBaQuickTotal, event.target.value)}
+                disabled={hasHocBaDetail}
+                step="0.01"
+                placeholder="0.00"
+              />
+            </div>
+          </CardSection>
+
+          <CardSection title="3. Điểm thi" icon={PenTool}>
             <div className="space-y-6">
               <div>
                 <h4 className="mb-3 font-semibold text-slate-800">Đánh giá năng lực</h4>
@@ -217,13 +284,14 @@ export const UhsCalculator = () => {
                   className="w-full rounded-md border border-slate-200 px-3 py-2 text-lg font-medium focus:outline-none focus:ring-2 focus:ring-blue-700"
                   placeholder="VD: 850"
                 />
-                <div className="mt-3 flex justify-between rounded-lg bg-slate-50 p-3 text-sm">
-                  <span className="text-slate-600">ĐGNL chuẩn hóa</span>
-                  <span className="font-bold text-slate-900">{results.dgnl100.toFixed(1)} / 100</span>
-                </div>
               </div>
 
               <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <div className="hidden">
+                  <label className="mb-2 block text-sm font-semibold text-slate-700">Nhập nhanh tổng THPT</label>
+                  <input type="number" min="0" max="30" step="0.1" value={hasThptDetail ? results.thptTotal.toFixed(1) : state.thptQuickTotal} onChange={(event) => setQuickTotal(state.setThptQuickTotal, event.target.value)} disabled={hasThptDetail} className={`w-full rounded-md border px-3 py-2 text-right font-bold focus:outline-none focus:ring-2 focus:ring-blue-700 ${hasThptDetail ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-500' : 'border-slate-200 bg-white text-blue-800'}`} placeholder="0.0" />
+                </div>
+
                 <div>
                   <h4 className="mb-3 font-semibold text-slate-800">Điểm THPT 3 môn</h4>
                   <div className="space-y-3">
@@ -237,66 +305,27 @@ export const UhsCalculator = () => {
                           step="0.1"
                           value={state.thpt[index]}
                           onChange={(event) => updateArrayValue(state.thpt, state.setThpt, index, event.target.value, 10)}
-                          className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700"
+                          disabled={hasThptQuickTotal}
+                          className={`w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700 ${hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`}
                           placeholder="0.0"
                         />
                       </div>
                     ))}
                   </div>
-                  <div className="mt-3 flex justify-between rounded-lg bg-blue-50 p-3 text-sm text-blue-900">
-                    <span className="font-medium">Tổng THPT</span>
-                    <span className="font-bold">{results.thptTotal.toFixed(1)} / 30</span>
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="mb-3 font-semibold text-slate-800">Học bạ 3 môn</h4>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead className="bg-slate-50 text-slate-600">
-                        <tr>
-                          <th className="rounded-tl-lg px-3 py-2 text-left font-semibold">Môn</th>
-                          <th className="px-3 py-2 font-semibold">Lớp 10</th>
-                          <th className="px-3 py-2 font-semibold">Lớp 11</th>
-                          <th className="rounded-tr-lg px-3 py-2 font-semibold">Lớp 12</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-100">
-                        {subjects.map((subject, subjectIndex) => (
-                          <tr key={`hocba-${subject}`}>
-                            <td className="px-3 py-2 font-medium text-slate-700">{subject}</td>
-                            {[0, 1, 2].map((yearIndex) => {
-                              const cellIndex = subjectIndex * 3 + yearIndex;
-                              return (
-                                <td key={cellIndex} className="px-1 py-2">
-                                  <input
-                                    type="number"
-                                    min="0"
-                                    max="10"
-                                    step="0.1"
-                                    value={state.hocBa[cellIndex]}
-                                    onChange={(event) => updateArrayValue(state.hocBa, state.setHocBa, cellIndex, event.target.value, 10)}
-                                    className="w-full rounded-md border border-slate-200 px-2 py-2 text-center focus:outline-none focus:ring-2 focus:ring-blue-700"
-                                    placeholder="0.0"
-                                  />
-                                </td>
-                              );
-                            })}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  <div className="mt-3 flex justify-between rounded-lg bg-blue-50 p-3 text-sm text-blue-900">
-                    <span className="font-medium">Tổng TB học bạ</span>
-                    <span className="font-bold">{results.hocBaTotal.toFixed(1)} / 30</span>
-                  </div>
+                  <QuickScoreInput
+                    title="Nhập nhanh tổng THPT"
+                    value={hasThptDetail ? results.thptTotal.toFixed(2) : state.thptQuickTotal}
+                    onChange={(event) => setQuickTotal(state.setThptQuickTotal, event.target.value)}
+                    disabled={hasThptDetail}
+                    step="0.01"
+                    placeholder="0.00"
+                  />
                 </div>
               </div>
             </div>
           </CardSection>
 
-          <CardSection title="3. Điểm cộng tích lũy" icon={Award}>
+          <CardSection title="4. Điểm cộng tích lũy" icon={Award}>
             <div className="space-y-4">
               <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3">
                 <input
@@ -325,8 +354,9 @@ export const UhsCalculator = () => {
                   <input
                     type="number"
                     min="0"
+                    max={state.languageType === 'TOEIC' ? UHS_TOEIC_MAX.lr : UHS_LANG_MAX[state.languageType]}
                     value={state.languageScore}
-                    onChange={(event) => state.setLanguageScore(event.target.value)}
+                    onChange={(event) => state.setLanguageScore(clampInput(event.target.value, state.languageType === 'TOEIC' ? UHS_TOEIC_MAX.lr : UHS_LANG_MAX[state.languageType]))}
                     className="rounded-md border border-blue-200 px-3 py-2 focus:ring-2 focus:ring-blue-700"
                     placeholder={state.languageType === 'TOEIC' ? 'L&R' : 'Điểm chứng chỉ'}
                   />
@@ -334,8 +364,9 @@ export const UhsCalculator = () => {
                     <input
                       type="number"
                       min="0"
+                      max={UHS_TOEIC_MAX.sw}
                       value={state.languageScore2}
-                      onChange={(event) => state.setLanguageScore2(event.target.value)}
+                      onChange={(event) => state.setLanguageScore2(clampInput(event.target.value, UHS_TOEIC_MAX.sw))}
                       className="rounded-md border border-blue-200 px-3 py-2 focus:ring-2 focus:ring-blue-700"
                       placeholder="S&W"
                     />
@@ -409,7 +440,7 @@ export const UhsCalculator = () => {
             </div>
           </CardSection>
 
-          <CardSection title="4. Ưu tiên khu vực & đối tượng" icon={Info}>
+          <CardSection title="5. Ưu tiên khu vực & đối tượng" icon={Info}>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
                 <label className="mb-2 block text-sm font-medium text-slate-700">Khu vực</label>

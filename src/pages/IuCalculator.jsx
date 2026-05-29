@@ -13,6 +13,7 @@ import {
   X,
 } from 'lucide-react';
 import { CardSection } from '../components/common/CardSection';
+import { QuickScoreInput } from '../components/common/QuickScoreInput';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { IU_ENGLISH_TYPES, IU_GROUPS } from '../constants/iu';
 import { useIuCalculator } from '../hooks/useIuCalculator';
@@ -22,6 +23,14 @@ const clampInput = (value, max) => {
   const number = parseFloat(value);
   if (Number.isNaN(number)) return value;
   return Math.min(Math.max(number, 0), max).toString();
+};
+
+const IU_ENGLISH_MAX = {
+  IELTS: 9,
+  TOEFL: 120,
+  TOEIC_LR: 990,
+  TOEIC_SW: 400,
+  CAMBRIDGE: 230,
 };
 
 const clampNumber = (value, min, max) => {
@@ -40,6 +49,11 @@ export const IuCalculator = () => {
   const needsDgnl = ['G1_DGNL', 'G2_BOTH', 'G2_DGNL'].includes(state.group);
   const needsHocBa = ['G1_DGNL', 'G1_NO_DGNL', 'G3_FOREIGN'].includes(state.group);
   const isK3Valid = results.k3 >= 10 && results.k3 <= 20;
+  const hasThptDetail = state.thpt.some((value) => value !== '') || state.useEnglishCertificate;
+  const hasThptQuickTotal = state.thptQuickTotal !== '';
+  const hasHocBaDetail = state.hocBa.some((value) => value !== '');
+  const hasHocBaQuickTotal = state.hocBaQuickTotal !== '';
+  const setQuickTotal = (setter, value) => setter(clampInput(value, 30));
 
   const updateK1 = (value) => {
     state.setK1(clampNumber(value, 30, 40));
@@ -71,6 +85,14 @@ export const IuCalculator = () => {
 
       <div className="space-y-5 p-6">
         <div>
+          <div className="mb-3 rounded-xl bg-red-50 p-3 text-sm text-red-900">
+            <div className="font-semibold">{results.formula}</div>
+            {results.interpolation && <div className="mt-1 text-red-800/80">{results.interpolation}</div>}
+            <div className="mt-2 flex justify-between font-bold">
+              <span>ĐHL</span>
+              <span>{results.dhl.toFixed(2)}</span>
+            </div>
+          </div>
           <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Điểm học lực</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
@@ -91,14 +113,6 @@ export const IuCalculator = () => {
                 <span className="font-semibold text-slate-900">{results.interview100.toFixed(2)}</span>
               </div>
             )}
-          </div>
-          <div className="mt-3 rounded-xl bg-red-50 p-3 text-sm text-red-900">
-            <div className="font-semibold">{results.formula}</div>
-            {results.interpolation && <div className="mt-1 text-red-800/80">{results.interpolation}</div>}
-            <div className="mt-2 flex justify-between font-bold">
-              <span>ĐHL</span>
-              <span>{results.dhl.toFixed(2)}</span>
-            </div>
           </div>
         </div>
 
@@ -239,11 +253,9 @@ export const IuCalculator = () => {
             </select>
           </CardSection>
 
-          {(needsThpt || needsDgnl || needsHocBa || isForeignGroup) && (
-            <CardSection title="3. Dữ liệu học lực" icon={PenTool}>
-              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                {needsHocBa && (
-                  <div className="space-y-4 lg:col-span-2">
+          {needsHocBa && (
+            <CardSection title="3. Học bạ" icon={PenTool}>
+                  <div className="space-y-4">
                     <h4 className="font-semibold text-slate-800">Học bạ - Trung bình lớp 10, 11, 12</h4>
                     <div className="overflow-x-auto">
                       <table className="w-full text-left text-sm">
@@ -271,7 +283,8 @@ export const IuCalculator = () => {
                                       step="0.1"
                                       value={state.hocBa[cellIndex]}
                                       onChange={(event) => updateArrayValue(state.hocBa, state.setHocBa, cellIndex, event.target.value, 10)}
-                                      className="w-full rounded-md border border-slate-200 px-3 py-2 text-center focus:outline-none focus:ring-2 focus:ring-red-500"
+                                      disabled={hasHocBaQuickTotal}
+                                      className={`w-full rounded-md border border-slate-200 px-3 py-2 text-center focus:outline-none focus:ring-2 focus:ring-red-500 ${hasHocBaQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`}
                                       placeholder="0.0"
                                     />
                                   </td>
@@ -285,13 +298,26 @@ export const IuCalculator = () => {
                         </tbody>
                       </table>
                     </div>
-                    <div className="flex justify-between rounded-lg bg-red-50 p-3 text-sm text-red-900">
-                      <span className="font-medium">Tổng TB 3 môn học bạ</span>
-                      <span className="font-bold">{results.hocBaTotal.toFixed(2)} / 30</span>
+                    <div className="hidden">
+                      <label className="mb-2 block text-sm font-semibold text-slate-700">Nhập nhanh tổng học bạ</label>
+                      <input type="number" min="0" max="30" step="0.1" value={hasHocBaDetail ? results.hocBaTotal.toFixed(2) : state.hocBaQuickTotal} onChange={(event) => setQuickTotal(state.setHocBaQuickTotal, event.target.value)} disabled={hasHocBaDetail} className={`w-full rounded-md border px-3 py-2 text-right font-bold focus:outline-none focus:ring-2 focus:ring-red-500 ${hasHocBaDetail ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-500' : 'border-slate-200 bg-white text-red-800'}`} placeholder="0.0" />
                     </div>
+                    <QuickScoreInput
+                      title="Nhập nhanh tổng học bạ"
+                      value={hasHocBaDetail ? results.hocBaTotal.toFixed(2) : state.hocBaQuickTotal}
+                      onChange={(event) => setQuickTotal(state.setHocBaQuickTotal, event.target.value)}
+                      disabled={hasHocBaDetail}
+                      step="0.01"
+                      placeholder="0.00"
+                      tone="red"
+                    />
                   </div>
-                )}
+            </CardSection>
+          )}
 
+          {(needsThpt || needsDgnl || isForeignGroup) && (
+            <CardSection title="4. Điểm thi" icon={PenTool}>
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 {needsThpt && (
                   <div className="space-y-4">
                     <h4 className="font-semibold text-slate-800">Kỳ thi THPT 2026</h4>
@@ -305,7 +331,8 @@ export const IuCalculator = () => {
                           step="0.1"
                           value={state.thpt[index]}
                           onChange={(event) => updateArrayValue(state.thpt, state.setThpt, index, event.target.value, 10)}
-                          className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                          disabled={hasThptQuickTotal}
+                          className={`w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 ${hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`}
                           placeholder="0.0"
                         />
                       </div>
@@ -320,7 +347,7 @@ export const IuCalculator = () => {
                           step="0.1"
                           value={state.useEnglishCertificate ? results.englishConvertedScore : state.thpt[2]}
                           onChange={(event) => updateArrayValue(state.thpt, state.setThpt, 2, event.target.value, 10)}
-                          disabled={state.useEnglishCertificate}
+                          disabled={state.useEnglishCertificate || hasThptQuickTotal}
                           className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:bg-slate-100 disabled:text-slate-500"
                           placeholder="0.0"
                         />
@@ -347,7 +374,11 @@ export const IuCalculator = () => {
                         <div className="mt-3 grid grid-cols-1 gap-2 border-t border-slate-200 pt-3 sm:grid-cols-3">
                           <select
                             value={state.englishType}
-                            onChange={(event) => state.setEnglishType(event.target.value)}
+                            onChange={(event) => {
+                              state.setEnglishType(event.target.value);
+                              state.setEnglishScore('');
+                              state.setEnglishScore2('');
+                            }}
                             className="rounded-md border border-slate-300 bg-white px-2 py-2 text-sm focus:ring-2 focus:ring-red-500"
                           >
                             {IU_ENGLISH_TYPES.map((type) => (
@@ -357,9 +388,10 @@ export const IuCalculator = () => {
                           <input
                             type="number"
                             min="0"
+                            max={state.englishType === 'TOEIC' ? IU_ENGLISH_MAX.TOEIC_LR : IU_ENGLISH_MAX[state.englishType]}
                             step="0.1"
                             value={state.englishScore}
-                            onChange={(event) => state.setEnglishScore(event.target.value)}
+                            onChange={(event) => state.setEnglishScore(clampInput(event.target.value, state.englishType === 'TOEIC' ? IU_ENGLISH_MAX.TOEIC_LR : IU_ENGLISH_MAX[state.englishType]))}
                             className="rounded-md border border-slate-300 px-2 py-2 text-sm focus:ring-2 focus:ring-red-500"
                             placeholder={state.englishType === 'TOEIC' ? 'Nghe đọc' : 'Điểm CC'}
                           />
@@ -367,9 +399,10 @@ export const IuCalculator = () => {
                             <input
                               type="number"
                               min="0"
+                              max={IU_ENGLISH_MAX.TOEIC_SW}
                               step="0.1"
                               value={state.englishScore2}
-                              onChange={(event) => state.setEnglishScore2(event.target.value)}
+                              onChange={(event) => state.setEnglishScore2(clampInput(event.target.value, IU_ENGLISH_MAX.TOEIC_SW))}
                               className="rounded-md border border-slate-300 px-2 py-2 text-sm focus:ring-2 focus:ring-red-500"
                               placeholder="Nói viết"
                             />
@@ -388,10 +421,19 @@ export const IuCalculator = () => {
                         </div>
                       )}
                     </div>
-                    <div className="flex justify-between rounded-lg bg-red-50 p-3 text-sm text-red-900">
-                      <span className="font-medium">Tổng THPT</span>
-                      <span className="font-bold">{results.thptTotal.toFixed(2)} / 30</span>
+                    <div className="hidden">
+                      <label className="mb-2 block text-sm font-semibold text-slate-700">Nhập nhanh tổng THPT</label>
+                      <input type="number" min="0" max="30" step="0.1" value={hasThptDetail ? results.thptTotal.toFixed(2) : state.thptQuickTotal} onChange={(event) => setQuickTotal(state.setThptQuickTotal, event.target.value)} disabled={hasThptDetail} className={`w-full rounded-md border px-3 py-2 text-right font-bold focus:outline-none focus:ring-2 focus:ring-red-500 ${hasThptDetail ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-500' : 'border-slate-200 bg-white text-red-800'}`} placeholder="0.0" />
                     </div>
+                    <QuickScoreInput
+                      title="Nhập nhanh tổng THPT"
+                      value={hasThptDetail ? results.thptTotal.toFixed(2) : state.thptQuickTotal}
+                      onChange={(event) => setQuickTotal(state.setThptQuickTotal, event.target.value)}
+                      disabled={hasThptDetail}
+                      step="0.01"
+                      placeholder="0.00"
+                      tone="red"
+                    />
                   </div>
                 )}
 
@@ -407,10 +449,6 @@ export const IuCalculator = () => {
                       className="w-full rounded-md border border-slate-200 px-3 py-2 text-lg font-medium focus:outline-none focus:ring-2 focus:ring-red-500"
                       placeholder="VD: 850"
                     />
-                    <div className="flex justify-between rounded-lg bg-slate-50 p-3 text-sm">
-                      <span className="text-slate-600">Chuẩn hóa thang 100</span>
-                      <span className="font-bold text-slate-900">{results.dgnl100.toFixed(2)}</span>
-                    </div>
                   </div>
                 )}
 
@@ -432,7 +470,7 @@ export const IuCalculator = () => {
             </CardSection>
           )}
 
-          <CardSection title="4. Điểm cộng & ưu tiên" icon={Award}>
+          <CardSection title="5. Điểm cộng & ưu tiên" icon={Award}>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
                 <label className="mb-2 block text-sm font-medium text-slate-700">Khu vực</label>

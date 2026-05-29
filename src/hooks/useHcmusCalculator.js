@@ -10,9 +10,11 @@ export const useHcmusCalculator = () => {
   // Học bạ (3 môn, 3 lớp)
   // Khởi tạo mảng 9 phần tử rỗng
   const [hocBa, setHocBa] = useState(Array(9).fill(''));
+  const [hocBaQuickTotal, setHocBaQuickTotal] = useState('');
   
   // Điểm thi THPT
   const [thpt, setThpt] = useState(['', '', '']);
+  const [thptQuickTotal, setThptQuickTotal] = useState('');
   
   // Ngoại ngữ
   const [isNgoaiNgu, setIsNgoaiNgu] = useState(false);
@@ -77,6 +79,10 @@ export const useHcmusCalculator = () => {
       tongHocBa = 0;
     }
     tongHocBa = Math.min(30, tongHocBa);
+    if (hocBaQuickTotal !== '') {
+      hocBaStatus = 1;
+      tongHocBa = Math.min(30, parseNumber(hocBaQuickTotal));
+    }
 
     // --- XỬ LÝ NGOẠI NGỮ & THPT ---
     let diemNgoaiNguQuyDoi = 0;
@@ -98,6 +104,9 @@ export const useHcmusCalculator = () => {
     }
     
     let tongTHPT = Math.min(30, m1 + m2 + m3);
+    if (thptQuickTotal !== '') {
+      tongTHPT = Math.min(30, parseNumber(thptQuickTotal));
+    }
 
     // --- ĐGNL ---
     const diemDGNL = parseNumber(dgnl);
@@ -161,13 +170,13 @@ export const useHcmusCalculator = () => {
       base30,
       base100
     };
-  }, [w1, w3, hocBa, thpt, dgnl, maxDgnl, kv, dt, khuyenKhich, isNgoaiNgu, chungChiType, diemChungChi]);
+  }, [w1, w3, hocBa, hocBaQuickTotal, thpt, thptQuickTotal, dgnl, maxDgnl, kv, dt, khuyenKhich, isNgoaiNgu, chungChiType, diemChungChi]);
 
   return {
     state: {
       w1, setW1, w3, setW3,
-      hocBa, setHocBa,
-      thpt, setThpt,
+      hocBa, setHocBa, hocBaQuickTotal, setHocBaQuickTotal,
+      thpt, setThpt, thptQuickTotal, setThptQuickTotal,
       isNgoaiNgu, setIsNgoaiNgu, chungChiType, setChungChiType, diemChungChi, setDiemChungChi,
       dgnl, setDgnl, maxDgnl, setMaxDgnl,
       kv, setKv, dt, setDt, khuyenKhich, setKhuyenKhich

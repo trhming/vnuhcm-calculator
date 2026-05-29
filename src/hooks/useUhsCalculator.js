@@ -13,7 +13,9 @@ export const useUhsCalculator = () => {
 
   const [dgnl, setDgnl] = useState('');
   const [thpt, setThpt] = useState(['', '', '']);
+  const [thptQuickTotal, setThptQuickTotal] = useState('');
   const [hocBa, setHocBa] = useState(Array(9).fill(''));
+  const [hocBaQuickTotal, setHocBaQuickTotal] = useState('');
 
   const [hasLanguage, setHasLanguage] = useState(false);
   const [languageType, setLanguageType] = useState('IELTS');
@@ -32,7 +34,9 @@ export const useUhsCalculator = () => {
 
   const results = useMemo(() => {
     const dgnl100 = roundUhs((parseNumber(dgnl) / 1200) * 100);
-    const thptTotal = thpt.reduce((total, value) => total + parseNumber(value), 0);
+    const thptTotal = thptQuickTotal !== ''
+      ? roundUhs(Math.min(30, parseNumber(thptQuickTotal)))
+      : thpt.reduce((total, value) => total + parseNumber(value), 0);
     const thpt100 = roundUhs((thptTotal / 30) * 100);
 
     const hocBaSubjectAverages = [0, 1, 2].map((subjectIndex) => {
@@ -43,7 +47,9 @@ export const useUhsCalculator = () => {
         parseNumber(hocBa[startIndex + 2])
       ) / 3);
     });
-    const hocBaTotal = roundUhs(hocBaSubjectAverages.reduce((total, value) => total + value, 0));
+    const hocBaTotal = hocBaQuickTotal !== ''
+      ? roundUhs(Math.min(30, parseNumber(hocBaQuickTotal)))
+      : roundUhs(hocBaSubjectAverages.reduce((total, value) => total + value, 0));
     const hocBa100 = roundUhs((hocBaTotal / 30) * 100);
 
     const cWeight = 100 - a - b;
@@ -113,7 +119,9 @@ export const useUhsCalculator = () => {
   }, [
     dgnl,
     thpt,
+    thptQuickTotal,
     hocBa,
+    hocBaQuickTotal,
     a,
     b,
     hasLanguage,
@@ -134,8 +142,8 @@ export const useUhsCalculator = () => {
       a, setA,
       b, setB,
       dgnl, setDgnl,
-      thpt, setThpt,
-      hocBa, setHocBa,
+      thpt, setThpt, thptQuickTotal, setThptQuickTotal,
+      hocBa, setHocBa, hocBaQuickTotal, setHocBaQuickTotal,
       hasLanguage, setHasLanguage,
       languageType, setLanguageType,
       languageScore, setLanguageScore,

@@ -1,12 +1,21 @@
 import { useState } from 'react';
 import { useUsshCalculator } from '../hooks/useUsshCalculator';
 import { CardSection } from '../components/common/CardSection';
+import { QuickScoreInput } from '../components/common/QuickScoreInput';
 import { Settings, BookOpen, PenTool, Award, Info, Calculator, X, Globe, ExternalLink } from 'lucide-react';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 
 export const UsshCalculator = () => {
   const { state, results } = useUsshCalculator();
   const [showMobileResultModal, setShowMobileResultModal] = useState(false);
+  const hasThptDetail = state.thpt.some((value) => value !== '');
+  const hasThptQuickTotal = state.thptQuickTotal !== '';
+  const hasHocBaDetail = state.hocBa.some((value) => value !== '');
+  const hasHocBaQuickTotal = state.hocBaQuickTotal !== '';
+  const setQuickTotal = (setter, value) => {
+    if (value !== '' && parseFloat(value) > 30) value = '30';
+    setter(value);
+  };
   
   const handleHocBaChange = (index, val) => {
     if (val !== '' && parseFloat(val) > 10) val = '10';
@@ -71,7 +80,8 @@ export const UsshCalculator = () => {
                               type="number" min="0" max="10" step="0.1"
                               value={state.hocBa[cellIndex]}
                               onChange={(e) => handleHocBaChange(cellIndex, e.target.value)}
-                              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600 text-center transition-colors border-slate-200 text-slate-900"
+                              disabled={hasHocBaQuickTotal}
+                              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600 text-center transition-colors border-slate-200 ${hasHocBaQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : 'text-slate-900'}`}
                               placeholder="0.0"
                             />
                           </td>
@@ -82,11 +92,24 @@ export const UsshCalculator = () => {
                 </tbody>
               </table>
               {results.hb100 > 0 && (
-                <div className="mt-4 flex gap-3 p-3 bg-emerald-50 rounded-lg text-sm items-center border border-emerald-100">
-                   <Info className="w-5 h-5 text-emerald-600 shrink-0" />
-                   <span className="text-emerald-900 font-medium">Đã quy đổi (thang 100): <strong className="text-emerald-700">{results.hb100.toFixed(2)}</strong></span>
+                <div className="mt-4 flex items-center gap-3 rounded-lg border border-emerald-100 bg-emerald-50 p-3 text-sm">
+                   <Info className="h-5 w-5 shrink-0 text-emerald-600" />
+                   <span className="font-medium text-emerald-900">Đã quy đổi (thang 100): <strong className="text-emerald-700">{results.hb100.toFixed(2)}</strong></span>
                 </div>
               )}
+              <div className="hidden">
+                <label className="mb-2 block text-sm font-semibold text-slate-700">Nhập nhanh tổng học bạ</label>
+                <input type="number" min="0" max="30" step="0.1" value={hasHocBaDetail ? ((results.hb100 / 100) * 30).toFixed(2) : state.hocBaQuickTotal} onChange={(event) => setQuickTotal(state.setHocBaQuickTotal, event.target.value)} disabled={hasHocBaDetail} className={`w-full rounded-md border px-3 py-2 text-right font-bold focus:outline-none focus:ring-2 focus:ring-emerald-600 ${hasHocBaDetail ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-500' : 'border-slate-200 bg-white text-emerald-800'}`} placeholder="0.0" />
+              </div>
+              <QuickScoreInput
+                title="Nhập nhanh tổng học bạ"
+                value={hasHocBaDetail ? ((results.hb100 / 100) * 30).toFixed(2) : state.hocBaQuickTotal}
+                onChange={(event) => setQuickTotal(state.setHocBaQuickTotal, event.target.value)}
+                disabled={hasHocBaDetail}
+                step="0.01"
+                placeholder="0.00"
+                tone="emerald"
+              />
             </div>
           </CardSection>
 
@@ -115,12 +138,6 @@ export const UsshCalculator = () => {
                       placeholder="VD: 850"
                     />
                   </div>
-                  {results.dgnl100 > 0 && (
-                     <div className="flex gap-3 p-3 bg-emerald-50 rounded-lg text-sm items-center border border-emerald-100 mt-0 md:mt-6">
-                        <Info className="w-5 h-5 text-emerald-600 shrink-0" />
-                        <span className="text-emerald-900 font-medium">Đã quy đổi (thang 100): <strong className="text-emerald-700">{results.dgnl100.toFixed(2)}</strong></span>
-                     </div>
-                  )}
                 </div>
               </div>
 
@@ -142,18 +159,33 @@ export const UsshCalculator = () => {
                         type="number" min="0" max="10" step="0.1"
                         value={state.thpt[idx]}
                         onChange={(e) => handleThptChange(idx, e.target.value)}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600"
+                        disabled={hasThptQuickTotal}
+                        className={`w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600 ${hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`}
                         placeholder="Điểm thi..."
                       />
                     </div>
                   ))}
                 </div>
                 {results.thpt100 > 0 && (
-                  <div className="mt-4 flex gap-3 p-3 bg-emerald-50 rounded-lg text-sm items-center border border-emerald-100">
-                     <Info className="w-5 h-5 text-emerald-600 shrink-0" />
-                     <span className="text-emerald-900 font-medium">Đã quy đổi (thang 100): <strong className="text-emerald-700">{results.thpt100.toFixed(2)}</strong></span>
+                  <div className="mt-4 flex items-center gap-3 rounded-lg border border-emerald-100 bg-emerald-50 p-3 text-sm">
+                     <Info className="h-5 w-5 shrink-0 text-emerald-600" />
+                     <span className="font-medium text-emerald-900">Đã quy đổi (thang 100): <strong className="text-emerald-700">{results.thpt100.toFixed(2)}</strong></span>
                   </div>
                 )}
+                <div className="hidden">
+                  <label className="mb-2 block text-sm font-semibold text-slate-700">Nhập nhanh tổng THPT</label>
+                  <input type="number" min="0" max="30" step="0.1" value={hasThptDetail ? ((results.thpt100 / 100) * 30).toFixed(2) : state.thptQuickTotal} onChange={(event) => setQuickTotal(state.setThptQuickTotal, event.target.value)} disabled={hasThptDetail} className={`w-full rounded-md border px-3 py-2 text-right font-bold focus:outline-none focus:ring-2 focus:ring-emerald-600 ${hasThptDetail ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-500' : 'border-slate-200 bg-white text-emerald-800'}`} placeholder="0.0" />
+                </div>
+                <QuickScoreInput
+                  title="Nhập nhanh tổng THPT"
+                  value={hasThptDetail ? ((results.thpt100 / 100) * 30).toFixed(2) : state.thptQuickTotal}
+                  onChange={(event) => setQuickTotal(state.setThptQuickTotal, event.target.value)}
+                  disabled={hasThptDetail}
+                  step="0.01"
+                  placeholder="0.00"
+                  tone="emerald"
+                  className="mt-4"
+                />
               </div>
 
             </div>
@@ -234,8 +266,6 @@ export const UsshCalculator = () => {
             {/* Breakdown */}
             <div className="p-6 space-y-6">
                <div>
-                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">So sánh Kịch bản ĐHL</h3>
-                  
                   <div className="space-y-3">
                     <div className={`p-3 rounded-xl border ${results.selectedScenario === 'all' ? 'bg-emerald-50 border-emerald-300 ring-1 ring-emerald-300' : 'bg-slate-50 border-slate-100 opacity-60'}`}>
                       <div className="text-xs font-semibold text-slate-500 mb-1">ĐHL Tổng (THPT 45% + ĐGNL 45% + HB 10%)</div>
@@ -256,6 +286,21 @@ export const UsshCalculator = () => {
                       <div className={`text-xl font-bold ${results.selectedScenario === '2' ? 'text-emerald-700' : 'text-slate-600'}`}>
                         {results.dhl2 !== null ? results.dhl2.toFixed(2) : '-'}
                       </div>
+                    </div>
+                  </div>
+                  <div className="mt-4 space-y-2 text-sm">
+                    <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Điểm học lực</h3>
+                    <div className="flex justify-between text-slate-600">
+                      <span>THPT chuẩn hóa</span>
+                      <span className="font-semibold text-slate-900">{results.thpt100.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-slate-600">
+                      <span>ĐGNL chuẩn hóa</span>
+                      <span className="font-semibold text-slate-900">{results.dgnl100.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-slate-600">
+                      <span>Học bạ chuẩn hóa</span>
+                      <span className="font-semibold text-slate-900">{results.hb100.toFixed(2)}</span>
                     </div>
                   </div>
                </div>

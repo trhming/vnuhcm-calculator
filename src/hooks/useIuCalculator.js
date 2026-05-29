@@ -15,6 +15,7 @@ export const useIuCalculator = () => {
   const [group, setGroup] = useState('G1_DGNL');
 
   const [thpt, setThpt] = useState(['', '', '']);
+  const [thptQuickTotal, setThptQuickTotal] = useState('');
   const [useEnglishCertificate, setUseEnglishCertificate] = useState(false);
   const [englishType, setEnglishType] = useState('IELTS');
   const [englishScore, setEnglishScore] = useState('');
@@ -22,6 +23,7 @@ export const useIuCalculator = () => {
 
   const [dgnl, setDgnl] = useState('');
   const [hocBa, setHocBa] = useState(Array(9).fill(''));
+  const [hocBaQuickTotal, setHocBaQuickTotal] = useState('');
   const [interview, setInterview] = useState('');
 
   const [achievementBonus, setAchievementBonus] = useState('');
@@ -43,7 +45,9 @@ export const useIuCalculator = () => {
       thptScores[2] = englishConvertedScore;
     }
 
-    const thptTotal = thptScores.reduce((total, value) => total + parseNumber(value), 0);
+    const thptTotal = thptQuickTotal !== ''
+      ? capScore(parseNumber(thptQuickTotal), 30)
+      : thptScores.reduce((total, value) => total + parseNumber(value), 0);
     const hocBaSubjectAverages = [0, 1, 2].map((subjectIndex) => {
       const startIndex = subjectIndex * 3;
       return (
@@ -52,7 +56,9 @@ export const useIuCalculator = () => {
         parseNumber(hocBa[startIndex + 2])
       ) / 3;
     });
-    const hocBaTotal = hocBaSubjectAverages.reduce((total, value) => total + value, 0);
+    const hocBaTotal = hocBaQuickTotal !== ''
+      ? capScore(parseNumber(hocBaQuickTotal), 30)
+      : hocBaSubjectAverages.reduce((total, value) => total + value, 0);
     const dgnlRaw = parseNumber(dgnl);
     const interviewRaw = parseNumber(interview);
 
@@ -143,12 +149,14 @@ export const useIuCalculator = () => {
     k2,
     group,
     thpt,
+    thptQuickTotal,
     useEnglishCertificate,
     englishType,
     englishScore,
     englishScore2,
     dgnl,
     hocBa,
+    hocBaQuickTotal,
     interview,
     achievementBonus,
     awardBonus,
@@ -162,13 +170,13 @@ export const useIuCalculator = () => {
       k1, setK1,
       k2, setK2,
       group, setGroup,
-      thpt, setThpt,
+      thpt, setThpt, thptQuickTotal, setThptQuickTotal,
       useEnglishCertificate, setUseEnglishCertificate,
       englishType, setEnglishType,
       englishScore, setEnglishScore,
       englishScore2, setEnglishScore2,
       dgnl, setDgnl,
-      hocBa, setHocBa,
+      hocBa, setHocBa, hocBaQuickTotal, setHocBaQuickTotal,
       interview, setInterview,
       achievementBonus, setAchievementBonus,
       awardBonus, setAwardBonus,

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useHcmusCalculator } from '../hooks/useHcmusCalculator';
 import { CardSection } from '../components/common/CardSection';
+import { QuickScoreInput } from '../components/common/QuickScoreInput';
 import { Settings, BookOpen, PenTool, Award, Info, Calculator, AlertTriangle, CheckCircle2, X, GraduationCap, ExternalLink } from 'lucide-react';
 import { NGOAI_NGU_CONVERSION } from '../constants/hcmus';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
@@ -9,6 +10,20 @@ const clampWeight = (value) => {
   const number = parseFloat(value);
   if (Number.isNaN(number)) return 0.7;
   return Math.min(Math.max(number, 0.7), 0.9);
+};
+
+const ENGLISH_SCORE_MAX = Object.fromEntries(
+  Object.entries(NGOAI_NGU_CONVERSION).map(([type, rows]) => [
+    type,
+    Math.max(...rows.map((row) => row.max)),
+  ])
+);
+
+const clampScore = (value, max) => {
+  if (value === '') return '';
+  const number = parseFloat(value);
+  if (Number.isNaN(number)) return value;
+  return Math.min(Math.max(number, 0), max).toString();
 };
 
 export const HcmusCalculator = () => {
@@ -23,12 +38,27 @@ export const HcmusCalculator = () => {
     state.setHocBa(newHocBa);
   };
 
+  const handleHocBaQuickTotalChange = (val) => {
+    if (val !== '' && parseFloat(val) > 30) val = '30';
+    state.setHocBaQuickTotal(val);
+  };
+
   const handleThptChange = (index, val) => {
     if (val !== '' && parseFloat(val) > 10) val = '10';
     const newThpt = [...state.thpt];
     newThpt[index] = val;
     state.setThpt(newThpt);
   };
+
+  const handleThptQuickTotalChange = (val) => {
+    if (val !== '' && parseFloat(val) > 30) val = '30';
+    state.setThptQuickTotal(val);
+  };
+
+  const hasHocBaDetail = state.hocBa.some(val => val !== '');
+  const hasHocBaQuickTotal = state.hocBaQuickTotal !== '';
+  const hasThptDetail = state.thpt.some(val => val !== '') || (state.isNgoaiNgu && state.diemChungChi !== '');
+  const hasThptQuickTotal = state.thptQuickTotal !== '';
 
   return (
     <div className="max-w-7xl mx-auto animate-in fade-in duration-500 pb-28">
@@ -126,7 +156,15 @@ export const HcmusCalculator = () => {
 
           {/* Học bạ */}
           <CardSection title="2. Điểm Học Bạ" icon={BookOpen}>
-            <div className="overflow-x-auto">
+            <div className="flex flex-col gap-4">
+              <QuickScoreInput
+                title="Nhập nhanh tổng học bạ"
+                value={hasHocBaDetail ? results.tongHocBa.toFixed(2) : state.hocBaQuickTotal}
+                onChange={(e) => handleHocBaQuickTotalChange(e.target.value)}
+                disabled={hasHocBaDetail}
+                className="order-2"
+              />
+              <div className="order-1 overflow-x-auto">
               <table className="w-full text-sm text-left border-collapse">
                 <thead className="bg-slate-50 text-slate-600">
                   <tr>
@@ -176,8 +214,10 @@ export const HcmusCalculator = () => {
                               type="number" min="0" max="10" step="0.1"
                               value={displayVal}
                               onChange={(e) => handleHocBaChange(cellIndex, e.target.value)}
+                              disabled={hasHocBaQuickTotal}
                               className={`w-full px-2 sm:px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-center transition-colors
-                                ${cellIsMissing10 ? 'border-amber-300 text-amber-600 bg-amber-50 font-semibold' : 
+                                ${hasHocBaQuickTotal ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400' :
+                                  cellIsMissing10 ? 'border-amber-300 text-amber-600 bg-amber-50 font-semibold' : 
                                   isThieuDiemCell ? 'border-red-300 bg-red-50 text-slate-900' : 'border-slate-200 text-slate-900'}
                               `}
                               placeholder="0.0"
@@ -192,16 +232,10 @@ export const HcmusCalculator = () => {
                     </tr>
                   )})}
                 </tbody>
-                <tfoot>
-                  <tr className="bg-blue-50">
-                    <td colSpan="5" className="px-4 py-3 text-center text-blue-900 font-medium rounded-b-lg">
-                      Tổng TB Học Bạ (Quy đổi) = <span className="font-bold">{results.tongHocBa.toFixed(2)}</span> / 30
-                    </td>
-                  </tr>
-                </tfoot>
               </table>
+              </div>
               {results.hocBaStatus === 3 && (
-                <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
+                <div className="order-3 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
                   <AlertTriangle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
                   <div className="text-sm text-red-800">
                     <strong>CẢNH BÁO:</strong> Hồ sơ không hợp lệ do thiếu điểm Lớp 11 hoặc Lớp 12. Điểm xét tuyển = 0.
@@ -215,9 +249,16 @@ export const HcmusCalculator = () => {
           <CardSection title="3. Điểm Thi" icon={PenTool}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* THPT */}
-              <div className="space-y-4">
+              <div className="flex flex-col gap-4">
                 <h4 className="font-semibold text-slate-800">Kỳ thi THPT 2026</h4>
-                <div className="space-y-3">
+                <QuickScoreInput
+                  title="Nhập nhanh tổng THPT"
+                  value={hasThptDetail ? results.tongTHPT.toFixed(2) : state.thptQuickTotal}
+                  onChange={(e) => handleThptQuickTotalChange(e.target.value)}
+                  disabled={hasThptDetail}
+                  className="order-3"
+                />
+                <div className="order-2 space-y-3">
                   {[0, 1].map((idx) => (
                     <div key={`thpt-${idx}`} className="flex items-center gap-3">
                       <label className="text-sm text-slate-600 w-16">Môn {idx + 1}</label>
@@ -225,7 +266,10 @@ export const HcmusCalculator = () => {
                         type="number" min="0" max="10" step="0.1"
                         value={state.thpt[idx]}
                         onChange={(e) => handleThptChange(idx, e.target.value)}
-                        className="flex-1 px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        disabled={hasThptQuickTotal}
+                        className={`flex-1 px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                          hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''
+                        }`}
                         placeholder="Điểm thi..."
                       />
                     </div>
@@ -239,7 +283,10 @@ export const HcmusCalculator = () => {
                         type="number" min="0" max="10" step="0.1"
                         value={state.thpt[2]}
                         onChange={(e) => handleThptChange(2, e.target.value)}
-                        className="flex-1 px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                        disabled={hasThptQuickTotal}
+                        className={`flex-1 px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                          hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : 'bg-white'
+                        }`}
                         placeholder="Điểm thi..."
                       />
                     </div>
@@ -266,7 +313,10 @@ export const HcmusCalculator = () => {
                         <div className="flex gap-2 w-full">
                           <select
                             value={state.chungChiType}
-                            onChange={(e) => state.setChungChiType(e.target.value)}
+                            onChange={(e) => {
+                              state.setChungChiType(e.target.value);
+                              state.setDiemChungChi('');
+                            }}
                             className="w-20 sm:w-24 px-2 py-1.5 text-sm border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-blue-500 shrink-0"
                           >
                             <option value="IELTS">IELTS</option>
@@ -274,15 +324,16 @@ export const HcmusCalculator = () => {
                           </select>
                           <input
                             type="number" min="0" step="0.1"
+                            max={ENGLISH_SCORE_MAX[state.chungChiType]}
                             value={state.diemChungChi}
-                            onChange={(e) => state.setDiemChungChi(e.target.value)}
+                            onChange={(e) => state.setDiemChungChi(clampScore(e.target.value, ENGLISH_SCORE_MAX[state.chungChiType]))}
                             className="w-full min-w-0 px-2 py-1.5 text-sm border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-blue-500"
                             placeholder="Điểm CC..."
                           />
                         </div>
                         {state.diemChungChi && (
-                          <div className="text-xs font-medium text-emerald-600 flex items-center gap-1">
-                            <CheckCircle2 className="w-3 h-3" />
+                          <div className="flex items-center gap-1 text-xs font-medium text-emerald-600">
+                            <CheckCircle2 className="h-3 w-3" />
                             Quy đổi: {results.diemNgoaiNguQuyDoi} / 10
                           </div>
                         )}
@@ -290,7 +341,7 @@ export const HcmusCalculator = () => {
                     )}
                   </div>
                 </div>
-                <div className="p-3 bg-blue-50 rounded-lg text-sm flex justify-between items-center border border-blue-100">
+                <div className="hidden p-3 bg-blue-50 rounded-lg text-sm justify-between items-center border border-blue-100">
                   <span className="text-blue-800 font-medium">Tổng 3 môn:</span>
                   <span className="font-bold text-blue-900 text-lg">{results.tongTHPT.toFixed(2)}</span>
                 </div>
@@ -421,11 +472,10 @@ export const HcmusCalculator = () => {
               </div>
 
               {/* Breakdown */}
-              <div className="p-6 space-y-6">
+            <div className="p-6 space-y-6">
                 
                 {/* Branch Selection */}
                 <div>
-                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Hệ thống chọn nhánh</h3>
                   <div className="space-y-2">
                     <div className={`p-3 rounded-xl border flex justify-between items-center transition-colors ${results.branchSelected === 1 ? 'bg-emerald-50 border-emerald-200' : 'bg-slate-50 border-slate-100'}`}>
                       <div>
@@ -457,6 +507,21 @@ export const HcmusCalculator = () => {
                       </div>
                     </div>
                   </div>
+                  <div className="mt-4 space-y-2 text-sm">
+                    <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Điểm học lực</h3>
+                    <div className="flex justify-between text-slate-600">
+                      <span>THPT chuẩn hóa</span>
+                      <span className="font-semibold text-slate-900">{((results.tongTHPT / 30) * 100).toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-slate-600">
+                      <span>ĐGNL chuẩn hóa</span>
+                      <span className="font-semibold text-slate-900">{((results.dgnlChuanHoa / 30) * 100).toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-slate-600">
+                      <span>Học bạ chuẩn hóa</span>
+                      <span className="font-semibold text-slate-900">{((results.tongHocBa / 30) * 100).toFixed(2)}</span>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="h-px w-full bg-slate-100"></div>
@@ -469,11 +534,17 @@ export const HcmusCalculator = () => {
                     <div className="space-y-1">
                       <div className="flex justify-between items-center text-slate-600">
                         <span>Điểm cộng (Gốc)</span>
-                        <span>+{results.congGoc.toFixed(2)}</span>
+                        <span>
+                          ~+{((results.congGoc / 30) * 100).toFixed(2)}
+                          <span className="ml-2 text-xs text-slate-500">(+{results.congGoc.toFixed(2)} / 30)</span>
+                        </span>
                       </div>
                       <div className="flex justify-between items-center bg-amber-50 p-2 rounded text-amber-900 border border-amber-100">
                         <span>Cộng thực nhận</span>
-                        <span className="font-bold text-amber-700">+{results.congThuc.toFixed(2)}</span>
+                        <span className="font-bold text-amber-700">
+                          ~+{((results.congThuc / 30) * 100).toFixed(2)}
+                          <span className="ml-2 text-xs font-medium text-amber-700/70">(+{results.congThuc.toFixed(2)} / 30)</span>
+                        </span>
                       </div>
                     </div>
 
@@ -481,11 +552,17 @@ export const HcmusCalculator = () => {
                     <div className="space-y-1">
                       <div className="flex justify-between items-center text-slate-600">
                         <span>Ưu tiên KV/ĐT (Gốc)</span>
-                        <span>+{results.uuTienGoc.toFixed(2)}</span>
+                        <span>
+                          ~+{((results.uuTienGoc / 30) * 100).toFixed(2)}
+                          <span className="ml-2 text-xs text-slate-500">(+{results.uuTienGoc.toFixed(2)} / 30)</span>
+                        </span>
                       </div>
                       <div className="flex justify-between items-center bg-emerald-50 p-2 rounded text-emerald-900 border border-emerald-100">
                         <span>Ưu tiên thực nhận</span>
-                        <span className="font-bold text-emerald-700">+{results.uuTienThuc.toFixed(2)}</span>
+                        <span className="font-bold text-emerald-700">
+                          ~+{((results.uuTienThuc / 30) * 100).toFixed(2)}
+                          <span className="ml-2 text-xs font-medium text-emerald-700/70">(+{results.uuTienThuc.toFixed(2)} / 30)</span>
+                        </span>
                       </div>
                     </div>
                   </div>

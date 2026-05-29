@@ -10,6 +10,7 @@ export const useHcmutCalculator = () => {
 
   // Điểm thi THPT
   const [thpt, setThpt] = useState(['', '', '']);
+  const [thptQuickTotal, setThptQuickTotal] = useState('');
   const [isNgoaiNgu, setIsNgoaiNgu] = useState(false);
   const [ngoaiNguType, setNgoaiNguType] = useState('IELTS');
   const [diemNgoaiNgu, setDiemNgoaiNgu] = useState('');
@@ -18,6 +19,7 @@ export const useHcmutCalculator = () => {
 
   // Điểm Học bạ
   const [hocBa, setHocBa] = useState(Array(9).fill(''));
+  const [hocBaQuickAverage, setHocBaQuickAverage] = useState('');
   
   // Đối tượng dự tuyển
   const [doiTuongUT, setDoiTuongUT] = useState('2.1');
@@ -25,6 +27,7 @@ export const useHcmutCalculator = () => {
   const [dgnlTa, setDgnlTa] = useState('');
   const [dgnlToan, setDgnlToan] = useState('');
   const [dgnlKh, setDgnlKh] = useState('');
+  const [dgnlQuickTotal, setDgnlQuickTotal] = useState('');
   
   const [intlCertType, setIntlCertType] = useState('SAT');
   const [intlCertScore, setIntlCertScore] = useState('');
@@ -54,7 +57,10 @@ export const useHcmutCalculator = () => {
     const t1 = parseFloat(thpt[1]) || 0;
     const t2_raw = parseFloat(thpt[2]) || 0;
     const t2 = isNgoaiNgu ? Math.max(t2_raw, diemNgoaiNguQuyDoi) : t2_raw;
-    const diemThptQuyDoi = ((t0 * 2) + t1 + t2) / 4 * 10;
+    let diemThptQuyDoi = ((t0 * 2) + t1 + t2) / 4 * 10;
+    if (thptQuickTotal !== '') {
+      diemThptQuyDoi = Math.min(100, ((parseFloat(thptQuickTotal) || 0) / 30) * 100);
+    }
 
     // 3. Điểm Học bạ Quy Đổi
     const tbMon = (subIdx) => {
@@ -66,13 +72,18 @@ export const useHcmutCalculator = () => {
     const tbToan = tbMon(0);
     const tbM2 = tbMon(1);
     const tbM3 = tbMon(2);
-    const diemHbQuyDoi = ((tbToan * 2) + tbM2 + tbM3) / 4 * 10;
+    let diemHbQuyDoi = ((tbToan * 2) + tbM2 + tbM3) / 4 * 10;
+    if (hocBaQuickAverage !== '') {
+      diemHbQuyDoi = Math.min(100, (parseFloat(hocBaQuickAverage) || 0) * 10);
+    }
 
     // 4. Điểm Năng Lực
     let diemNangLuc = 0;
     if (doiTuongUT === '2.1') {
       const totalDgnl = (parseFloat(dgnlTv) || 0) + (parseFloat(dgnlTa) || 0) + ((parseFloat(dgnlToan) || 0) * 2) + (parseFloat(dgnlKh) || 0);
-      diemNangLuc = totalDgnl / 15;
+      diemNangLuc = dgnlQuickTotal !== ''
+        ? Math.min(100, (parseFloat(dgnlQuickTotal) || 0) / 15)
+        : totalDgnl / 15;
     } else if (doiTuongUT === '2.2') {
       diemNangLuc = diemThptQuyDoi * 0.75;
     } else if (doiTuongUT === '2.4') {
@@ -123,16 +134,16 @@ export const useHcmutCalculator = () => {
       uuTienThucNhan,
       total
     };
-  }, [wNL, wTHPT, wHB, thpt, isNgoaiNgu, ngoaiNguType, diemNgoaiNgu, toeicLr, toeicSw, hocBa, doiTuongUT, dgnlTv, dgnlTa, dgnlToan, dgnlKh, intlCertType, intlCertScore, kv, dt, thuong, xetThuong, khuyenKhich]);
+  }, [wNL, wTHPT, wHB, thpt, thptQuickTotal, isNgoaiNgu, ngoaiNguType, diemNgoaiNgu, toeicLr, toeicSw, hocBa, hocBaQuickAverage, doiTuongUT, dgnlTv, dgnlTa, dgnlToan, dgnlKh, dgnlQuickTotal, intlCertType, intlCertScore, kv, dt, thuong, xetThuong, khuyenKhich]);
 
   return {
     state: {
       wNL, setWNL, wTHPT, setWTHPT, wHB, setWHB,
-      thpt, setThpt,
+      thpt, setThpt, thptQuickTotal, setThptQuickTotal,
       isNgoaiNgu, setIsNgoaiNgu, ngoaiNguType, setNgoaiNguType, diemNgoaiNgu, setDiemNgoaiNgu, toeicLr, setToeicLr, toeicSw, setToeicSw,
-      hocBa, setHocBa,
+      hocBa, setHocBa, hocBaQuickAverage, setHocBaQuickAverage,
       doiTuongUT, setDoiTuongUT, 
-      dgnlTv, setDgnlTv, dgnlTa, setDgnlTa, dgnlToan, setDgnlToan, dgnlKh, setDgnlKh,
+      dgnlTv, setDgnlTv, dgnlTa, setDgnlTa, dgnlToan, setDgnlToan, dgnlKh, setDgnlKh, dgnlQuickTotal, setDgnlQuickTotal,
       intlCertType, setIntlCertType, intlCertScore, setIntlCertScore,
       kv, setKv, dt, setDt,
       thuong, setThuong, xetThuong, setXetThuong, khuyenKhich, setKhuyenKhich

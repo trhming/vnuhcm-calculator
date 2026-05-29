@@ -1,9 +1,23 @@
 import { useState } from 'react';
 import { useHcmutCalculator } from '../hooks/useHcmutCalculator';
 import { CardSection } from '../components/common/CardSection';
+import { QuickScoreInput } from '../components/common/QuickScoreInput';
 import { Settings, BookOpen, PenTool, Award, Info, Calculator, CheckCircle2, X, Building2, ExternalLink } from 'lucide-react';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { DOI_TUONG_HCMUT, INTL_CERT_TYPES, HCMUT_CCQT_TABLE } from '../constants/hcmut';
+
+const ENGLISH_SCORE_MAX = {
+  IELTS: 9,
+  TOEFL: 120,
+  PTE: 90,
+};
+
+const clampScore = (value, max) => {
+  if (value === '') return '';
+  const number = parseFloat(value);
+  if (Number.isNaN(number)) return value;
+  return Math.min(Math.max(number, 0), max).toString();
+};
 
 export const HcmutCalculator = () => {
   const { state, results } = useHcmutCalculator();
@@ -18,12 +32,35 @@ export const HcmutCalculator = () => {
     state.setHocBa(newHocBa);
   };
 
+  const handleHocBaQuickAverageChange = (val) => {
+    if (val !== '' && parseFloat(val) > 10) val = '10';
+    state.setHocBaQuickAverage(val);
+  };
+
   const handleThptChange = (index, val) => {
     if (val !== '' && parseFloat(val) > 10) val = '10';
     const newThpt = [...state.thpt];
     newThpt[index] = val;
     state.setThpt(newThpt);
   };
+
+  const handleThptQuickTotalChange = (val) => {
+    if (val !== '' && parseFloat(val) > 30) val = '30';
+    state.setThptQuickTotal(val);
+  };
+
+  const handleDgnlQuickTotalChange = (val) => {
+    if (val !== '' && parseFloat(val) > 1500) val = '1500';
+    state.setDgnlQuickTotal(val);
+  };
+
+  const hasHocBaDetail = state.hocBa.some(val => val !== '');
+  const hasHocBaQuickAverage = state.hocBaQuickAverage !== '';
+  const hasThptDetail = state.thpt.some(val => val !== '') || (state.isNgoaiNgu && (state.diemNgoaiNgu !== '' || state.toeicLr !== '' || state.toeicSw !== ''));
+  const hasThptQuickTotal = state.thptQuickTotal !== '';
+  const dgnlDetailTotal = (parseFloat(state.dgnlTv) || 0) + (parseFloat(state.dgnlTa) || 0) + ((parseFloat(state.dgnlToan) || 0) * 2) + (parseFloat(state.dgnlKh) || 0);
+  const hasDgnlDetail = state.dgnlTv !== '' || state.dgnlTa !== '' || state.dgnlToan !== '' || state.dgnlKh !== '';
+  const hasDgnlQuickTotal = state.dgnlQuickTotal !== '';
 
   return (
     <div className="max-w-7xl mx-auto animate-in fade-in duration-500 pb-28">
@@ -69,23 +106,46 @@ export const HcmutCalculator = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-medium text-blue-800 mb-1">Tiếng Việt</label>
-                      <input type="number" min="0" max="300" value={state.dgnlTv} onChange={e => { let val = e.target.value; if (val !== '' && parseFloat(val) > 300) val = '300'; state.setDgnlTv(val); }} className="w-full px-3 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-800" placeholder="VD: 300" />
+                      <input type="number" min="0" max="300" value={state.dgnlTv} onChange={e => { let val = e.target.value; if (val !== '' && parseFloat(val) > 300) val = '300'; state.setDgnlTv(val); }} disabled={hasDgnlQuickTotal} className={`w-full px-3 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-800 ${hasDgnlQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`} placeholder="VD: 300" />
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-blue-800 mb-1">Tiếng Anh</label>
-                      <input type="number" min="0" max="300" value={state.dgnlTa} onChange={e => { let val = e.target.value; if (val !== '' && parseFloat(val) > 300) val = '300'; state.setDgnlTa(val); }} className="w-full px-3 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-800" placeholder="VD: 300" />
+                      <input type="number" min="0" max="300" value={state.dgnlTa} onChange={e => { let val = e.target.value; if (val !== '' && parseFloat(val) > 300) val = '300'; state.setDgnlTa(val); }} disabled={hasDgnlQuickTotal} className={`w-full px-3 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-800 ${hasDgnlQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`} placeholder="VD: 300" />
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-blue-800 mb-1">Toán <span className="font-bold">(x2)</span></label>
-                      <input type="number" min="0" max="300" value={state.dgnlToan} onChange={e => { let val = e.target.value; if (val !== '' && parseFloat(val) > 300) val = '300'; state.setDgnlToan(val); }} className="w-full px-3 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-800" placeholder="VD: 300" />
+                      <input type="number" min="0" max="300" value={state.dgnlToan} onChange={e => { let val = e.target.value; if (val !== '' && parseFloat(val) > 300) val = '300'; state.setDgnlToan(val); }} disabled={hasDgnlQuickTotal} className={`w-full px-3 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-800 ${hasDgnlQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`} placeholder="VD: 300" />
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-blue-800 mb-1">Tư duy khoa học</label>
-                      <input type="number" min="0" max="300" value={state.dgnlKh} onChange={e => { let val = e.target.value; if (val !== '' && parseFloat(val) > 300) val = '300'; state.setDgnlKh(val); }} className="w-full px-3 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-800" placeholder="VD: 300" />
+                      <input type="number" min="0" max="300" value={state.dgnlKh} onChange={e => { let val = e.target.value; if (val !== '' && parseFloat(val) > 300) val = '300'; state.setDgnlKh(val); }} disabled={hasDgnlQuickTotal} className={`w-full px-3 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-800 ${hasDgnlQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`} placeholder="VD: 300" />
                     </div>
                   </div>
-                  <div className="mt-3 text-sm text-blue-800 font-medium">
+                  <div className="hidden">
                     Tổng điểm: {(parseFloat(state.dgnlTv)||0) + (parseFloat(state.dgnlTa)||0) + ((parseFloat(state.dgnlToan)||0)*2) + (parseFloat(state.dgnlKh)||0)} / 1500
+                  </div>
+                  <div className="mt-4 rounded-xl border border-blue-100 bg-white/70 p-4">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                      <div>
+                        <label className="mb-1 block text-sm font-semibold text-blue-900">Nhập nhanh tổng ĐGNL</label>
+                        <p className="text-xs text-blue-700">Tổng điểm 4 phần thi trên thang 1500.</p>
+                      </div>
+                      <input
+                        type="number"
+                        min="0"
+                        max="1500"
+                        step="1"
+                        value={hasDgnlDetail ? dgnlDetailTotal.toFixed(0) : state.dgnlQuickTotal}
+                        onChange={(e) => handleDgnlQuickTotalChange(e.target.value)}
+                        disabled={hasDgnlDetail}
+                        className={`w-full rounded-md border px-3 py-2 text-right text-lg font-bold focus:outline-none focus:ring-2 focus:ring-blue-800 sm:w-40 ${
+                          hasDgnlDetail
+                            ? 'cursor-not-allowed border-blue-100 bg-slate-100 text-slate-500'
+                            : 'border-blue-200 bg-white text-blue-800'
+                        }`}
+                        placeholder="0"
+                      />
+                    </div>
                   </div>
                 </div>
               )}
@@ -159,7 +219,10 @@ export const HcmutCalculator = () => {
                               type="number" min="0" max="10" step="0.1"
                               value={state.hocBa[cellIndex]}
                               onChange={(e) => handleHocBaChange(cellIndex, e.target.value)}
-                              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-800 text-center transition-colors border-slate-200 text-slate-900 ${subjectIndex === 0 ? "bg-white" : ""}`}
+                              disabled={hasHocBaQuickAverage}
+                              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-800 text-center transition-colors border-slate-200 ${
+                                hasHocBaQuickAverage ? 'cursor-not-allowed bg-slate-100 text-slate-400' : `text-slate-900 ${subjectIndex === 0 ? "bg-white" : ""}`
+                              }`}
                               placeholder="0.0"
                             />
                           </td>
@@ -169,9 +232,28 @@ export const HcmutCalculator = () => {
                   ))}
                 </tbody>
               </table>
-              <div className="mt-4 flex gap-3 p-3 bg-slate-50 rounded-lg text-sm items-center border border-slate-100">
-                 <Info className="w-5 h-5 text-slate-500 shrink-0" />
-                 <span className="text-slate-700">Điểm Học bạ Quy đổi = [(TB Toán x 2) + TB Môn 2 + TB Môn 3] / 4 * 10 = <strong className="text-blue-800">{results.diemHbQuyDoi.toFixed(2)}</strong></span>
+              <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <label className="mb-1 block text-sm font-semibold text-slate-700">Nhập nhanh trung bình học bạ</label>
+                    <p className="text-xs text-slate-500">Điểm trung bình học bạ trên thang 10.</p>
+                  </div>
+                  <input
+                    type="number"
+                    min="0"
+                    max="10"
+                    step="0.01"
+                    value={hasHocBaDetail ? (results.diemHbQuyDoi / 10).toFixed(2) : state.hocBaQuickAverage}
+                    onChange={(e) => handleHocBaQuickAverageChange(e.target.value)}
+                    disabled={hasHocBaDetail}
+                    className={`w-full rounded-md border px-3 py-2 text-right text-lg font-bold focus:outline-none focus:ring-2 focus:ring-blue-800 sm:w-40 ${
+                      hasHocBaDetail
+                        ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-500'
+                        : 'border-slate-200 bg-white text-blue-800'
+                    }`}
+                    placeholder="0.00"
+                  />
+                </div>
               </div>
             </div>
           </CardSection>
@@ -189,7 +271,10 @@ export const HcmutCalculator = () => {
                        type="number" min="0" max="10" step="0.1"
                        value={state.thpt[idx]}
                        onChange={(e) => handleThptChange(idx, e.target.value)}
-                       className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-800"
+                      disabled={hasThptQuickTotal}
+                      className={`w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-800 ${
+                        hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''
+                      }`}
                        placeholder="Điểm thi..."
                      />
                    </div>
@@ -204,7 +289,10 @@ export const HcmutCalculator = () => {
                            type="number" min="0" max="10" step="0.1"
                            value={state.thpt[2]}
                            onChange={(e) => handleThptChange(2, e.target.value)}
-                           className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-800 bg-white"
+                           disabled={hasThptQuickTotal}
+                           className={`w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-800 ${
+                             hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : 'bg-white'
+                           }`}
                            placeholder="Điểm thi THPT..."
                         />
                       </div>
@@ -231,7 +319,12 @@ export const HcmutCalculator = () => {
                            <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-3 animate-in fade-in">
                              <select
                                value={state.ngoaiNguType}
-                               onChange={(e) => state.setNgoaiNguType(e.target.value)}
+                               onChange={(e) => {
+                                 state.setNgoaiNguType(e.target.value);
+                                 state.setDiemNgoaiNgu('');
+                                 state.setToeicLr('');
+                                 state.setToeicSw('');
+                               }}
                                className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-blue-800"
                              >
                                <option value="IELTS">IELTS</option>
@@ -244,31 +337,35 @@ export const HcmutCalculator = () => {
                                <div className="flex gap-2">
                                   <input
                                     type="number" min="0"
-                                    value={state.toeicLr} onChange={e => state.setToeicLr(e.target.value)}
+                                    max="990"
+                                    value={state.toeicLr} onChange={e => state.setToeicLr(clampScore(e.target.value, 990))}
                                     className="w-1/2 px-3 py-2 text-sm border border-slate-300 rounded-md" placeholder="Nghe Đọc..."
                                   />
                                   <input
                                     type="number" min="0"
-                                    value={state.toeicSw} onChange={e => state.setToeicSw(e.target.value)}
+                                    max="400"
+                                    value={state.toeicSw} onChange={e => state.setToeicSw(clampScore(e.target.value, 400))}
                                     className="w-1/2 px-3 py-2 text-sm border border-slate-300 rounded-md" placeholder="Nói Viết..."
                                   />
                                </div>
                              ) : (
                                <input
                                  type="number" min="0" step="0.1"
+                                 max={ENGLISH_SCORE_MAX[state.ngoaiNguType]}
                                  value={state.diemNgoaiNgu}
-                                 onChange={(e) => state.setDiemNgoaiNgu(e.target.value)}
+                                 onChange={(e) => state.setDiemNgoaiNgu(clampScore(e.target.value, ENGLISH_SCORE_MAX[state.ngoaiNguType]))}
                                  className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md"
                                  placeholder={`Điểm ${state.ngoaiNguType}...`}
                                />
                              )}
 
                              {state.ngoaiNguType && (results.diemNgoaiNguQuyDoi > 0) && (
-                               <div className="text-xs font-bold text-emerald-700 flex items-center gap-1 bg-emerald-50 p-2 rounded">
-                                 <CheckCircle2 className="w-4 h-4" />
+                               <div className="flex items-center gap-1 rounded bg-emerald-50 p-2 text-xs font-bold text-emerald-700">
+                                 <CheckCircle2 className="h-4 w-4" />
                                  Quy đổi: {results.diemNgoaiNguQuyDoi} / 10
                                </div>
                              )}
+
                            </div>
                          )}
                       </div>
@@ -276,10 +373,13 @@ export const HcmutCalculator = () => {
                  </div>
                </div>
                
-               <div className="mt-4 flex gap-3 p-3 bg-slate-50 rounded-lg text-sm items-center border border-slate-100">
-                  <Info className="w-5 h-5 text-slate-500 shrink-0" />
-                  <span className="text-slate-700">Điểm THPT Quy đổi = [(Toán x 2) + Môn 2 + Môn 3] / 4 * 10 = <strong className="text-blue-800">{results.diemThptQuyDoi.toFixed(2)}</strong></span>
-               </div>
+               <QuickScoreInput
+                 title="Nhập nhanh tổng THPT"
+                 value={hasThptDetail ? ((results.diemThptQuyDoi / 100) * 30).toFixed(2) : state.thptQuickTotal}
+                 onChange={(e) => handleThptQuickTotalChange(e.target.value)}
+                 disabled={hasThptDetail}
+                 tone="hcmut"
+               />
              </div>
           </CardSection>
 
@@ -359,20 +459,28 @@ export const HcmutCalculator = () => {
             {/* Breakdown */}
             <div className="p-6 space-y-6">
                <div>
-                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Điểm Học Lực (Chưa cộng)</h3>
-                  <div className="text-3xl font-bold text-slate-800">{results.diemHL.toFixed(2)}</div>
+                  <div className="mb-3 rounded-xl bg-blue-50 p-3 text-sm text-blue-900">
+                    <div className="font-semibold">
+                      ĐHL = Năng lực x {(state.wNL * 100).toFixed(0)}% + THPT x {(state.wTHPT * 100).toFixed(0)}% + Học bạ x {(state.wHB * 100).toFixed(0)}%
+                    </div>
+                    <div className="mt-2 flex justify-between font-bold">
+                      <span>ĐHL</span>
+                      <span>{results.diemHL.toFixed(2)}</span>
+                    </div>
+                  </div>
                   
-                  <div className="mt-3 space-y-2">
+                  <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Điểm học lực</h3>
+                  <div className="space-y-2 text-sm">
                     <div className="flex justify-between text-sm">
                       <span className="text-slate-600">Năng lực ({(state.wNL*100).toFixed(0)}%)</span>
                       <span className="font-semibold">{results.diemNangLuc.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-600">THPT Quy đổi ({(state.wTHPT*100).toFixed(0)}%)</span>
+                      <span className="text-slate-600">THPT quy đổi ({(state.wTHPT*100).toFixed(0)}%)</span>
                       <span className="font-semibold">{results.diemThptQuyDoi.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-600">Học bạ Quy đổi ({(state.wHB*100).toFixed(0)}%)</span>
+                      <span className="text-slate-600">Học bạ quy đổi ({(state.wHB*100).toFixed(0)}%)</span>
                       <span className="font-semibold">{results.diemHbQuyDoi.toFixed(2)}</span>
                     </div>
                   </div>

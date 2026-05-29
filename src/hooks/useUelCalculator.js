@@ -8,8 +8,10 @@ export const useUelCalculator = () => {
 
   // Điểm
   const [thpt, setThpt] = useState(['', '', '']);
+  const [thptQuickTotal, setThptQuickTotal] = useState('');
   const [dgnl, setDgnl] = useState('');
   const [hocBa, setHocBa] = useState(Array(9).fill(''));
+  const [hocBaQuickTotal, setHocBaQuickTotal] = useState('');
 
   // CCQT
   const [loaiCCQT, setLoaiCCQT] = useState('SAT');
@@ -35,6 +37,7 @@ export const useUelCalculator = () => {
     // Chuẩn hóa điểm thang 100
     // THPT (Y)
     let tongThpt = parseNumber(thpt[0]) + parseNumber(thpt[1]) + parseNumber(thpt[2]);
+    if (thptQuickTotal !== '') tongThpt = Math.min(30, parseNumber(thptQuickTotal));
     let Y = (tongThpt / 30) * 100;
 
     // ĐGNL (X)
@@ -48,6 +51,7 @@ export const useUelCalculator = () => {
       const v12 = parseNumber(hocBa[i * 3 + 2]);
       tongTbHocBa += (v10 + v11 + v12) / 3;
     }
+    if (hocBaQuickTotal !== '') tongTbHocBa = Math.min(30, parseNumber(hocBaQuickTotal));
     let Z = (tongTbHocBa / 30) * 100;
 
     // Tính ĐHL
@@ -126,7 +130,7 @@ export const useUelCalculator = () => {
     };
   }, [
     program, dtXetTuyen,
-    thpt, dgnl, hocBa,
+    thpt, thptQuickTotal, dgnl, hocBa, hocBaQuickTotal,
     loaiCCQT, diemCCQT,
     hasNgoaiNgu, loaiNgoaiNgu, diemNgoaiNgu, diemNgoaiNgu2, la149Truong,
     kv, dt
@@ -136,7 +140,7 @@ export const useUelCalculator = () => {
     state: {
       program, setProgram,
       dtXetTuyen, setDtXetTuyen,
-      thpt, setThpt, dgnl, setDgnl, hocBa, setHocBa,
+      thpt, setThpt, thptQuickTotal, setThptQuickTotal, dgnl, setDgnl, hocBa, setHocBa, hocBaQuickTotal, setHocBaQuickTotal,
       loaiCCQT, setLoaiCCQT, diemCCQT, setDiemCCQT,
       hasNgoaiNgu, setHasNgoaiNgu, loaiNgoaiNgu, setLoaiNgoaiNgu, diemNgoaiNgu, setDiemNgoaiNgu, diemNgoaiNgu2, setDiemNgoaiNgu2, la149Truong, setLa149Truong,
       kv, setKv, dt, setDt

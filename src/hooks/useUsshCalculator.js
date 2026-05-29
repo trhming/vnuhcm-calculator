@@ -4,12 +4,14 @@ import { KHU_VUC, DOI_TUONG } from '../constants/common';
 export const useUsshCalculator = () => {
   // Điểm thi THPT
   const [thpt, setThpt] = useState(['', '', '']);
+  const [thptQuickTotal, setThptQuickTotal] = useState('');
   
   // Điểm ĐGNL
   const [dgnl, setDgnl] = useState('');
   
   // Điểm Học bạ
   const [hocBa, setHocBa] = useState(Array(9).fill(''));
+  const [hocBaQuickTotal, setHocBaQuickTotal] = useState('');
   
   // Ưu tiên & Điểm cộng
   const [kv, setKv] = useState('KV3');
@@ -26,6 +28,10 @@ export const useUsshCalculator = () => {
     let hasThpt = false;
     if (!isNaN(t0) && !isNaN(t1) && !isNaN(t2)) {
       thpt100 = ((t0 + t1 + t2) / 30) * 100;
+      hasThpt = true;
+    }
+    if (thptQuickTotal !== '') {
+      thpt100 = (Math.min(30, parseFloat(thptQuickTotal) || 0) / 30) * 100;
       hasThpt = true;
     }
 
@@ -55,6 +61,10 @@ export const useUsshCalculator = () => {
     
     if (hasHb) {
       hb100 = ((tbMon[0] + tbMon[1] + tbMon[2]) / 30) * 100;
+    }
+    if (hocBaQuickTotal !== '') {
+      hb100 = (Math.min(30, parseFloat(hocBaQuickTotal) || 0) / 30) * 100;
+      hasHb = true;
     }
 
     // 2. Kịch bản tính Điểm Học Lực (ĐHL)
@@ -118,13 +128,13 @@ export const useUsshCalculator = () => {
       dcGoc, dcThucNhan,
       uuTien100, uuTienThucNhan, total
     };
-  }, [thpt, dgnl, hocBa, kv, dt, thanhTich]);
+  }, [thpt, thptQuickTotal, dgnl, hocBa, hocBaQuickTotal, kv, dt, thanhTich]);
 
   return {
     state: {
-      thpt, setThpt,
+      thpt, setThpt, thptQuickTotal, setThptQuickTotal,
       dgnl, setDgnl,
-      hocBa, setHocBa,
+      hocBa, setHocBa, hocBaQuickTotal, setHocBaQuickTotal,
       kv, setKv, dt, setDt,
       thanhTich, setThanhTich
     },

@@ -397,7 +397,7 @@ export const HcmusCalculator = () => {
                   onChange={(e) => state.setKv(e.target.value)}
                   className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                 >
-                  {KHU_VUC.map(k => <option key={k.id} value={k.id}>{k.name} (+{k.points})</option>)}
+                  {KHU_VUC.map(k => <option key={k.id} value={k.id}>{k.name}</option>)}
                 </select>
               </div>
               <div>
@@ -407,7 +407,7 @@ export const HcmusCalculator = () => {
                   onChange={(e) => state.setDt(e.target.value)}
                   className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                 >
-                  {DOI_TUONG.map(d => <option key={d.id} value={d.id}>{d.name} (+{d.points})</option>)}
+                  {DOI_TUONG.map(d => <option key={d.id} value={d.id}>{d.name}</option>)}
                 </select>
               </div>
               <div>

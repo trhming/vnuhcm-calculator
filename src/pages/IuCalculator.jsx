@@ -86,7 +86,9 @@ export const IuCalculator = () => {
       <div className="space-y-5 p-6">
         <div>
           <div className="mb-3 rounded-xl bg-red-50 p-3 text-sm text-red-900">
-            <div className="font-semibold">{results.formula}</div>
+            <div className="font-semibold">
+              ĐHL = ĐGNL x {state.k2}% + THPT x {state.k1}% + Học bạ x {results.k3}%
+            </div>
             {results.interpolation && <div className="mt-1 text-red-800/80">{results.interpolation}</div>}
             <div className="mt-2 flex justify-between font-bold">
               <span>ĐHL</span>
@@ -96,12 +98,12 @@ export const IuCalculator = () => {
           <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Điểm học lực</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
-              <span className="text-slate-600">THPT chuẩn hóa</span>
-              <span className="font-semibold text-slate-900">{results.thpt100.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
               <span className="text-slate-600">ĐGNL chuẩn hóa</span>
               <span className="font-semibold text-slate-900">{results.dgnl100.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-slate-600">THPT chuẩn hóa</span>
+              <span className="font-semibold text-slate-900">{results.thpt100.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-600">Học bạ chuẩn hóa</span>

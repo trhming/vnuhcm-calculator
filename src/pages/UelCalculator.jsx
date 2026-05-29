@@ -53,6 +53,12 @@ export const UelCalculator = () => {
   const hasThptQuickTotal = state.thptQuickTotal !== '';
   const hasHocBaDetail = state.hocBa.some((value) => value !== '');
   const hasHocBaQuickTotal = state.hocBaQuickTotal !== '';
+  const learningWeights = (() => {
+    if (state.dtXetTuyen === 'DT1') return { dgnl: 55, thpt: 35, hocBa: 10 };
+    if (state.dtXetTuyen === 'DT2') return { dgnl: 0, thpt: isChinhQuy ? 90 : 50, hocBa: isChinhQuy ? 10 : 50 };
+    if (state.dtXetTuyen === 'DT3') return { dgnl: 90, thpt: 0, hocBa: 10 };
+    return null;
+  })();
   const setQuickTotal = (setter, value) => {
     if (value !== '' && parseFloat(value) > 30) value = '30';
     setter(value);
@@ -495,7 +501,11 @@ export const UelCalculator = () => {
             <div className="p-6 space-y-6">
                <div>
                   <div className="mb-3 rounded-xl bg-indigo-50 p-3 text-sm text-indigo-900">
-                    <div className="font-semibold">{results.textFormula}</div>
+                    <div className="font-semibold">
+                      {learningWeights
+                        ? `ĐHL = ĐGNL x ${learningWeights.dgnl}% + THPT x ${learningWeights.thpt}% + Học bạ x ${learningWeights.hocBa}%`
+                        : results.textFormula}
+                    </div>
                     <div className="mt-2 flex justify-between font-bold">
                       <span>ĐHL</span>
                       <span>{results.dhl.toFixed(2)}</span>
@@ -508,19 +518,19 @@ export const UelCalculator = () => {
                       <div className="space-y-2 text-sm">
                         {showDgnl && (
                           <div className="flex justify-between items-center text-slate-600">
-                            <span>Đánh giá Năng lực (X)</span>
+                            <span>ĐGNL chuẩn hóa</span>
                             <span className="font-medium text-slate-800">{results.X.toFixed(2)}</span>
                           </div>
                         )}
                         {showThpt && (
                           <div className="flex justify-between items-center text-slate-600">
-                            <span>Tốt nghiệp THPT (Y)</span>
+                            <span>THPT chuẩn hóa</span>
                             <span className="font-medium text-slate-800">{results.Y.toFixed(2)}</span>
                           </div>
                         )}
                         {showHocBa && (
                           <div className="flex justify-between items-center text-slate-600">
-                            <span>Học bạ THPT (Z)</span>
+                            <span>Học bạ chuẩn hóa</span>
                             <span className="font-medium text-slate-800">{results.Z.toFixed(2)}</span>
                           </div>
                         )}

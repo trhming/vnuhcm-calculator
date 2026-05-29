@@ -461,7 +461,7 @@ export const HcmutCalculator = () => {
                <div>
                   <div className="mb-3 rounded-xl bg-blue-50 p-3 text-sm text-blue-900">
                     <div className="font-semibold">
-                      ĐHL = Năng lực x {(state.wNL * 100).toFixed(0)}% + THPT x {(state.wTHPT * 100).toFixed(0)}% + Học bạ x {(state.wHB * 100).toFixed(0)}%
+                      ĐHL = ĐGNL x {(state.wNL * 100).toFixed(0)}% + THPT x {(state.wTHPT * 100).toFixed(0)}% + Học bạ x {(state.wHB * 100).toFixed(0)}%
                     </div>
                     <div className="mt-2 flex justify-between font-bold">
                       <span>ĐHL</span>
@@ -472,15 +472,15 @@ export const HcmutCalculator = () => {
                   <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Điểm học lực</h3>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-600">Năng lực ({(state.wNL*100).toFixed(0)}%)</span>
+                      <span className="text-slate-600">ĐGNL chuẩn hóa</span>
                       <span className="font-semibold">{results.diemNangLuc.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-600">THPT quy đổi ({(state.wTHPT*100).toFixed(0)}%)</span>
+                      <span className="text-slate-600">THPT chuẩn hóa</span>
                       <span className="font-semibold">{results.diemThptQuyDoi.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-600">Học bạ quy đổi ({(state.wHB*100).toFixed(0)}%)</span>
+                      <span className="text-slate-600">Học bạ chuẩn hóa</span>
                       <span className="font-semibold">{results.diemHbQuyDoi.toFixed(2)}</span>
                     </div>
                   </div>

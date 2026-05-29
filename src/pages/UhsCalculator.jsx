@@ -76,7 +76,9 @@ export const UhsCalculator = () => {
       <div className="space-y-5 p-6">
         <div>
           <div className="mb-3 rounded-xl bg-blue-50 p-3 text-sm text-blue-900">
-            <div className="font-semibold">ĐHL = ĐGNL x a + THPT x b + Học bạ x c</div>
+            <div className="font-semibold">
+              ĐHL = ĐGNL x {state.a}% + THPT x {state.b}% + Học bạ x {results.cWeight}%
+            </div>
             <div className="mt-2 flex justify-between font-bold">
               <span>ĐHL</span>
               <span>{results.dhl.toFixed(1)}</span>
@@ -85,15 +87,15 @@ export const UhsCalculator = () => {
           <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Điểm học lực</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
-              <span className="text-slate-600">ĐGNL ({state.a}%)</span>
+              <span className="text-slate-600">ĐGNL chuẩn hóa</span>
               <span className="font-semibold">{results.dgnl100.toFixed(1)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-600">THPT ({state.b}%)</span>
+              <span className="text-slate-600">THPT chuẩn hóa</span>
               <span className="font-semibold">{results.thpt100.toFixed(1)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-600">Học bạ ({results.cWeight}%)</span>
+              <span className="text-slate-600">Học bạ chuẩn hóa</span>
               <span className="font-semibold">{results.hocBa100.toFixed(1)}</span>
             </div>
           </div>

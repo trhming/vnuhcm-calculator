@@ -59,7 +59,6 @@ export const HcmusCalculator = () => {
   const hasHocBaQuickTotal = state.hocBaQuickTotal !== '';
   const hasThptDetail = state.thpt.some(val => val !== '') || (state.isNgoaiNgu && state.diemChungChi !== '');
   const hasThptQuickTotal = state.thptQuickTotal !== '';
-
   return (
     <div className="max-w-7xl mx-auto animate-in fade-in duration-500 pb-28">
       <div className="mb-8">
@@ -510,12 +509,12 @@ export const HcmusCalculator = () => {
                   <div className="mt-4 space-y-2 text-sm">
                     <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Điểm học lực</h3>
                     <div className="flex justify-between text-slate-600">
-                      <span>THPT chuẩn hóa</span>
-                      <span className="font-semibold text-slate-900">{((results.tongTHPT / 30) * 100).toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between text-slate-600">
                       <span>ĐGNL chuẩn hóa</span>
                       <span className="font-semibold text-slate-900">{((results.dgnlChuanHoa / 30) * 100).toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-slate-600">
+                      <span>THPT chuẩn hóa</span>
+                      <span className="font-semibold text-slate-900">{((results.tongTHPT / 30) * 100).toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-slate-600">
                       <span>Học bạ chuẩn hóa</span>

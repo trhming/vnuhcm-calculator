@@ -16,8 +16,15 @@ const ENGLISH_SCORE_MAX = {
   TOEIC_SW: 400,
 };
 
+const CCQT_SCORE_MAX = {
+  SAT: 1600,
+  ACT: 36,
+  IB: 45,
+};
+
 const clampScore = (value, max) => {
   if (value === '') return '';
+  if (value.toString().trim().startsWith('-')) return '0';
   const number = parseFloat(value);
   if (Number.isNaN(number)) return value;
   return Math.min(Math.max(number, 0), max).toString();
@@ -30,16 +37,14 @@ export const UelCalculator = () => {
   const [showCcqtConversionTable, setShowCcqtConversionTable] = useState(false);
 
   const handleHocBaChange = (index, val) => {
-    if (val !== '' && parseFloat(val) > 10) val = '10';
     const newHocBa = [...state.hocBa];
-    newHocBa[index] = val;
+    newHocBa[index] = clampScore(val, 10);
     state.setHocBa(newHocBa);
   };
 
   const handleThptChange = (index, val) => {
-    if (val !== '' && parseFloat(val) > 10) val = '10';
     const newThpt = [...state.thpt];
-    newThpt[index] = val;
+    newThpt[index] = clampScore(val, 10);
     state.setThpt(newThpt);
   };
 
@@ -60,8 +65,7 @@ export const UelCalculator = () => {
     return null;
   })();
   const setQuickTotal = (setter, value) => {
-    if (value !== '' && parseFloat(value) > 30) value = '30';
-    setter(value);
+    setter(clampScore(value, 30));
   };
 
   return (
@@ -217,9 +221,7 @@ export const UelCalculator = () => {
                       type="number" min="0" max="1200"
                       value={state.dgnl}
                       onChange={(e) => {
-                         let val = e.target.value;
-                         if (val !== '' && parseFloat(val) > 1200) val = '1200';
-                         state.setDgnl(val);
+                         state.setDgnl(clampScore(e.target.value, 1200));
                       }}
                       className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-lg"
                       placeholder="VD: 850"
@@ -311,9 +313,11 @@ export const UelCalculator = () => {
                          </select>
                        ) : (
                          <input 
-                           type="text" 
+                           type="number"
+                           min="0"
+                           max={CCQT_SCORE_MAX[state.loaiCCQT]}
                            value={state.diemCCQT} 
-                           onChange={e => state.setDiemCCQT(e.target.value)}
+                           onChange={e => state.setDiemCCQT(clampScore(e.target.value, CCQT_SCORE_MAX[state.loaiCCQT]))}
                            className="w-full px-3 py-2 border border-slate-200 rounded-md focus:ring-2 focus:ring-indigo-600" 
                            placeholder="VD: 1450"
                          />

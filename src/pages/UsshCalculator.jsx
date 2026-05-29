@@ -5,6 +5,14 @@ import { QuickScoreInput } from '../components/common/QuickScoreInput';
 import { Settings, BookOpen, PenTool, Award, Info, Calculator, X, Globe, ExternalLink } from 'lucide-react';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 
+const clampScore = (value, max) => {
+  if (value === '') return '';
+  if (value.toString().trim().startsWith('-')) return '0';
+  const number = parseFloat(value);
+  if (Number.isNaN(number)) return value;
+  return Math.min(Math.max(number, 0), max).toString();
+};
+
 export const UsshCalculator = () => {
   const { state, results } = useUsshCalculator();
   const [showMobileResultModal, setShowMobileResultModal] = useState(false);
@@ -13,21 +21,18 @@ export const UsshCalculator = () => {
   const hasHocBaDetail = state.hocBa.some((value) => value !== '');
   const hasHocBaQuickTotal = state.hocBaQuickTotal !== '';
   const setQuickTotal = (setter, value) => {
-    if (value !== '' && parseFloat(value) > 30) value = '30';
-    setter(value);
+    setter(clampScore(value, 30));
   };
   
   const handleHocBaChange = (index, val) => {
-    if (val !== '' && parseFloat(val) > 10) val = '10';
     const newHocBa = [...state.hocBa];
-    newHocBa[index] = val;
+    newHocBa[index] = clampScore(val, 10);
     state.setHocBa(newHocBa);
   };
 
   const handleThptChange = (index, val) => {
-    if (val !== '' && parseFloat(val) > 10) val = '10';
     const newThpt = [...state.thpt];
-    newThpt[index] = val;
+    newThpt[index] = clampScore(val, 10);
     state.setThpt(newThpt);
   };
 
@@ -130,9 +135,7 @@ export const UsshCalculator = () => {
                       type="number" min="0" max="1200"
                       value={state.dgnl}
                       onChange={(e) => {
-                         let val = e.target.value;
-                         if (val !== '' && parseFloat(val) > 1200) val = '1200';
-                         state.setDgnl(val);
+                         state.setDgnl(clampScore(e.target.value, 1200));
                       }}
                       className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600 font-medium text-lg"
                       placeholder="VD: 850"
@@ -221,11 +224,7 @@ export const UsshCalculator = () => {
                    <input 
                      type="number" min="0" max="10" step="0.1" 
                      value={state.thanhTich} 
-                     onChange={e => {
-                        let val = e.target.value;
-                        if (val !== '' && parseFloat(val) > 10) val = '10';
-                        state.setThanhTich(val);
-                     }} 
+                     onChange={e => state.setThanhTich(clampScore(e.target.value, 10))} 
                      className="w-full px-3 py-2 border border-slate-200 rounded-md focus:ring-2 focus:ring-emerald-600" 
                      placeholder="VD: 5"
                    />

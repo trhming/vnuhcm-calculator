@@ -34,6 +34,22 @@ export const QuickScoreInput = ({
   className = '',
 }) => {
   const toneStyle = toneClass[tone] || toneClass.blue;
+  const handleChange = (event) => {
+    const { value } = event.target;
+    if (value !== '') {
+      if (value.toString().trim().startsWith('-')) {
+        event.target.value = '0';
+        onChange(event);
+        return;
+      }
+      const number = parseFloat(value);
+      const maxValue = parseFloat(max);
+      if (!Number.isNaN(number)) {
+        event.target.value = Math.min(Math.max(number, 0), maxValue).toString();
+      }
+    }
+    onChange(event);
+  };
 
   return (
     <div className={`rounded-xl border border-slate-200 bg-slate-50 p-4 ${className}`}>
@@ -48,7 +64,7 @@ export const QuickScoreInput = ({
           max={max}
           step={step}
           value={value}
-          onChange={onChange}
+          onChange={handleChange}
           disabled={disabled}
           className={`w-full rounded-md border px-3 py-2 text-right text-lg font-bold focus:outline-none focus:ring-2 sm:w-40 ${toneStyle.ring} ${
             disabled

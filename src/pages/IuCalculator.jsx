@@ -20,6 +20,7 @@ import { useIuCalculator } from '../hooks/useIuCalculator';
 
 const clampInput = (value, max) => {
   if (value === '') return '';
+  if (value.toString().trim().startsWith('-')) return '0';
   const number = parseFloat(value);
   if (Number.isNaN(number)) return value;
   return Math.min(Math.max(number, 0), max).toString();

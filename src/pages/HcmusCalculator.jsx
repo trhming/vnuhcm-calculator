@@ -21,6 +21,7 @@ const ENGLISH_SCORE_MAX = Object.fromEntries(
 
 const clampScore = (value, max) => {
   if (value === '') return '';
+  if (value.toString().trim().startsWith('-')) return '0';
   const number = parseFloat(value);
   if (Number.isNaN(number)) return value;
   return Math.min(Math.max(number, 0), max).toString();
@@ -32,27 +33,23 @@ export const HcmusCalculator = () => {
   const [showMobileResultModal, setShowMobileResultModal] = useState(false);
   
   const handleHocBaChange = (index, val) => {
-    if (val !== '' && parseFloat(val) > 10) val = '10';
     const newHocBa = [...state.hocBa];
-    newHocBa[index] = val;
+    newHocBa[index] = clampScore(val, 10);
     state.setHocBa(newHocBa);
   };
 
   const handleHocBaQuickTotalChange = (val) => {
-    if (val !== '' && parseFloat(val) > 30) val = '30';
-    state.setHocBaQuickTotal(val);
+    state.setHocBaQuickTotal(clampScore(val, 30));
   };
 
   const handleThptChange = (index, val) => {
-    if (val !== '' && parseFloat(val) > 10) val = '10';
     const newThpt = [...state.thpt];
-    newThpt[index] = val;
+    newThpt[index] = clampScore(val, 10);
     state.setThpt(newThpt);
   };
 
   const handleThptQuickTotalChange = (val) => {
-    if (val !== '' && parseFloat(val) > 30) val = '30';
-    state.setThptQuickTotal(val);
+    state.setThptQuickTotal(clampScore(val, 30));
   };
 
   const hasHocBaDetail = state.hocBa.some(val => val !== '');
@@ -356,10 +353,8 @@ export const HcmusCalculator = () => {
                       type="number" min="0" max={state.maxDgnl || 1200}
                       value={state.dgnl}
                       onChange={(e) => {
-                         let val = e.target.value;
-                         let maxVal = parseFloat(state.maxDgnl) || 1200;
-                         if (val !== '' && parseFloat(val) > maxVal) val = maxVal.toString();
-                         state.setDgnl(val);
+                         const maxVal = parseFloat(state.maxDgnl) || 1200;
+                         state.setDgnl(clampScore(e.target.value, maxVal));
                       }}
                       className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium text-lg"
                       placeholder="VD: 850"
@@ -371,9 +366,7 @@ export const HcmusCalculator = () => {
                       type="number" min="0" max="1200"
                       value={state.maxDgnl}
                       onChange={(e) => {
-                         let val = e.target.value;
-                         if (val !== '' && parseFloat(val) > 1200) val = '1200';
-                         state.setMaxDgnl(val);
+                         state.setMaxDgnl(clampScore(e.target.value, 1200));
                       }}
                       className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
@@ -415,7 +408,7 @@ export const HcmusCalculator = () => {
                 <input
                   type="number" min="0" max="1.5" step="0.1"
                   value={state.khuyenKhich}
-                  onChange={(e) => state.setKhuyenKhich(e.target.value)}
+                  onChange={(e) => state.setKhuyenKhich(clampScore(e.target.value, 1.5))}
                   className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="0.0"
                 />

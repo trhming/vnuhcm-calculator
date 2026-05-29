@@ -12,8 +12,15 @@ const ENGLISH_SCORE_MAX = {
   PTE: 90,
 };
 
+const INTL_CERT_MAX = {
+  SAT: 1600,
+  ACT: 36,
+  IB: 45,
+};
+
 const clampScore = (value, max) => {
   if (value === '') return '';
+  if (value.toString().trim().startsWith('-')) return '0';
   const number = parseFloat(value);
   if (Number.isNaN(number)) return value;
   return Math.min(Math.max(number, 0), max).toString();
@@ -26,32 +33,27 @@ export const HcmutCalculator = () => {
   const [showIntlCertTable, setShowIntlCertTable] = useState(false);
   
   const handleHocBaChange = (index, val) => {
-    if (val !== '' && parseFloat(val) > 10) val = '10';
     const newHocBa = [...state.hocBa];
-    newHocBa[index] = val;
+    newHocBa[index] = clampScore(val, 10);
     state.setHocBa(newHocBa);
   };
 
   const handleHocBaQuickAverageChange = (val) => {
-    if (val !== '' && parseFloat(val) > 10) val = '10';
-    state.setHocBaQuickAverage(val);
+    state.setHocBaQuickAverage(clampScore(val, 10));
   };
 
   const handleThptChange = (index, val) => {
-    if (val !== '' && parseFloat(val) > 10) val = '10';
     const newThpt = [...state.thpt];
-    newThpt[index] = val;
+    newThpt[index] = clampScore(val, 10);
     state.setThpt(newThpt);
   };
 
   const handleThptQuickTotalChange = (val) => {
-    if (val !== '' && parseFloat(val) > 30) val = '30';
-    state.setThptQuickTotal(val);
+    state.setThptQuickTotal(clampScore(val, 30));
   };
 
   const handleDgnlQuickTotalChange = (val) => {
-    if (val !== '' && parseFloat(val) > 1500) val = '1500';
-    state.setDgnlQuickTotal(val);
+    state.setDgnlQuickTotal(clampScore(val, 1500));
   };
 
   const hasHocBaDetail = state.hocBa.some(val => val !== '');
@@ -106,19 +108,19 @@ export const HcmutCalculator = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-medium text-blue-800 mb-1">Tiếng Việt</label>
-                      <input type="number" min="0" max="300" value={state.dgnlTv} onChange={e => { let val = e.target.value; if (val !== '' && parseFloat(val) > 300) val = '300'; state.setDgnlTv(val); }} disabled={hasDgnlQuickTotal} className={`w-full px-3 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-800 ${hasDgnlQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`} placeholder="VD: 300" />
+                      <input type="number" min="0" max="300" value={state.dgnlTv} onChange={e => state.setDgnlTv(clampScore(e.target.value, 300))} disabled={hasDgnlQuickTotal} className={`w-full px-3 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-800 ${hasDgnlQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`} placeholder="VD: 300" />
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-blue-800 mb-1">Tiếng Anh</label>
-                      <input type="number" min="0" max="300" value={state.dgnlTa} onChange={e => { let val = e.target.value; if (val !== '' && parseFloat(val) > 300) val = '300'; state.setDgnlTa(val); }} disabled={hasDgnlQuickTotal} className={`w-full px-3 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-800 ${hasDgnlQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`} placeholder="VD: 300" />
+                      <input type="number" min="0" max="300" value={state.dgnlTa} onChange={e => state.setDgnlTa(clampScore(e.target.value, 300))} disabled={hasDgnlQuickTotal} className={`w-full px-3 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-800 ${hasDgnlQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`} placeholder="VD: 300" />
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-blue-800 mb-1">Toán <span className="font-bold">(x2)</span></label>
-                      <input type="number" min="0" max="300" value={state.dgnlToan} onChange={e => { let val = e.target.value; if (val !== '' && parseFloat(val) > 300) val = '300'; state.setDgnlToan(val); }} disabled={hasDgnlQuickTotal} className={`w-full px-3 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-800 ${hasDgnlQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`} placeholder="VD: 300" />
+                      <input type="number" min="0" max="300" value={state.dgnlToan} onChange={e => state.setDgnlToan(clampScore(e.target.value, 300))} disabled={hasDgnlQuickTotal} className={`w-full px-3 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-800 ${hasDgnlQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`} placeholder="VD: 300" />
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-blue-800 mb-1">Tư duy khoa học</label>
-                      <input type="number" min="0" max="300" value={state.dgnlKh} onChange={e => { let val = e.target.value; if (val !== '' && parseFloat(val) > 300) val = '300'; state.setDgnlKh(val); }} disabled={hasDgnlQuickTotal} className={`w-full px-3 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-800 ${hasDgnlQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`} placeholder="VD: 300" />
+                      <input type="number" min="0" max="300" value={state.dgnlKh} onChange={e => state.setDgnlKh(clampScore(e.target.value, 300))} disabled={hasDgnlQuickTotal} className={`w-full px-3 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-800 ${hasDgnlQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`} placeholder="VD: 300" />
                     </div>
                   </div>
                   <div className="hidden">
@@ -156,7 +158,10 @@ export const HcmutCalculator = () => {
                   <div className="flex gap-3">
                     <select
                       value={state.intlCertType}
-                      onChange={e => state.setIntlCertType(e.target.value)}
+                      onChange={e => {
+                        state.setIntlCertType(e.target.value);
+                        state.setIntlCertScore('');
+                      }}
                       className="px-3 py-2 border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-blue-800"
                     >
                       {INTL_CERT_TYPES.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
@@ -174,8 +179,9 @@ export const HcmutCalculator = () => {
                        </select>
                     ) : (
                        <input
-                        type="number" min="0"
-                        value={state.intlCertScore} onChange={e => state.setIntlCertScore(e.target.value)}
+                        type="number" min="0" max={INTL_CERT_MAX[state.intlCertType]}
+                        value={state.intlCertScore}
+                        onChange={e => state.setIntlCertScore(clampScore(e.target.value, INTL_CERT_MAX[state.intlCertType]))}
                         className="flex-1 px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-800 font-bold text-lg"
                         placeholder="Nhập điểm CC..."
                       />
@@ -412,15 +418,15 @@ export const HcmutCalculator = () => {
                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                    <div>
                      <label className="block text-xs text-slate-500 mb-1">Điểm thưởng (Tối đa 10)</label>
-                     <input type="number" min="0" max="10" step="0.1" value={state.thuong} onChange={e => state.setThuong(e.target.value)} className="w-full px-3 py-2 border border-slate-200 rounded-md focus:ring-2 focus:ring-blue-800" />
+                     <input type="number" min="0" max="10" step="0.1" value={state.thuong} onChange={e => state.setThuong(clampScore(e.target.value, 10))} className="w-full px-3 py-2 border border-slate-200 rounded-md focus:ring-2 focus:ring-blue-800" />
                    </div>
                    <div>
                      <label className="block text-xs text-slate-500 mb-1">Xét thưởng (Tối đa 5)</label>
-                     <input type="number" min="0" max="5" step="0.1" value={state.xetThuong} onChange={e => state.setXetThuong(e.target.value)} className="w-full px-3 py-2 border border-slate-200 rounded-md focus:ring-2 focus:ring-blue-800" />
+                     <input type="number" min="0" max="5" step="0.1" value={state.xetThuong} onChange={e => state.setXetThuong(clampScore(e.target.value, 5))} className="w-full px-3 py-2 border border-slate-200 rounded-md focus:ring-2 focus:ring-blue-800" />
                    </div>
                    <div>
                      <label className="block text-xs text-slate-500 mb-1">Khuyến khích (Tối đa 5)</label>
-                     <input type="number" min="0" max="5" step="0.1" value={state.khuyenKhich} onChange={e => state.setKhuyenKhich(e.target.value)} className="w-full px-3 py-2 border border-slate-200 rounded-md focus:ring-2 focus:ring-blue-800" />
+                     <input type="number" min="0" max="5" step="0.1" value={state.khuyenKhich} onChange={e => state.setKhuyenKhich(clampScore(e.target.value, 5))} className="w-full px-3 py-2 border border-slate-200 rounded-md focus:ring-2 focus:ring-blue-800" />
                    </div>
                  </div>
                </div>

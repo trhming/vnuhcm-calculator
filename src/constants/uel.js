@@ -178,6 +178,7 @@ export const convertCCQT = (type, scoreStr) => {
   if (type === 'IB') {
     const score = parseFloat(scoreStr);
     if (isNaN(score)) return 0;
+    if (score >= 42) return 100;
     const map = {
       42: 100, 41: 98, 40: 96, 39: 94, 38: 91, 37: 89, 36: 86, 35: 84,
       34: 82, 33: 79, 32: 77, 31: 74, 30: 71, 29: 69, 28: 67, 27: 64

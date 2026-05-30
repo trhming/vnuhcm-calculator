@@ -59,7 +59,7 @@ export const useHcmutCalculator = () => {
     const t2 = isNgoaiNgu ? Math.max(t2_raw, diemNgoaiNguQuyDoi) : t2_raw;
     let diemThptQuyDoi = ((t0 * 2) + t1 + t2) / 4 * 10;
     if (thptQuickTotal !== '') {
-      diemThptQuyDoi = Math.min(100, ((parseFloat(thptQuickTotal) || 0) / 30) * 100);
+      diemThptQuyDoi = Math.min(100, (parseFloat(thptQuickTotal) || 0) * 10);
     }
 
     // 3. Điểm Học bạ Quy Đổi

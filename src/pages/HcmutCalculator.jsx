@@ -49,7 +49,7 @@ export const HcmutCalculator = () => {
   };
 
   const handleThptQuickTotalChange = (val) => {
-    state.setThptQuickTotal(clampScore(val, 30));
+    state.setThptQuickTotal(clampScore(val, 10));
   };
 
   const handleDgnlQuickTotalChange = (val) => {
@@ -380,10 +380,12 @@ export const HcmutCalculator = () => {
                </div>
                
                <QuickScoreInput
-                 title="Nhập nhanh tổng THPT"
-                 value={hasThptDetail ? ((results.diemThptQuyDoi / 100) * 30).toFixed(2) : state.thptQuickTotal}
+                 title="Nhập nhanh trung bình THPT"
+                 description="Điểm trung bình THPT trên thang 10."
+                 value={hasThptDetail ? (results.diemThptQuyDoi / 10).toFixed(2) : state.thptQuickTotal}
                  onChange={(e) => handleThptQuickTotalChange(e.target.value)}
                  disabled={hasThptDetail}
+                 max={10}
                  tone="hcmut"
                />
              </div>

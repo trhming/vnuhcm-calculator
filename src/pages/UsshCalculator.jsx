@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useUsshCalculator } from '../hooks/useUsshCalculator';
 import { CardSection } from '../components/common/CardSection';
 import { QuickScoreInput } from '../components/common/QuickScoreInput';
-import { Settings, BookOpen, PenTool, Award, Info, Calculator, X, Globe, ExternalLink } from 'lucide-react';
+import { Settings, BookOpen, PenTool, Award, Calculator, X, Globe, ExternalLink } from 'lucide-react';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 
 const clampScore = (value, max) => {
@@ -96,12 +96,6 @@ export const UsshCalculator = () => {
                   ))}
                 </tbody>
               </table>
-              {results.hb100 > 0 && (
-                <div className="mt-4 flex items-center gap-3 rounded-lg border border-emerald-100 bg-emerald-50 p-3 text-sm">
-                   <Info className="h-5 w-5 shrink-0 text-emerald-600" />
-                   <span className="font-medium text-emerald-900">Đã quy đổi (thang 100): <strong className="text-emerald-700">{results.hb100.toFixed(2)}</strong></span>
-                </div>
-              )}
               <div className="hidden">
                 <label className="mb-2 block text-sm font-semibold text-slate-700">Nhập nhanh tổng học bạ</label>
                 <input type="number" min="0" max="30" step="0.1" value={hasHocBaDetail ? ((results.hb100 / 100) * 30).toFixed(2) : state.hocBaQuickTotal} onChange={(event) => setQuickTotal(state.setHocBaQuickTotal, event.target.value)} disabled={hasHocBaDetail} className={`w-full rounded-md border px-3 py-2 text-right font-bold focus:outline-none focus:ring-2 focus:ring-emerald-600 ${hasHocBaDetail ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-500' : 'border-slate-200 bg-white text-emerald-800'}`} placeholder="0.0" />
@@ -169,12 +163,6 @@ export const UsshCalculator = () => {
                     </div>
                   ))}
                 </div>
-                {results.thpt100 > 0 && (
-                  <div className="mt-4 flex items-center gap-3 rounded-lg border border-emerald-100 bg-emerald-50 p-3 text-sm">
-                     <Info className="h-5 w-5 shrink-0 text-emerald-600" />
-                     <span className="font-medium text-emerald-900">Đã quy đổi (thang 100): <strong className="text-emerald-700">{results.thpt100.toFixed(2)}</strong></span>
-                  </div>
-                )}
                 <div className="hidden">
                   <label className="mb-2 block text-sm font-semibold text-slate-700">Nhập nhanh tổng THPT</label>
                   <input type="number" min="0" max="30" step="0.1" value={hasThptDetail ? ((results.thpt100 / 100) * 30).toFixed(2) : state.thptQuickTotal} onChange={(event) => setQuickTotal(state.setThptQuickTotal, event.target.value)} disabled={hasThptDetail} className={`w-full rounded-md border px-3 py-2 text-right font-bold focus:outline-none focus:ring-2 focus:ring-emerald-600 ${hasThptDetail ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-500' : 'border-slate-200 bg-white text-emerald-800'}`} placeholder="0.0" />

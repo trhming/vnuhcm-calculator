@@ -84,20 +84,21 @@ export const useUhsCalculator = () => {
     }
 
     const bonusTotal = roundUhs(bonusLanguage + bonusSat + bonusHsg);
+    const bonusEffective = roundUhs(Math.min(bonusTotal, Math.max(0, 100 - dhl)));
 
     const khuvuc = KHU_VUC.find((item) => item.id === kv);
     const doituong = DOI_TUONG.find((item) => item.id === dt);
     const priority30 = (khuvuc ? khuvuc.points : 0) + (doituong ? doituong.points : 0);
     const priority100 = roundUhs((priority30 / 3) * 10);
 
-    const temporaryTotal = dhl + bonusTotal;
+    const temporaryTotal = dhl + bonusEffective;
     let priorityAccepted = priority100;
     if (temporaryTotal >= 75) {
       priorityAccepted = roundUhs(((100 - temporaryTotal) / 25) * priority100);
       if (priorityAccepted < 0) priorityAccepted = 0;
     }
 
-    const total = roundUhs(Math.min(100, dhl + bonusTotal + priorityAccepted));
+    const total = roundUhs(Math.min(100, dhl + bonusEffective + priorityAccepted));
 
     return {
       dgnl100,
@@ -112,6 +113,7 @@ export const useUhsCalculator = () => {
       bonusSat: roundUhs(bonusSat),
       bonusHsg: roundUhs(bonusHsg),
       bonusTotal,
+      bonusEffective,
       priority100,
       priorityAccepted,
       total,

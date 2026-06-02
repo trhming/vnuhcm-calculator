@@ -120,9 +120,13 @@ export const UhsCalculator = () => {
                 <span>Cộng HSG</span>
                 <span>+{results.bonusHsg.toFixed(1)}</span>
               </div>
+              <div className="flex items-center justify-between text-slate-600">
+                <span>Tổng điểm cộng (Gốc)</span>
+                <span>+{results.bonusTotal.toFixed(1)}</span>
+              </div>
               <div className="flex items-center justify-between rounded bg-amber-50 p-2 font-medium text-amber-900 border border-amber-100">
-                <span>Tổng điểm cộng</span>
-                <span className="font-bold text-amber-700">+{results.bonusTotal.toFixed(1)}</span>
+                <span>Cộng thực nhận</span>
+                <span className="font-bold text-amber-700">+{results.bonusEffective.toFixed(1)}</span>
               </div>
             </div>
             <div className="space-y-1">

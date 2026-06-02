@@ -115,14 +115,14 @@ export const useIuCalculator = () => {
     const priority30 = (khuvuc ? khuvuc.points : 0) + (doituong ? doituong.points : 0);
     const priority100 = (priority30 / 3) * 10;
 
-    const temporaryTotal = dhl + bonusAccepted;
+    const temporaryTotal = dhl + bonusEffective;
     let priorityAccepted = priority100;
     if (temporaryTotal >= 75) {
       priorityAccepted = ((100 - temporaryTotal) / 25) * priority100;
       if (priorityAccepted < 0) priorityAccepted = 0;
     }
 
-    const total = Math.min(100, dhl + bonusAccepted + priorityAccepted);
+    const total = Math.min(100, dhl + bonusEffective + priorityAccepted);
 
     return {
       k3,

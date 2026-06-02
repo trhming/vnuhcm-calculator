@@ -102,7 +102,7 @@ export const useUelCalculator = () => {
     const truongUuTienPoint = (program === 'CHINH_QUY' && la149Truong) ? 5.0 : 0;
 
     const dcGoc = nnPoint + truongUuTienPoint;
-    const dcThucNhan = Math.min(dcGoc, 10);
+    const dcThucNhan = Math.min(dcGoc, 10, Math.max(0, 100 - dhl));
 
     // Ưu tiên (ƯT)
     const khuvuc = KHU_VUC.find(k => k.id === kv);

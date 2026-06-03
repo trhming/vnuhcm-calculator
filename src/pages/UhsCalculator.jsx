@@ -95,7 +95,7 @@ export const UhsCalculator = () => {
         <div className="h-px bg-slate-100" />
 
         <div>
-          <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Điểm cộng & Ưu tiên</h3>
+          <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Ưu tiên & Điểm cộng</h3>
           <div className="space-y-4 text-sm">
             <div className="space-y-1">
               <div className="flex items-center justify-between text-slate-600">

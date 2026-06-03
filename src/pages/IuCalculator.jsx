@@ -111,7 +111,7 @@ export const IuCalculator = () => {
         <div className="h-px bg-slate-100" />
 
         <div>
-          <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Điểm cộng & Ưu tiên</h3>
+          <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Ưu tiên & Điểm cộng</h3>
           <div className="space-y-4 text-sm">
             <div className="space-y-1">
               <div className="flex items-center justify-between text-slate-600">
@@ -461,7 +461,7 @@ export const IuCalculator = () => {
             </CardSection>
           )}
 
-          <CardSection title="5. Điểm cộng & ưu tiên" icon={Award}>
+          <CardSection title="5. Ưu tiên & Điểm cộng" icon={Award}>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <div>
                 <label className="mb-2 block text-sm font-medium text-slate-700">Khu vực</label>

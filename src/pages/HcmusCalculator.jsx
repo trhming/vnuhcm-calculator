@@ -508,7 +508,7 @@ export const HcmusCalculator = () => {
 
                 {/* Phân tích điểm cộng & ưu tiên */}
                 <div>
-                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Điểm cộng & Ưu tiên</h3>
+                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Ưu tiên & Điểm cộng</h3>
                   <div className="space-y-4 text-sm">
                     {/* Điểm cộng */}
                     <div className="space-y-1">

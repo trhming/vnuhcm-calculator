@@ -383,7 +383,7 @@ export const HcmutCalculator = () => {
           </CardSection>
 
           {/* Thành tích & Ưu tiên */}
-          <CardSection title="4. Thành Tích & Ưu Tiên" icon={Award}>
+          <CardSection title="4. Ưu tiên & Điểm cộng" icon={Award}>
             <div className="space-y-6">
                <div className="grid grid-cols-1 md:grid-cols-[13fr_14fr] gap-6">
                  <div>
@@ -488,7 +488,7 @@ export const HcmutCalculator = () => {
                <div className="h-px w-full bg-slate-100"></div>
 
                <div>
-                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Điểm cộng & Ưu tiên</h3>
+                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Ưu tiên & Điểm cộng</h3>
                   <div className="space-y-4 text-sm">
                     {/* Điểm cộng */}
                     <div className="space-y-1">

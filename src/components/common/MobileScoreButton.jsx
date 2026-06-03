@@ -25,6 +25,8 @@ export const MobileScoreButton = ({
       return activeElement?.matches?.('input, textarea, select, [contenteditable="true"]');
     };
 
+    const isEditableTarget = (target) => target?.matches?.('input, textarea, select, [contenteditable="true"]');
+
     const updateKeyboardInset = () => {
       if (!viewport || !isTextInputFocused()) {
         setKeyboardInset(0);
@@ -39,11 +41,21 @@ export const MobileScoreButton = ({
       window.requestAnimationFrame(updateKeyboardInset);
     };
 
+    const resetOnPageTouch = (event) => {
+      if (isEditableTarget(event.target)) return;
+
+      const activeElement = document.activeElement;
+      if (isTextInputFocused()) activeElement.blur();
+      setKeyboardInset(0);
+    };
+
     updateKeyboardInset();
     viewport?.addEventListener('resize', updateSoon);
     viewport?.addEventListener('scroll', updateSoon);
     window.addEventListener('resize', updateSoon);
     window.addEventListener('scroll', updateSoon, { passive: true });
+    window.addEventListener('touchstart', resetOnPageTouch, { passive: true, capture: true });
+    window.addEventListener('pointerdown', resetOnPageTouch, { passive: true, capture: true });
     document.addEventListener('focusin', updateSoon);
     document.addEventListener('focusout', updateSoon);
 
@@ -52,6 +64,8 @@ export const MobileScoreButton = ({
       viewport?.removeEventListener('scroll', updateSoon);
       window.removeEventListener('resize', updateSoon);
       window.removeEventListener('scroll', updateSoon);
+      window.removeEventListener('touchstart', resetOnPageTouch, { capture: true });
+      window.removeEventListener('pointerdown', resetOnPageTouch, { capture: true });
       document.removeEventListener('focusin', updateSoon);
       document.removeEventListener('focusout', updateSoon);
     };

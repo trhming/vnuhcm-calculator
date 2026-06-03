@@ -178,12 +178,6 @@ export const UelCalculator = () => {
                   </tbody>
                 </table>
               </div>
-              {results.Z > 0 && (
-                <div className="mt-4 flex items-center justify-end gap-2 text-sm font-medium text-emerald-600">
-                  <span>↳ Điểm quy đổi học bạ (Thang 100):</span>
-                  <span className="text-base font-bold">{results.Z.toFixed(2)}</span>
-                </div>
-              )}
               <QuickScoreInput
                 title="Nhập nhanh tổng học bạ"
                 value={hasHocBaDetail ? ((results.Z / 100) * 30).toFixed(2) : state.hocBaQuickTotal}
@@ -242,12 +236,6 @@ export const UelCalculator = () => {
                         </div>
                       ))}
                     </div>
-                    {results.Y > 0 && (
-                      <div className="mt-4 flex items-center justify-end gap-2 text-sm font-medium text-emerald-600">
-                        <span>↳ Điểm quy đổi THPT (Thang 100):</span>
-                        <span className="text-base font-bold">{results.Y.toFixed(2)}</span>
-                      </div>
-                    )}
                     <QuickScoreInput
                       title="Nhập nhanh tổng THPT"
                       value={hasThptDetail ? ((results.Y / 100) * 30).toFixed(2) : state.thptQuickTotal}

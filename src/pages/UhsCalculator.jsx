@@ -18,6 +18,7 @@ import { MobileScoreButton } from '../components/common/MobileScoreButton';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { UHS_LANG_MAX, UHS_LANG_TYPES } from '../constants/uhs';
 import { useUhsCalculator } from '../hooks/useUhsCalculator';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 import { clampNumber, clampScore } from '../utils/input';
 
 const UHS_TOEIC_MAX = {
@@ -28,6 +29,7 @@ const UHS_TOEIC_MAX = {
 export const UhsCalculator = () => {
   const { state, results } = useUhsCalculator();
   const [showMobileResultModal, setShowMobileResultModal] = useState(false);
+  useBodyScrollLock(showMobileResultModal);
 
   const subjects = ['Môn 1', 'Môn 2', 'Môn 3'];
   const computedC = 100 - state.a - state.b;

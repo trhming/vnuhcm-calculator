@@ -19,6 +19,7 @@ import { MobileScoreButton } from '../components/common/MobileScoreButton';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { IU_ENGLISH_TYPES, IU_GROUPS } from '../constants/iu';
 import { useIuCalculator } from '../hooks/useIuCalculator';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 import { clampNumber, clampScore } from '../utils/input';
 
 const IU_ENGLISH_MAX = {
@@ -33,6 +34,7 @@ export const IuCalculator = () => {
   const { state, results } = useIuCalculator();
   const [showMobileResultModal, setShowMobileResultModal] = useState(false);
   const [showEnglishConversionTable, setShowEnglishConversionTable] = useState(false);
+  useBodyScrollLock(showMobileResultModal);
 
   const isForeignGroup = state.group === 'G3_FOREIGN';
   const needsThpt = ['G1_DGNL', 'G1_NO_DGNL', 'G2_BOTH', 'G2_THPT'].includes(state.group);

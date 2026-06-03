@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useUsshCalculator } from '../hooks/useUsshCalculator';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 import { CardSection } from '../components/common/CardSection';
 import { QuickScoreInput } from '../components/common/QuickScoreInput';
 import { MobileScoreButton } from '../components/common/MobileScoreButton';
@@ -10,6 +11,7 @@ import { clampScore } from '../utils/input';
 export const UsshCalculator = () => {
   const { state, results } = useUsshCalculator();
   const [showMobileResultModal, setShowMobileResultModal] = useState(false);
+  useBodyScrollLock(showMobileResultModal);
   const hasThptDetail = state.thpt.some((value) => value !== '');
   const hasThptQuickTotal = state.thptQuickTotal !== '';
   const hasHocBaDetail = state.hocBa.some((value) => value !== '');

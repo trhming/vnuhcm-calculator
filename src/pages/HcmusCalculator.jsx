@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useHcmusCalculator } from '../hooks/useHcmusCalculator';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 import { CardSection } from '../components/common/CardSection';
 import { QuickScoreInput } from '../components/common/QuickScoreInput';
 import { MobileScoreButton } from '../components/common/MobileScoreButton';
@@ -19,6 +20,7 @@ export const HcmusCalculator = () => {
   const { state, results } = useHcmusCalculator();
   const [showConversionTable, setShowConversionTable] = useState(false);
   const [showMobileResultModal, setShowMobileResultModal] = useState(false);
+  useBodyScrollLock(showMobileResultModal);
   
   const handleHocBaChange = (index, val) => {
     const newHocBa = [...state.hocBa];

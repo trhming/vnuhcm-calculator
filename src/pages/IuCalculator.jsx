@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { CardSection } from '../components/common/CardSection';
 import { QuickScoreInput } from '../components/common/QuickScoreInput';
+import { MobileScoreButton } from '../components/common/MobileScoreButton';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { IU_ENGLISH_TYPES, IU_GROUPS } from '../constants/iu';
 import { useIuCalculator } from '../hooks/useIuCalculator';
@@ -562,22 +563,11 @@ export const IuCalculator = () => {
         <div className="hidden lg:block lg:w-96">{resultCard}</div>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-between border-t border-slate-200 bg-white p-4 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.1)] lg:hidden">
-        <div>
-          <div className="mb-0.5 text-xs font-medium text-slate-500">Điểm xét tuyển</div>
-          <div className="text-2xl font-extrabold leading-none text-red-700">
-            {results.total.toFixed(2)}
-            <span className="text-sm font-normal text-slate-500"> / 100</span>
-          </div>
-        </div>
-        <button
-          type="button"
-          onClick={() => setShowMobileResultModal(true)}
-          className="flex items-center gap-2 rounded-xl bg-red-700 px-6 py-3 font-semibold text-white shadow-md transition-colors hover:bg-red-800"
-        >
-          Xem chi tiết
-        </button>
-      </div>
+      <MobileScoreButton
+        score={results.total}
+        tone="red"
+        onClick={() => setShowMobileResultModal(true)}
+      />
 
       {showMobileResultModal && (
         <div className="fixed inset-0 z-[60] flex items-end justify-center bg-slate-900/50 p-0 backdrop-blur-sm animate-in fade-in sm:items-center sm:p-4 lg:hidden">

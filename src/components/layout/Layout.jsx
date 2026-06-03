@@ -2,7 +2,6 @@ import { useEffect, useLayoutEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Navbar } from './Navbar';
 import { Footer } from './Footer';
-import { BackToTop } from './BackToTop';
 
 export const Layout = () => {
   const { pathname } = useLocation();
@@ -24,7 +23,6 @@ export const Layout = () => {
         <Outlet />
       </main>
       <Footer />
-      <BackToTop />
     </div>
   );
 };

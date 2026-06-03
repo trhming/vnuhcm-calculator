@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useUelCalculator } from '../hooks/useUelCalculator';
 import { CardSection } from '../components/common/CardSection';
 import { QuickScoreInput } from '../components/common/QuickScoreInput';
+import { MobileScoreButton } from '../components/common/MobileScoreButton';
 import { Settings, BookOpen, PenTool, Award, Calculator, X, BookHeart, GraduationCap, Info, ExternalLink } from 'lucide-react';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { UEL_ENGLISH_BONUS, CCQT_TYPES, UEL_ENGLISH_CERT_TYPES, UEL_CCQT_TABLE, UEL_ENGLISH_CONVERSION } from '../constants/uel';
@@ -578,21 +579,11 @@ export const UelCalculator = () => {
         </div>
       </div>
 
-      {/* Floating Bar for Mobile */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 pb-safe shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.1)] z-40 lg:hidden flex justify-between items-center animate-in slide-in-from-bottom-full">
-        <div>
-          <div className="text-xs text-slate-500 font-medium mb-0.5">Tổng điểm xét tuyển</div>
-          <div className="text-2xl font-extrabold text-indigo-700 leading-none">
-            {results.total.toFixed(2)} <span className="text-sm font-normal text-slate-500">/ 100</span>
-          </div>
-        </div>
-        <button 
-          onClick={() => setShowMobileResultModal(true)}
-          className="px-6 py-3 bg-indigo-700 hover:bg-indigo-800 text-white rounded-xl font-semibold transition-colors shadow-md flex items-center gap-2"
-        >
-          Xem chi tiết
-        </button>
-      </div>
+      <MobileScoreButton
+        score={results.total}
+        tone="indigo"
+        onClick={() => setShowMobileResultModal(true)}
+      />
 
     </div>
 

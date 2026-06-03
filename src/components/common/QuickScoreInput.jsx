@@ -13,6 +13,10 @@ const toneClass = {
     ring: 'focus:ring-emerald-600',
     active: 'text-emerald-800',
   },
+  teal: {
+    ring: 'focus:ring-teal-600',
+    active: 'text-teal-800',
+  },
   indigo: {
     ring: 'focus:ring-indigo-600',
     active: 'text-indigo-800',

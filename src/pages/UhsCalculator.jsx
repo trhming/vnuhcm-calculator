@@ -51,22 +51,22 @@ export const UhsCalculator = () => {
   };
 
   const resultCard = (
-    <div className="w-full overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-2xl sticky top-24">
-      <div className="relative overflow-hidden bg-gradient-to-br from-blue-800 to-emerald-800 p-6 text-white">
+    <div className="w-full overflow-hidden rounded-2xl border border-teal-100 bg-white shadow-2xl sticky top-24">
+      <div className="relative overflow-hidden bg-gradient-to-br from-teal-700 to-cyan-800 p-6 text-white">
         <div className="absolute right-0 top-0 p-4 opacity-10">
           <Calculator className="h-24 w-24" />
         </div>
-        <h2 className="mb-1 text-lg font-medium text-blue-100">Điểm xét tuyển</h2>
+        <h2 className="mb-1 text-lg font-medium text-teal-100">Điểm xét tuyển</h2>
         <div className="mb-2 text-5xl font-extrabold tracking-tight">
           {results.total.toFixed(1)}
-          <span className="text-xl font-normal text-blue-100"> / 100</span>
+          <span className="text-xl font-normal text-teal-100"> / 100</span>
         </div>
-        <p className="mt-2 text-sm text-blue-100">Các điểm thành phần làm tròn 0.1</p>
+        <p className="mt-2 text-sm text-teal-100">Các điểm thành phần làm tròn 0.1</p>
       </div>
 
       <div className="space-y-5 p-6">
         <div>
-          <div className="mb-3 rounded-xl bg-blue-50 p-3 text-sm text-blue-900">
+          <div className="mb-3 rounded-xl bg-teal-50 p-3 text-sm text-teal-900">
             <div className="font-semibold">
               ĐHL = ĐGNL x {state.a}% + THPT x {state.b}% + Học bạ x {results.cWeight}%
             </div>
@@ -138,8 +138,8 @@ export const UhsCalculator = () => {
   return (
     <div className="mx-auto max-w-7xl animate-in fade-in pb-28 duration-500">
       <div className="mb-8">
-        <h1 className="flex items-center gap-3 text-3xl font-extrabold tracking-tight text-blue-900">
-          <HeartPulse className="h-8 w-8 text-blue-700" />
+        <h1 className="flex items-center gap-3 text-3xl font-extrabold tracking-tight text-teal-900">
+          <HeartPulse className="h-8 w-8 text-teal-700" />
           Máy tính điểm UHS 2026
         </h1>
         <p className="mt-2 text-slate-500">
@@ -149,7 +149,7 @@ export const UhsCalculator = () => {
           href="https://tuyensinh.uhsvnu.edu.vn/news.php?slug=phuonghuong"
           target="_blank"
           rel="noreferrer"
-          className="mt-4 inline-flex items-center gap-2 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 text-sm font-medium text-blue-800 transition-colors hover:border-blue-200 hover:bg-blue-100"
+          className="mt-4 inline-flex items-center gap-2 rounded-lg border border-teal-100 bg-teal-50 px-3 py-2 text-sm font-medium text-teal-800 transition-colors hover:border-teal-200 hover:bg-teal-100"
         >
           Xem phương thức tuyển sinh UHS
           <ExternalLink className="h-4 w-4" />
@@ -175,9 +175,9 @@ export const UhsCalculator = () => {
                         step="1"
                         value={value}
                         onChange={(event) => updateWeight(key, event.target.value)}
-                        className="w-14 rounded-md border border-blue-200 px-2 py-1 text-right text-sm font-bold text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-700"
+                        className="w-14 rounded-md border border-teal-200 px-2 py-1 text-right text-sm font-bold text-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-700"
                       />
-                      <span className="font-bold text-blue-700">%</span>
+                      <span className="font-bold text-teal-700">%</span>
                     </div>
                   </div>
                   <input
@@ -187,15 +187,15 @@ export const UhsCalculator = () => {
                     step="1"
                     value={value}
                     onChange={(event) => updateWeight(key, event.target.value)}
-                    className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-slate-200 accent-blue-700"
+                    className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-slate-200 accent-teal-700"
                   />
                   <div className="mt-1 text-xs text-slate-500">{note}</div>
                 </div>
               ))}
-              <div className={`rounded-xl border p-4 ${isWeightValid ? 'border-blue-100 bg-blue-50' : 'border-amber-200 bg-amber-50'}`}>
-                <div className={`text-sm font-semibold ${isWeightValid ? 'text-blue-900' : 'text-amber-900'}`}>c - Học bạ</div>
-                <div className={`mt-1 text-3xl font-extrabold ${isWeightValid ? 'text-blue-700' : 'text-amber-700'}`}>{computedC}%</div>
-                <div className={`mt-1 text-xs ${isWeightValid ? 'text-blue-800/70' : 'text-amber-800'}`}>
+              <div className={`rounded-xl border p-4 ${isWeightValid ? 'border-teal-100 bg-teal-50' : 'border-amber-200 bg-amber-50'}`}>
+                <div className={`text-sm font-semibold ${isWeightValid ? 'text-teal-900' : 'text-amber-900'}`}>c - Học bạ</div>
+                <div className={`mt-1 text-3xl font-extrabold ${isWeightValid ? 'text-teal-700' : 'text-amber-700'}`}>{computedC}%</div>
+                <div className={`mt-1 text-xs ${isWeightValid ? 'text-teal-800/70' : 'text-amber-800'}`}>
                   Tự tính = 100 - a - b
                 </div>
                 {!isWeightValid && (
@@ -205,8 +205,8 @@ export const UhsCalculator = () => {
                 )}
               </div>
             </div>
-            <div className={`mt-5 flex gap-3 rounded-lg border p-4 text-sm ${isWeightValid ? 'border-blue-100 bg-blue-50 text-blue-900' : 'border-amber-200 bg-amber-50 text-amber-900'}`}>
-              <Info className={`mt-0.5 h-5 w-5 shrink-0 ${isWeightValid ? 'text-blue-700' : 'text-amber-600'}`} />
+            <div className={`mt-5 flex gap-3 rounded-lg border p-4 text-sm ${isWeightValid ? 'border-teal-100 bg-teal-50 text-teal-900' : 'border-amber-200 bg-amber-50 text-amber-900'}`}>
+              <Info className={`mt-0.5 h-5 w-5 shrink-0 ${isWeightValid ? 'text-teal-700' : 'text-amber-600'}`} />
               <p>
                 Điều kiện hợp lệ: a &gt;= 40%, b &lt;= 35%, c &lt;= 25%, và a + b + c = 100%.
               </p>
@@ -242,7 +242,7 @@ export const UhsCalculator = () => {
                                 value={state.hocBa[cellIndex]}
                                 onChange={(event) => updateArrayValue(state.hocBa, state.setHocBa, cellIndex, event.target.value, 10)}
                                 disabled={hasHocBaQuickTotal}
-                                className={`w-full rounded-md border border-slate-200 px-2 py-2 text-center focus:outline-none focus:ring-2 focus:ring-blue-700 ${hasHocBaQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`}
+                                className={`w-full rounded-md border border-slate-200 px-2 py-2 text-center focus:outline-none focus:ring-2 focus:ring-teal-700 ${hasHocBaQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`}
                                 placeholder="0.0"
                               />
                             </td>
@@ -260,6 +260,7 @@ export const UhsCalculator = () => {
                 disabled={hasHocBaDetail}
                 step="0.01"
                 placeholder="0.00"
+                tone="teal"
               />
             </div>
           </CardSection>
@@ -267,8 +268,8 @@ export const UhsCalculator = () => {
           <CardSection title="3. Điểm thi" icon={PenTool}>
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               <div>
-                <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-blue-900">
-                  <BookOpen className="h-4 w-4 text-blue-700" /> Kỳ thi tốt nghiệp THPT 2026
+                <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-teal-900">
+                  <BookOpen className="h-4 w-4 text-teal-700" /> Kỳ thi tốt nghiệp THPT 2026
                 </label>
                 <div className="space-y-3">
                   {subjects.map((subject, index) => (
@@ -282,7 +283,7 @@ export const UhsCalculator = () => {
                         value={state.thpt[index]}
                         onChange={(event) => updateArrayValue(state.thpt, state.setThpt, index, event.target.value, 10)}
                         disabled={hasThptQuickTotal}
-                        className={`w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700 ${hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`}
+                        className={`w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-700 ${hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`}
                         placeholder="0.00"
                       />
                     </div>
@@ -296,12 +297,13 @@ export const UhsCalculator = () => {
                   disabled={hasThptDetail}
                   step="0.01"
                   placeholder="0.00"
+                  tone="teal"
                 />
               </div>
 
               <div>
-                <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-blue-900">
-                  <Settings className="h-4 w-4 text-blue-700" /> Kỳ thi ĐGNL 2026
+                <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-teal-900">
+                  <Settings className="h-4 w-4 text-teal-700" /> Kỳ thi ĐGNL 2026
                 </label>
                 <input
                   type="number"
@@ -309,7 +311,7 @@ export const UhsCalculator = () => {
                   max="1200"
                   value={state.dgnl}
                   onChange={(event) => state.setDgnl(clampScore(event.target.value, 1200))}
-                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-lg font-medium focus:outline-none focus:ring-2 focus:ring-blue-700"
+                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-lg font-medium focus:outline-none focus:ring-2 focus:ring-teal-700"
                   placeholder="850"
                 />
               </div>
@@ -323,12 +325,12 @@ export const UhsCalculator = () => {
                   type="checkbox"
                   checked={state.hasLanguage}
                   onChange={(event) => state.setHasLanguage(event.target.checked)}
-                  className="h-4 w-4 rounded text-blue-700 focus:ring-blue-700"
+                  className="h-4 w-4 rounded text-teal-700 focus:ring-teal-700"
                 />
                 <span className="text-sm font-medium text-slate-700">Có chứng chỉ ngoại ngữ</span>
               </label>
               {state.hasLanguage && (
-                <div className="grid grid-cols-1 gap-4 rounded-xl border border-blue-100 bg-blue-50 p-4 md:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4 rounded-xl border border-teal-100 bg-teal-50 p-4 md:grid-cols-3">
                   <select
                     value={state.languageType}
                     onChange={(event) => {
@@ -336,7 +338,7 @@ export const UhsCalculator = () => {
                       state.setLanguageScore('');
                       state.setLanguageScore2('');
                     }}
-                    className="rounded-md border border-blue-200 bg-white px-3 py-2 focus:ring-2 focus:ring-blue-700"
+                    className="rounded-md border border-teal-200 bg-white px-3 py-2 focus:ring-2 focus:ring-teal-700"
                   >
                     {UHS_LANG_TYPES.map((type) => (
                       <option key={type.id} value={type.id}>{type.name}</option>
@@ -348,7 +350,7 @@ export const UhsCalculator = () => {
                     max={state.languageType === 'TOEIC' ? UHS_TOEIC_MAX.lr : UHS_LANG_MAX[state.languageType]}
                     value={state.languageScore}
                     onChange={(event) => state.setLanguageScore(clampScore(event.target.value, state.languageType === 'TOEIC' ? UHS_TOEIC_MAX.lr : UHS_LANG_MAX[state.languageType]))}
-                    className="rounded-md border border-blue-200 px-3 py-2 focus:ring-2 focus:ring-blue-700"
+                    className="rounded-md border border-teal-200 px-3 py-2 focus:ring-2 focus:ring-teal-700"
                     placeholder={state.languageType === 'TOEIC' ? 'L&R' : 'Điểm chứng chỉ'}
                   />
                   {state.languageType === 'TOEIC' ? (
@@ -358,7 +360,7 @@ export const UhsCalculator = () => {
                       max={UHS_TOEIC_MAX.sw}
                       value={state.languageScore2}
                       onChange={(event) => state.setLanguageScore2(clampScore(event.target.value, UHS_TOEIC_MAX.sw))}
-                      className="rounded-md border border-blue-200 px-3 py-2 focus:ring-2 focus:ring-blue-700"
+                      className="rounded-md border border-teal-200 px-3 py-2 focus:ring-2 focus:ring-teal-700"
                       placeholder="S&W"
                     />
                   ) : (
@@ -380,7 +382,7 @@ export const UhsCalculator = () => {
                   type="checkbox"
                   checked={state.hasSat}
                   onChange={(event) => state.setHasSat(event.target.checked)}
-                  className="h-4 w-4 rounded text-blue-700 focus:ring-blue-700"
+                  className="h-4 w-4 rounded text-teal-700 focus:ring-teal-700"
                 />
                 <span className="text-sm font-medium text-slate-700">Có SAT từ 1280 trở lên</span>
               </label>
@@ -391,7 +393,7 @@ export const UhsCalculator = () => {
                   max="1600"
                   value={state.satScore}
                   onChange={(event) => state.setSatScore(clampScore(event.target.value, 1600))}
-                  className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700"
+                    className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-700"
                   placeholder="Điểm SAT"
                 />
               )}
@@ -402,7 +404,7 @@ export const UhsCalculator = () => {
                     type="checkbox"
                     checked={state.hasSpecialSchool}
                     onChange={(event) => state.setHasSpecialSchool(event.target.checked)}
-                    className="h-4 w-4 rounded text-blue-700 focus:ring-blue-700"
+                    className="h-4 w-4 rounded text-teal-700 focus:ring-teal-700"
                   />
                   <span className="text-sm font-medium text-slate-700">Học tập &gt;= 2 năm tại trường Chuyên/PTNK</span>
                 </label>
@@ -411,7 +413,7 @@ export const UhsCalculator = () => {
                     type="checkbox"
                     checked={state.hasGoodAcademic}
                     onChange={(event) => state.setHasGoodAcademic(event.target.checked)}
-                    className="h-4 w-4 rounded text-blue-700 focus:ring-blue-700"
+                    className="h-4 w-4 rounded text-teal-700 focus:ring-teal-700"
                   />
                   <span className="text-sm font-medium text-slate-700">Trung bình học lực 3 năm từ Tốt trở lên</span>
                 </label>
@@ -423,7 +425,7 @@ export const UhsCalculator = () => {
                     step="0.1"
                     value={state.hsgAverage}
                     onChange={(event) => state.setHsgAverage(clampScore(event.target.value, 10))}
-                    className="mt-3 w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700"
+                    className="mt-3 w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-700"
                     placeholder="Trung bình cộng 3 năm THPT"
                   />
                 )}
@@ -438,7 +440,7 @@ export const UhsCalculator = () => {
                 <select
                   value={state.kv}
                   onChange={(event) => state.setKv(event.target.value)}
-                  className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700"
+                  className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-700"
                 >
                   {KHU_VUC.map((item) => (
                     <option key={item.id} value={item.id}>{item.name}</option>
@@ -450,7 +452,7 @@ export const UhsCalculator = () => {
                 <select
                   value={state.dt}
                   onChange={(event) => state.setDt(event.target.value)}
-                  className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700"
+                  className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-700"
                 >
                   {DOI_TUONG.map((item) => (
                     <option key={item.id} value={item.id}>{item.name}</option>
@@ -467,6 +469,7 @@ export const UhsCalculator = () => {
       <MobileScoreButton
         score={results.total}
         precision={1}
+        tone="teal"
         onClick={() => setShowMobileResultModal(true)}
       />
 

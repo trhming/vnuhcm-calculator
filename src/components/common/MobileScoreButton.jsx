@@ -2,6 +2,7 @@ const toneClass = {
   blue: 'bg-blue-700 hover:bg-blue-800 focus:ring-blue-500',
   hcmut: 'bg-blue-800 hover:bg-blue-900 focus:ring-blue-700',
   emerald: 'bg-emerald-700 hover:bg-emerald-800 focus:ring-emerald-500',
+  teal: 'bg-teal-700 hover:bg-teal-800 focus:ring-teal-500',
   indigo: 'bg-indigo-700 hover:bg-indigo-800 focus:ring-indigo-500',
   red: 'bg-red-700 hover:bg-red-800 focus:ring-red-500',
 };

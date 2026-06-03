@@ -1,3 +1,5 @@
+import { clampScore } from '../../utils/input';
+
 const toneClass = {
   blue: {
     ring: 'focus:ring-blue-500',
@@ -36,18 +38,7 @@ export const QuickScoreInput = ({
   const toneStyle = toneClass[tone] || toneClass.blue;
   const handleChange = (event) => {
     const { value } = event.target;
-    if (value !== '') {
-      if (value.toString().trim().startsWith('-')) {
-        event.target.value = '0';
-        onChange(event);
-        return;
-      }
-      const number = parseFloat(value);
-      const maxValue = parseFloat(max);
-      if (!Number.isNaN(number)) {
-        event.target.value = Math.min(Math.max(number, 0), maxValue).toString();
-      }
-    }
+    event.target.value = clampScore(value, max);
     onChange(event);
   };
 

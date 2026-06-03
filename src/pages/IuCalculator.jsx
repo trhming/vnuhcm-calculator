@@ -18,14 +18,7 @@ import { MobileScoreButton } from '../components/common/MobileScoreButton';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { IU_ENGLISH_TYPES, IU_GROUPS } from '../constants/iu';
 import { useIuCalculator } from '../hooks/useIuCalculator';
-
-const clampInput = (value, max) => {
-  if (value === '') return '';
-  if (value.toString().trim().startsWith('-')) return '0';
-  const number = parseFloat(value);
-  if (Number.isNaN(number)) return value;
-  return Math.min(Math.max(number, 0), max).toString();
-};
+import { clampNumber, clampScore } from '../utils/input';
 
 const IU_ENGLISH_MAX = {
   IELTS: 9,
@@ -33,12 +26,6 @@ const IU_ENGLISH_MAX = {
   TOEIC_LR: 990,
   TOEIC_SW: 400,
   CAMBRIDGE: 230,
-};
-
-const clampNumber = (value, min, max) => {
-  const number = parseInt(value, 10);
-  if (Number.isNaN(number)) return min;
-  return Math.min(Math.max(number, min), max);
 };
 
 export const IuCalculator = () => {
@@ -55,7 +42,7 @@ export const IuCalculator = () => {
   const hasThptQuickTotal = state.thptQuickTotal !== '';
   const hasHocBaDetail = state.hocBa.some((value) => value !== '');
   const hasHocBaQuickTotal = state.hocBaQuickTotal !== '';
-  const setQuickTotal = (setter, value) => setter(clampInput(value, 30));
+  const setQuickTotal = (setter, value) => setter(clampScore(value, 30));
 
   const updateK1 = (value) => {
     state.setK1(clampNumber(value, 30, 40));
@@ -67,7 +54,7 @@ export const IuCalculator = () => {
 
   const updateArrayValue = (values, setter, index, value, max) => {
     const nextValues = [...values];
-    nextValues[index] = clampInput(value, max);
+    nextValues[index] = clampScore(value, max);
     setter(nextValues);
   };
 
@@ -302,10 +289,6 @@ export const IuCalculator = () => {
                         </tbody>
                       </table>
                     </div>
-                    <div className="hidden">
-                      <label className="mb-2 block text-sm font-semibold text-slate-700">Nhập nhanh tổng học bạ</label>
-                      <input type="number" min="0" max="30" step="0.1" value={hasHocBaDetail ? results.hocBaTotal.toFixed(2) : state.hocBaQuickTotal} onChange={(event) => setQuickTotal(state.setHocBaQuickTotal, event.target.value)} disabled={hasHocBaDetail} className={`w-full rounded-md border px-3 py-2 text-right font-bold focus:outline-none focus:ring-2 focus:ring-red-500 ${hasHocBaDetail ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-500' : 'border-slate-200 bg-white text-red-800'}`} placeholder="0.0" />
-                    </div>
                     <QuickScoreInput
                       title="Nhập nhanh tổng học bạ"
                       value={hasHocBaDetail ? results.hocBaTotal.toFixed(2) : state.hocBaQuickTotal}
@@ -395,7 +378,7 @@ export const IuCalculator = () => {
                             max={state.englishType === 'TOEIC' ? IU_ENGLISH_MAX.TOEIC_LR : IU_ENGLISH_MAX[state.englishType]}
                             step="0.1"
                             value={state.englishScore}
-                            onChange={(event) => state.setEnglishScore(clampInput(event.target.value, state.englishType === 'TOEIC' ? IU_ENGLISH_MAX.TOEIC_LR : IU_ENGLISH_MAX[state.englishType]))}
+                            onChange={(event) => state.setEnglishScore(clampScore(event.target.value, state.englishType === 'TOEIC' ? IU_ENGLISH_MAX.TOEIC_LR : IU_ENGLISH_MAX[state.englishType]))}
                             className="rounded-md border border-slate-300 px-2 py-2 text-sm focus:ring-2 focus:ring-red-500"
                             placeholder={state.englishType === 'TOEIC' ? 'Nghe đọc' : 'Điểm CC'}
                           />
@@ -406,7 +389,7 @@ export const IuCalculator = () => {
                               max={IU_ENGLISH_MAX.TOEIC_SW}
                               step="0.1"
                               value={state.englishScore2}
-                              onChange={(event) => state.setEnglishScore2(clampInput(event.target.value, IU_ENGLISH_MAX.TOEIC_SW))}
+                              onChange={(event) => state.setEnglishScore2(clampScore(event.target.value, IU_ENGLISH_MAX.TOEIC_SW))}
                               className="rounded-md border border-slate-300 px-2 py-2 text-sm focus:ring-2 focus:ring-red-500"
                               placeholder="Nói viết"
                             />
@@ -424,10 +407,6 @@ export const IuCalculator = () => {
                           )}
                         </div>
                       )}
-                    </div>
-                    <div className="hidden">
-                      <label className="mb-2 block text-sm font-semibold text-slate-700">Nhập nhanh tổng THPT</label>
-                      <input type="number" min="0" max="30" step="0.1" value={hasThptDetail ? results.thptTotal.toFixed(2) : state.thptQuickTotal} onChange={(event) => setQuickTotal(state.setThptQuickTotal, event.target.value)} disabled={hasThptDetail} className={`w-full rounded-md border px-3 py-2 text-right font-bold focus:outline-none focus:ring-2 focus:ring-red-500 ${hasThptDetail ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-500' : 'border-slate-200 bg-white text-red-800'}`} placeholder="0.0" />
                     </div>
                     <QuickScoreInput
                       title="Nhập nhanh tổng THPT"
@@ -449,7 +428,7 @@ export const IuCalculator = () => {
                       min="0"
                       max="1200"
                       value={state.dgnl}
-                      onChange={(event) => state.setDgnl(clampInput(event.target.value, 1200))}
+                      onChange={(event) => state.setDgnl(clampScore(event.target.value, 1200))}
                       className="w-full rounded-md border border-slate-200 px-3 py-2 text-lg font-medium focus:outline-none focus:ring-2 focus:ring-red-500"
                       placeholder="VD: 850"
                     />
@@ -464,7 +443,7 @@ export const IuCalculator = () => {
                       min="0"
                       max="100"
                       value={state.interview}
-                      onChange={(event) => state.setInterview(clampInput(event.target.value, 100))}
+                      onChange={(event) => state.setInterview(clampScore(event.target.value, 100))}
                       className="w-full rounded-md border border-slate-200 px-3 py-2 text-lg font-medium focus:outline-none focus:ring-2 focus:ring-red-500"
                       placeholder="Thang 100"
                     />
@@ -513,7 +492,7 @@ export const IuCalculator = () => {
                     max="10"
                     step="0.1"
                     value={state.achievementBonus}
-                    onChange={(event) => state.setAchievementBonus(clampInput(event.target.value, 10))}
+                    onChange={(event) => state.setAchievementBonus(clampScore(event.target.value, 10))}
                     className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
                     placeholder="0.0"
                   />
@@ -526,7 +505,7 @@ export const IuCalculator = () => {
                     max="5"
                     step="0.1"
                     value={state.awardBonus}
-                    onChange={(event) => state.setAwardBonus(clampInput(event.target.value, 5))}
+                    onChange={(event) => state.setAwardBonus(clampScore(event.target.value, 5))}
                     className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
                     placeholder="0.0"
                   />
@@ -539,7 +518,7 @@ export const IuCalculator = () => {
                     max="5"
                     step="0.1"
                     value={state.englishBonus}
-                    onChange={(event) => state.setEnglishBonus(clampInput(event.target.value, 5))}
+                    onChange={(event) => state.setEnglishBonus(clampScore(event.target.value, 5))}
                     disabled={state.useEnglishCertificate}
                     className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:bg-slate-100 disabled:text-slate-400"
                     placeholder="0.0"

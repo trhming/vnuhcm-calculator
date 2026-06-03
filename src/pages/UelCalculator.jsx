@@ -6,6 +6,7 @@ import { MobileScoreButton } from '../components/common/MobileScoreButton';
 import { Settings, BookOpen, PenTool, Award, Calculator, X, BookHeart, GraduationCap, Info, ExternalLink } from 'lucide-react';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { UEL_ENGLISH_BONUS, CCQT_TYPES, UEL_ENGLISH_CERT_TYPES, UEL_CCQT_TABLE, UEL_ENGLISH_CONVERSION } from '../constants/uel';
+import { clampScore } from '../utils/input';
 
 const ENGLISH_SCORE_MAX = {
   ...Object.fromEntries(
@@ -21,14 +22,6 @@ const CCQT_SCORE_MAX = {
   SAT: 1600,
   ACT: 36,
   IB: 45,
-};
-
-const clampScore = (value, max) => {
-  if (value === '') return '';
-  if (value.toString().trim().startsWith('-')) return '0';
-  const number = parseFloat(value);
-  if (Number.isNaN(number)) return value;
-  return Math.min(Math.max(number, 0), max).toString();
 };
 
 export const UelCalculator = () => {
@@ -185,10 +178,6 @@ export const UelCalculator = () => {
                   </tbody>
                 </table>
               </div>
-              <div className="hidden">
-                <label className="mb-2 block text-sm font-semibold text-slate-700">Nhập nhanh tổng học bạ</label>
-                <input type="number" min="0" max="30" step="0.1" value={hasHocBaDetail ? ((results.Z / 100) * 30).toFixed(2) : state.hocBaQuickTotal} onChange={(event) => setQuickTotal(state.setHocBaQuickTotal, event.target.value)} disabled={hasHocBaDetail} className={`w-full rounded-md border px-3 py-2 text-right font-bold focus:outline-none focus:ring-2 focus:ring-indigo-600 ${hasHocBaDetail ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-500' : 'border-slate-200 bg-white text-indigo-800'}`} placeholder="0.0" />
-              </div>
               {results.Z > 0 && (
                 <div className="mt-4 flex items-center justify-end gap-2 text-sm font-medium text-emerald-600">
                   <span>↳ Điểm quy đổi học bạ (Thang 100):</span>
@@ -227,10 +216,6 @@ export const UelCalculator = () => {
                       className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-lg"
                       placeholder="VD: 850"
                     />
-                    <div className="hidden">
-                      <label className="mb-2 block text-sm font-semibold text-slate-700">Nhập nhanh tổng THPT</label>
-                      <input type="number" min="0" max="30" step="0.1" value={hasThptDetail ? ((results.Y / 100) * 30).toFixed(2) : state.thptQuickTotal} onChange={(event) => setQuickTotal(state.setThptQuickTotal, event.target.value)} disabled={hasThptDetail} className={`w-full rounded-md border px-3 py-2 text-right font-bold focus:outline-none focus:ring-2 focus:ring-indigo-600 ${hasThptDetail ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-500' : 'border-slate-200 bg-white text-indigo-800'}`} placeholder="0.0" />
-                    </div>
                   </div>
                 )}
 

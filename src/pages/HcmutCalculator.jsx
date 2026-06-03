@@ -6,6 +6,7 @@ import { MobileScoreButton } from '../components/common/MobileScoreButton';
 import { Settings, BookOpen, PenTool, Award, Info, Calculator, CheckCircle2, X, Building2, ExternalLink } from 'lucide-react';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { DOI_TUONG_HCMUT, INTL_CERT_TYPES, HCMUT_CCQT_TABLE } from '../constants/hcmut';
+import { clampScore } from '../utils/input';
 
 const ENGLISH_SCORE_MAX = {
   IELTS: 9,
@@ -17,14 +18,6 @@ const INTL_CERT_MAX = {
   SAT: 1600,
   ACT: 36,
   IB: 45,
-};
-
-const clampScore = (value, max) => {
-  if (value === '') return '';
-  if (value.toString().trim().startsWith('-')) return '0';
-  const number = parseFloat(value);
-  if (Number.isNaN(number)) return value;
-  return Math.min(Math.max(number, 0), max).toString();
 };
 
 export const HcmutCalculator = () => {
@@ -123,9 +116,6 @@ export const HcmutCalculator = () => {
                       <label className="block text-xs font-medium text-blue-800 mb-1">Tư duy khoa học</label>
                       <input type="number" min="0" max="300" value={state.dgnlKh} onChange={e => state.setDgnlKh(clampScore(e.target.value, 300))} disabled={hasDgnlQuickTotal} className={`w-full px-3 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-800 ${hasDgnlQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`} placeholder="VD: 300" />
                     </div>
-                  </div>
-                  <div className="hidden">
-                    Tổng điểm: {(parseFloat(state.dgnlTv)||0) + (parseFloat(state.dgnlTa)||0) + ((parseFloat(state.dgnlToan)||0)*2) + (parseFloat(state.dgnlKh)||0)} / 1500
                   </div>
                   <div className="mt-4 rounded-xl border border-blue-100 bg-white/70 p-4">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">

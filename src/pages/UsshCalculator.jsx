@@ -5,14 +5,7 @@ import { QuickScoreInput } from '../components/common/QuickScoreInput';
 import { MobileScoreButton } from '../components/common/MobileScoreButton';
 import { Settings, BookOpen, PenTool, Award, Calculator, X, Globe, ExternalLink } from 'lucide-react';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
-
-const clampScore = (value, max) => {
-  if (value === '') return '';
-  if (value.toString().trim().startsWith('-')) return '0';
-  const number = parseFloat(value);
-  if (Number.isNaN(number)) return value;
-  return Math.min(Math.max(number, 0), max).toString();
-};
+import { clampScore } from '../utils/input';
 
 export const UsshCalculator = () => {
   const { state, results } = useUsshCalculator();
@@ -97,10 +90,6 @@ export const UsshCalculator = () => {
                   ))}
                 </tbody>
               </table>
-              <div className="hidden">
-                <label className="mb-2 block text-sm font-semibold text-slate-700">Nhập nhanh tổng học bạ</label>
-                <input type="number" min="0" max="30" step="0.1" value={hasHocBaDetail ? ((results.hb100 / 100) * 30).toFixed(2) : state.hocBaQuickTotal} onChange={(event) => setQuickTotal(state.setHocBaQuickTotal, event.target.value)} disabled={hasHocBaDetail} className={`w-full rounded-md border px-3 py-2 text-right font-bold focus:outline-none focus:ring-2 focus:ring-emerald-600 ${hasHocBaDetail ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-500' : 'border-slate-200 bg-white text-emerald-800'}`} placeholder="0.0" />
-              </div>
               <QuickScoreInput
                 title="Nhập nhanh tổng học bạ"
                 value={hasHocBaDetail ? ((results.hb100 / 100) * 30).toFixed(2) : state.hocBaQuickTotal}
@@ -163,10 +152,6 @@ export const UsshCalculator = () => {
                       />
                     </div>
                   ))}
-                </div>
-                <div className="hidden">
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">Nhập nhanh tổng THPT</label>
-                  <input type="number" min="0" max="30" step="0.1" value={hasThptDetail ? ((results.thpt100 / 100) * 30).toFixed(2) : state.thptQuickTotal} onChange={(event) => setQuickTotal(state.setThptQuickTotal, event.target.value)} disabled={hasThptDetail} className={`w-full rounded-md border px-3 py-2 text-right font-bold focus:outline-none focus:ring-2 focus:ring-emerald-600 ${hasThptDetail ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-500' : 'border-slate-200 bg-white text-emerald-800'}`} placeholder="0.0" />
                 </div>
                 <QuickScoreInput
                   title="Nhập nhanh tổng THPT"

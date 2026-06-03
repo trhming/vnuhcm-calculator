@@ -6,12 +6,7 @@ import { MobileScoreButton } from '../components/common/MobileScoreButton';
 import { Settings, BookOpen, PenTool, Award, Info, Calculator, AlertTriangle, CheckCircle2, X, GraduationCap, ExternalLink } from 'lucide-react';
 import { NGOAI_NGU_CONVERSION } from '../constants/hcmus';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
-
-const clampWeight = (value) => {
-  const number = parseFloat(value);
-  if (Number.isNaN(number)) return 0.7;
-  return Math.min(Math.max(number, 0.7), 0.9);
-};
+import { clampDecimal, clampScore } from '../utils/input';
 
 const ENGLISH_SCORE_MAX = Object.fromEntries(
   Object.entries(NGOAI_NGU_CONVERSION).map(([type, rows]) => [
@@ -19,14 +14,6 @@ const ENGLISH_SCORE_MAX = Object.fromEntries(
     Math.max(...rows.map((row) => row.max)),
   ])
 );
-
-const clampScore = (value, max) => {
-  if (value === '') return '';
-  if (value.toString().trim().startsWith('-')) return '0';
-  const number = parseFloat(value);
-  if (Number.isNaN(number)) return value;
-  return Math.min(Math.max(number, 0), max).toString();
-};
 
 export const HcmusCalculator = () => {
   const { state, results } = useHcmusCalculator();
@@ -98,7 +85,7 @@ export const HcmusCalculator = () => {
                           max="0.9"
                           step="0.01"
                           value={state.w1.toFixed(2)}
-                          onChange={(e) => state.setW1(clampWeight(e.target.value))}
+                          onChange={(e) => state.setW1(clampDecimal(e.target.value, 0.7, 0.9, 0.7))}
                           className="w-16 rounded-md border border-blue-200 px-2 py-1 text-right text-sm font-bold text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
@@ -131,7 +118,7 @@ export const HcmusCalculator = () => {
                           max="0.9"
                           step="0.01"
                           value={state.w3.toFixed(2)}
-                          onChange={(e) => state.setW3(clampWeight(e.target.value))}
+                          onChange={(e) => state.setW3(clampDecimal(e.target.value, 0.7, 0.9, 0.7))}
                           className="w-16 rounded-md border border-blue-200 px-2 py-1 text-right text-sm font-bold text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
@@ -337,10 +324,6 @@ export const HcmusCalculator = () => {
                       </div>
                     )}
                   </div>
-                </div>
-                <div className="hidden p-3 bg-blue-50 rounded-lg text-sm justify-between items-center border border-blue-100">
-                  <span className="text-blue-800 font-medium">Tổng 3 môn:</span>
-                  <span className="font-bold text-blue-900 text-lg">{results.tongTHPT.toFixed(2)}</span>
                 </div>
               </div>
 

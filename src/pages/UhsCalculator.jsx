@@ -16,24 +16,11 @@ import { MobileScoreButton } from '../components/common/MobileScoreButton';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { UHS_LANG_MAX, UHS_LANG_TYPES } from '../constants/uhs';
 import { useUhsCalculator } from '../hooks/useUhsCalculator';
-
-const clampInput = (value, max) => {
-  if (value === '') return '';
-  if (value.toString().trim().startsWith('-')) return '0';
-  const number = parseFloat(value);
-  if (Number.isNaN(number)) return value;
-  return Math.min(Math.max(number, 0), max).toString();
-};
+import { clampNumber, clampScore } from '../utils/input';
 
 const UHS_TOEIC_MAX = {
   lr: 990,
   sw: 400,
-};
-
-const clampNumber = (value, min, max) => {
-  const number = parseInt(value, 10);
-  if (Number.isNaN(number)) return min;
-  return Math.min(Math.max(number, min), max);
 };
 
 export const UhsCalculator = () => {
@@ -46,7 +33,7 @@ export const UhsCalculator = () => {
 
   const updateArrayValue = (values, setter, index, value, max) => {
     const nextValues = [...values];
-    nextValues[index] = clampInput(value, max);
+    nextValues[index] = clampScore(value, max);
     setter(nextValues);
   };
 
@@ -54,7 +41,7 @@ export const UhsCalculator = () => {
   const hasThptQuickTotal = state.thptQuickTotal !== '';
   const hasHocBaDetail = state.hocBa.some((value) => value !== '');
   const hasHocBaQuickTotal = state.hocBaQuickTotal !== '';
-  const setQuickTotal = (setter, value) => setter(clampInput(value, 30));
+  const setQuickTotal = (setter, value) => setter(clampScore(value, 30));
 
   const updateWeight = (key, value) => {
     if (key === 'a') state.setA(clampNumber(value, 40, 100));
@@ -264,10 +251,6 @@ export const UhsCalculator = () => {
                   </tbody>
                 </table>
               </div>
-              <div className="hidden">
-                <label className="mb-2 block text-sm font-semibold text-slate-700">Nhập nhanh tổng học bạ</label>
-                <input type="number" min="0" max="30" step="0.1" value={hasHocBaDetail ? results.hocBaTotal.toFixed(1) : state.hocBaQuickTotal} onChange={(event) => setQuickTotal(state.setHocBaQuickTotal, event.target.value)} disabled={hasHocBaDetail} className={`w-full rounded-md border px-3 py-2 text-right font-bold focus:outline-none focus:ring-2 focus:ring-blue-700 ${hasHocBaDetail ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-500' : 'border-slate-200 bg-white text-blue-800'}`} placeholder="0.0" />
-              </div>
               <QuickScoreInput
                 title="Nhập nhanh tổng học bạ"
                 value={hasHocBaDetail ? results.hocBaTotal.toFixed(2) : state.hocBaQuickTotal}
@@ -288,18 +271,13 @@ export const UhsCalculator = () => {
                   min="0"
                   max="1200"
                   value={state.dgnl}
-                  onChange={(event) => state.setDgnl(clampInput(event.target.value, 1200))}
+                  onChange={(event) => state.setDgnl(clampScore(event.target.value, 1200))}
                   className="w-full rounded-md border border-slate-200 px-3 py-2 text-lg font-medium focus:outline-none focus:ring-2 focus:ring-blue-700"
                   placeholder="VD: 850"
                 />
               </div>
 
               <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                <div className="hidden">
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">Nhập nhanh tổng THPT</label>
-                  <input type="number" min="0" max="30" step="0.1" value={hasThptDetail ? results.thptTotal.toFixed(1) : state.thptQuickTotal} onChange={(event) => setQuickTotal(state.setThptQuickTotal, event.target.value)} disabled={hasThptDetail} className={`w-full rounded-md border px-3 py-2 text-right font-bold focus:outline-none focus:ring-2 focus:ring-blue-700 ${hasThptDetail ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-500' : 'border-slate-200 bg-white text-blue-800'}`} placeholder="0.0" />
-                </div>
-
                 <div>
                   <h4 className="mb-3 font-semibold text-slate-800">Điểm THPT 3 môn</h4>
                   <div className="space-y-3">
@@ -364,7 +342,7 @@ export const UhsCalculator = () => {
                     min="0"
                     max={state.languageType === 'TOEIC' ? UHS_TOEIC_MAX.lr : UHS_LANG_MAX[state.languageType]}
                     value={state.languageScore}
-                    onChange={(event) => state.setLanguageScore(clampInput(event.target.value, state.languageType === 'TOEIC' ? UHS_TOEIC_MAX.lr : UHS_LANG_MAX[state.languageType]))}
+                    onChange={(event) => state.setLanguageScore(clampScore(event.target.value, state.languageType === 'TOEIC' ? UHS_TOEIC_MAX.lr : UHS_LANG_MAX[state.languageType]))}
                     className="rounded-md border border-blue-200 px-3 py-2 focus:ring-2 focus:ring-blue-700"
                     placeholder={state.languageType === 'TOEIC' ? 'L&R' : 'Điểm chứng chỉ'}
                   />
@@ -374,7 +352,7 @@ export const UhsCalculator = () => {
                       min="0"
                       max={UHS_TOEIC_MAX.sw}
                       value={state.languageScore2}
-                      onChange={(event) => state.setLanguageScore2(clampInput(event.target.value, UHS_TOEIC_MAX.sw))}
+                      onChange={(event) => state.setLanguageScore2(clampScore(event.target.value, UHS_TOEIC_MAX.sw))}
                       className="rounded-md border border-blue-200 px-3 py-2 focus:ring-2 focus:ring-blue-700"
                       placeholder="S&W"
                     />
@@ -407,7 +385,7 @@ export const UhsCalculator = () => {
                   min="0"
                   max="1600"
                   value={state.satScore}
-                  onChange={(event) => state.setSatScore(clampInput(event.target.value, 1600))}
+                  onChange={(event) => state.setSatScore(clampScore(event.target.value, 1600))}
                   className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700"
                   placeholder="Điểm SAT"
                 />
@@ -439,7 +417,7 @@ export const UhsCalculator = () => {
                     max="10"
                     step="0.1"
                     value={state.hsgAverage}
-                    onChange={(event) => state.setHsgAverage(clampInput(event.target.value, 10))}
+                    onChange={(event) => state.setHsgAverage(clampScore(event.target.value, 10))}
                     className="mt-3 w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700"
                     placeholder="Trung bình cộng 3 năm THPT"
                   />

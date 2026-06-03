@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import {
   Award,
+  BookOpen,
   Calculator,
   CheckCircle2,
   ExternalLink,
   HeartPulse,
   Info,
   PenTool,
+  Settings,
   SlidersHorizontal,
   X,
 } from 'lucide-react';
@@ -263,9 +265,44 @@ export const UhsCalculator = () => {
           </CardSection>
 
           <CardSection title="3. Điểm thi" icon={PenTool}>
-            <div className="space-y-6">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               <div>
-                <h4 className="mb-3 font-semibold text-slate-800">Đánh giá năng lực</h4>
+                <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-blue-900">
+                  <BookOpen className="h-4 w-4 text-blue-700" /> Kỳ thi tốt nghiệp THPT 2026
+                </label>
+                <div className="space-y-3">
+                  {subjects.map((subject, index) => (
+                    <div key={`thpt-${subject}`} className="flex items-center gap-3">
+                      <label className="w-16 text-sm text-slate-600">{subject}</label>
+                      <input
+                        type="number"
+                        min="0"
+                        max="10"
+                        step="0.1"
+                        value={state.thpt[index]}
+                        onChange={(event) => updateArrayValue(state.thpt, state.setThpt, index, event.target.value, 10)}
+                        disabled={hasThptQuickTotal}
+                        className={`w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700 ${hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`}
+                        placeholder="0.00"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <QuickScoreInput
+                  className="mt-4"
+                  title="Nhập nhanh tổng THPT"
+                  value={hasThptDetail ? results.thptTotal.toFixed(2) : state.thptQuickTotal}
+                  onChange={(event) => setQuickTotal(state.setThptQuickTotal, event.target.value)}
+                  disabled={hasThptDetail}
+                  step="0.01"
+                  placeholder="0.00"
+                />
+              </div>
+
+              <div>
+                <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-blue-900">
+                  <Settings className="h-4 w-4 text-blue-700" /> Kỳ thi ĐGNL 2026
+                </label>
                 <input
                   type="number"
                   min="0"
@@ -273,40 +310,8 @@ export const UhsCalculator = () => {
                   value={state.dgnl}
                   onChange={(event) => state.setDgnl(clampScore(event.target.value, 1200))}
                   className="w-full rounded-md border border-slate-200 px-3 py-2 text-lg font-medium focus:outline-none focus:ring-2 focus:ring-blue-700"
-                  placeholder="VD: 850"
+                  placeholder="850"
                 />
-              </div>
-
-              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                <div>
-                  <h4 className="mb-3 font-semibold text-slate-800">Điểm THPT 3 môn</h4>
-                  <div className="space-y-3">
-                    {subjects.map((subject, index) => (
-                      <div key={`thpt-${subject}`} className="flex items-center gap-3">
-                        <label className="w-16 text-sm text-slate-600">{subject}</label>
-                        <input
-                          type="number"
-                          min="0"
-                          max="10"
-                          step="0.1"
-                          value={state.thpt[index]}
-                          onChange={(event) => updateArrayValue(state.thpt, state.setThpt, index, event.target.value, 10)}
-                          disabled={hasThptQuickTotal}
-                          className={`w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-700 ${hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`}
-                          placeholder="0.0"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                  <QuickScoreInput
-                    title="Nhập nhanh tổng THPT"
-                    value={hasThptDetail ? results.thptTotal.toFixed(2) : state.thptQuickTotal}
-                    onChange={(event) => setQuickTotal(state.setThptQuickTotal, event.target.value)}
-                    disabled={hasThptDetail}
-                    step="0.01"
-                    placeholder="0.00"
-                  />
-                </div>
               </div>
             </div>
           </CardSection>

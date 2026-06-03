@@ -104,37 +104,12 @@ export const UsshCalculator = () => {
 
           {/* Điểm Thi */}
           <CardSection title="2. Điểm Thi (ĐGNL & THPT)" icon={PenTool}>
-            <div className="space-y-6">
-              
-              {/* Điểm thi ĐGNL */}
-              <div>
-                <label className="block text-sm font-semibold text-emerald-900 mb-2 flex items-center gap-2">
-                  <Settings className="w-4 h-4 text-emerald-600" />
-                  Kỳ thi Đánh giá Năng lực
-                </label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Điểm thi ĐGNL (tối đa 1200)</label>
-                    <input
-                      type="number" min="0" max="1200"
-                      value={state.dgnl}
-                      onChange={(e) => {
-                         state.setDgnl(clampScore(e.target.value, 1200));
-                      }}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600 font-medium text-lg"
-                      placeholder="VD: 850"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div className="h-px w-full bg-slate-100"></div>
-
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               {/* Điểm Thi THPT */}
               <div>
                 <label className="block text-sm font-semibold text-emerald-900 mb-3 flex items-center gap-2">
                   <BookOpen className="w-4 h-4 text-emerald-600" />
-                  Kỳ thi Tốt nghiệp THPT
+                  Kỳ thi tốt nghiệp THPT 2026
                 </label>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {[0, 1, 2].map((idx) => (
@@ -148,7 +123,7 @@ export const UsshCalculator = () => {
                         onChange={(e) => handleThptChange(idx, e.target.value)}
                         disabled={hasThptQuickTotal}
                         className={`w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600 ${hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`}
-                        placeholder="Điểm thi..."
+                        placeholder="0.00"
                       />
                     </div>
                   ))}
@@ -165,6 +140,25 @@ export const UsshCalculator = () => {
                 />
               </div>
 
+              {/* Điểm thi ĐGNL */}
+              <div>
+                <label className="block text-sm font-semibold text-emerald-900 mb-2 flex items-center gap-2">
+                  <Settings className="w-4 h-4 text-emerald-600" />
+                  Kỳ thi ĐGNL 2026
+                </label>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Điểm thi ĐGNL (tối đa 1200)</label>
+                    <input
+                      type="number" min="0" max="1200"
+                      value={state.dgnl}
+                      onChange={(e) => {
+                         state.setDgnl(clampScore(e.target.value, 1200));
+                      }}
+                      className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600 font-medium text-lg"
+                      placeholder="850"
+                    />
+                </div>
+              </div>
             </div>
           </CardSection>
 

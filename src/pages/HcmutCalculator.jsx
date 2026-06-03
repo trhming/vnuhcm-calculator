@@ -272,7 +272,7 @@ export const HcmutCalculator = () => {
                       className={`w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-800 ${
                         hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''
                       }`}
-                       placeholder="Điểm thi..."
+                       placeholder="0.00"
                      />
                    </div>
                  ))}
@@ -290,7 +290,7 @@ export const HcmutCalculator = () => {
                            className={`w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-800 ${
                              hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : 'bg-white'
                            }`}
-                           placeholder="Điểm thi THPT..."
+                           placeholder="0.00"
                         />
                       </div>
                       

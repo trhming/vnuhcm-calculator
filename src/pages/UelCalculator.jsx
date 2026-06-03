@@ -193,33 +193,12 @@ export const UelCalculator = () => {
           {/* Điểm Thi */}
           {(showDgnl || showThpt) && (
             <CardSection title="2. Điểm Thi (ĐGNL & THPT)" icon={PenTool}>
-              <div className="space-y-6">
-                
-                {/* Điểm thi ĐGNL */}
-                {showDgnl && (
-                  <div>
-                    <label className="block text-sm font-semibold text-indigo-900 mb-2 flex items-center gap-2">
-                      <Settings className="w-4 h-4 text-indigo-600" /> Kỳ thi Đánh giá Năng lực
-                    </label>
-                    <input
-                      type="number" min="0" max="1200"
-                      value={state.dgnl}
-                      onChange={(e) => {
-                         state.setDgnl(clampScore(e.target.value, 1200));
-                      }}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-lg"
-                      placeholder="VD: 850"
-                    />
-                  </div>
-                )}
-
-                {showDgnl && showThpt && <div className="h-px w-full bg-slate-100"></div>}
-
+              <div className={`grid grid-cols-1 gap-6 ${showDgnl && showThpt ? 'lg:grid-cols-2' : ''}`}>
                 {/* Điểm Thi THPT */}
                 {showThpt && (
                   <div>
                     <label className="block text-sm font-semibold text-indigo-900 mb-3 flex items-center gap-2">
-                      <BookHeart className="w-4 h-4 text-indigo-600" /> Kỳ thi Tốt nghiệp THPT
+                      <BookHeart className="w-4 h-4 text-indigo-600" /> Kỳ thi tốt nghiệp THPT 2026
                     </label>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       {[0, 1, 2].map((idx) => (
@@ -231,7 +210,7 @@ export const UelCalculator = () => {
                             onChange={(e) => handleThptChange(idx, e.target.value)}
                             disabled={hasThptQuickTotal}
                             className={`w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600 ${hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`}
-                            placeholder="Điểm thi..."
+                            placeholder="0.00"
                           />
                         </div>
                       ))}
@@ -245,6 +224,24 @@ export const UelCalculator = () => {
                       placeholder="0.00"
                       tone="indigo"
                       className="mt-4"
+                    />
+                  </div>
+                )}
+
+                {/* Điểm thi ĐGNL */}
+                {showDgnl && (
+                  <div>
+                    <label className="block text-sm font-semibold text-indigo-900 mb-2 flex items-center gap-2">
+                      <Settings className="w-4 h-4 text-indigo-600" /> Kỳ thi ĐGNL 2026
+                    </label>
+                    <input
+                      type="number" min="0" max="1200"
+                      value={state.dgnl}
+                      onChange={(e) => {
+                         state.setDgnl(clampScore(e.target.value, 1200));
+                      }}
+                      className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-lg"
+                      placeholder="850"
                     />
                   </div>
                 )}

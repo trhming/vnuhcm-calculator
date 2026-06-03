@@ -2,6 +2,7 @@ import { useState } from 'react';
 import {
   AlertTriangle,
   Award,
+  BookOpen,
   Calculator,
   CheckCircle2,
   ExternalLink,
@@ -306,109 +307,114 @@ export const IuCalculator = () => {
             <CardSection title="4. Điểm thi" icon={PenTool}>
               <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 {needsThpt && (
-                  <div className="space-y-4">
-                    <h4 className="font-semibold text-slate-800">Kỳ thi THPT 2026</h4>
-                    {[0, 1].map((index) => (
-                      <div key={`thpt-${index}`} className="flex items-center gap-3">
-                        <label className="w-16 text-sm text-slate-600">Môn {index + 1}</label>
-                        <input
-                          type="number"
-                          min="0"
-                          max="10"
-                          step="0.1"
-                          value={state.thpt[index]}
-                          onChange={(event) => updateArrayValue(state.thpt, state.setThpt, index, event.target.value, 10)}
-                          disabled={hasThptQuickTotal}
-                          className={`w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 ${hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`}
-                          placeholder="0.0"
-                        />
-                      </div>
-                    ))}
-                    <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-                      <div className="flex items-center gap-3">
-                        <label className="w-16 text-sm font-medium text-slate-700">Môn 3</label>
-                        <input
-                          type="number"
-                          min="0"
-                          max="10"
-                          step="0.1"
-                          value={state.useEnglishCertificate ? results.englishConvertedScore : state.thpt[2]}
-                          onChange={(event) => updateArrayValue(state.thpt, state.setThpt, 2, event.target.value, 10)}
-                          disabled={state.useEnglishCertificate || hasThptQuickTotal}
-                          className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:bg-slate-100 disabled:text-slate-500"
-                          placeholder="0.0"
-                        />
-                      </div>
-                      <label className="mt-3 flex cursor-pointer items-center gap-2 pl-[4.75rem] text-sm text-slate-600">
-                        <input
-                          type="checkbox"
-                          checked={state.useEnglishCertificate}
-                          onChange={(event) => state.setUseEnglishCertificate(event.target.checked)}
-                          className="h-4 w-4 rounded text-red-600 focus:ring-red-500"
-                        />
-                        Dùng chứng chỉ ngoại ngữ quy đổi
-                      </label>
-                      <div className="mt-2 pl-[4.75rem]">
-                        <button
-                          type="button"
-                          onClick={() => setShowEnglishConversionTable(true)}
-                          className="text-xs font-medium text-blue-700 hover:text-blue-900 hover:underline"
-                        >
-                          Bảng quy đổi
-                        </button>
-                      </div>
-                      {state.useEnglishCertificate && (
-                        <div className="mt-3 grid grid-cols-1 gap-2 border-t border-slate-200 pt-3 sm:grid-cols-3">
-                          <select
-                            value={state.englishType}
-                            onChange={(event) => {
-                              state.setEnglishType(event.target.value);
-                              state.setEnglishScore('');
-                              state.setEnglishScore2('');
-                            }}
-                            className="rounded-md border border-slate-300 bg-white px-2 py-2 text-sm focus:ring-2 focus:ring-red-500"
-                          >
-                            {IU_ENGLISH_TYPES.map((type) => (
-                              <option key={type.id} value={type.id}>{type.name}</option>
-                            ))}
-                          </select>
+                  <div>
+                    <label className="mb-4 flex items-center gap-2 text-sm font-semibold text-red-900">
+                      <BookOpen className="w-4 h-4 text-red-600" /> Kỳ thi tốt nghiệp THPT 2026
+                    </label>
+                    <div className="space-y-3">
+                      {[0, 1].map((index) => (
+                        <div key={`thpt-${index}`} className="flex items-center gap-3">
+                          <label className="w-16 text-sm text-slate-600">Môn {index + 1}</label>
                           <input
                             type="number"
                             min="0"
-                            max={state.englishType === 'TOEIC' ? IU_ENGLISH_MAX.TOEIC_LR : IU_ENGLISH_MAX[state.englishType]}
+                            max="10"
                             step="0.1"
-                            value={state.englishScore}
-                            onChange={(event) => state.setEnglishScore(clampScore(event.target.value, state.englishType === 'TOEIC' ? IU_ENGLISH_MAX.TOEIC_LR : IU_ENGLISH_MAX[state.englishType]))}
-                            className="rounded-md border border-slate-300 px-2 py-2 text-sm focus:ring-2 focus:ring-red-500"
-                            placeholder={state.englishType === 'TOEIC' ? 'Nghe đọc' : 'Điểm CC'}
+                            value={state.thpt[index]}
+                            onChange={(event) => updateArrayValue(state.thpt, state.setThpt, index, event.target.value, 10)}
+                            disabled={hasThptQuickTotal}
+                            className={`w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 ${hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`}
+                            placeholder="0.00"
                           />
-                          {state.englishType === 'TOEIC' ? (
+                        </div>
+                      ))}
+                      <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                        <div className="flex items-center gap-3">
+                          <label className="w-16 text-sm font-medium text-slate-700">Môn 3</label>
+                          <input
+                            type="number"
+                            min="0"
+                            max="10"
+                            step="0.1"
+                            value={state.useEnglishCertificate ? results.englishConvertedScore : state.thpt[2]}
+                            onChange={(event) => updateArrayValue(state.thpt, state.setThpt, 2, event.target.value, 10)}
+                            disabled={state.useEnglishCertificate || hasThptQuickTotal}
+                            className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:bg-slate-100 disabled:text-slate-500"
+                            placeholder="0.00"
+                          />
+                        </div>
+                        <label className="mt-3 flex cursor-pointer items-center gap-2 pl-[4.75rem] text-sm text-slate-600">
+                          <input
+                            type="checkbox"
+                            checked={state.useEnglishCertificate}
+                            onChange={(event) => state.setUseEnglishCertificate(event.target.checked)}
+                            className="h-4 w-4 rounded text-red-600 focus:ring-red-500"
+                          />
+                          Dùng chứng chỉ ngoại ngữ quy đổi
+                        </label>
+                        <div className="mt-2 pl-[4.75rem]">
+                          <button
+                            type="button"
+                            onClick={() => setShowEnglishConversionTable(true)}
+                            className="text-xs font-medium text-blue-700 hover:text-blue-900 hover:underline"
+                          >
+                            Bảng quy đổi
+                          </button>
+                        </div>
+                        {state.useEnglishCertificate && (
+                          <div className="mt-3 grid grid-cols-1 gap-2 border-t border-slate-200 pt-3 sm:grid-cols-3">
+                            <select
+                              value={state.englishType}
+                              onChange={(event) => {
+                                state.setEnglishType(event.target.value);
+                                state.setEnglishScore('');
+                                state.setEnglishScore2('');
+                              }}
+                              className="rounded-md border border-slate-300 bg-white px-2 py-2 text-sm focus:ring-2 focus:ring-red-500"
+                            >
+                              {IU_ENGLISH_TYPES.map((type) => (
+                                <option key={type.id} value={type.id}>{type.name}</option>
+                              ))}
+                            </select>
                             <input
                               type="number"
                               min="0"
-                              max={IU_ENGLISH_MAX.TOEIC_SW}
+                              max={state.englishType === 'TOEIC' ? IU_ENGLISH_MAX.TOEIC_LR : IU_ENGLISH_MAX[state.englishType]}
                               step="0.1"
-                              value={state.englishScore2}
-                              onChange={(event) => state.setEnglishScore2(clampScore(event.target.value, IU_ENGLISH_MAX.TOEIC_SW))}
+                              value={state.englishScore}
+                              onChange={(event) => state.setEnglishScore(clampScore(event.target.value, state.englishType === 'TOEIC' ? IU_ENGLISH_MAX.TOEIC_LR : IU_ENGLISH_MAX[state.englishType]))}
                               className="rounded-md border border-slate-300 px-2 py-2 text-sm focus:ring-2 focus:ring-red-500"
-                              placeholder="Nói viết"
+                              placeholder={state.englishType === 'TOEIC' ? 'Nghe đọc' : 'Điểm CC'}
                             />
-                          ) : (
-                            <div className="flex items-center gap-1 text-sm font-medium text-emerald-600">
-                              <CheckCircle2 className="h-4 w-4" />
-                              {results.englishConvertedScore.toFixed(1)} / 10
-                            </div>
-                          )}
-                          {state.englishType === 'TOEIC' && (
-                            <div className="flex items-center gap-1 text-sm font-medium text-emerald-600 sm:col-span-3">
-                              <CheckCircle2 className="h-4 w-4" />
-                              Quy đổi: {results.englishConvertedScore.toFixed(1)} / 10
-                            </div>
-                          )}
-                        </div>
-                      )}
+                            {state.englishType === 'TOEIC' ? (
+                              <input
+                                type="number"
+                                min="0"
+                                max={IU_ENGLISH_MAX.TOEIC_SW}
+                                step="0.1"
+                                value={state.englishScore2}
+                                onChange={(event) => state.setEnglishScore2(clampScore(event.target.value, IU_ENGLISH_MAX.TOEIC_SW))}
+                                className="rounded-md border border-slate-300 px-2 py-2 text-sm focus:ring-2 focus:ring-red-500"
+                                placeholder="Nói viết"
+                              />
+                            ) : (
+                              <div className="flex items-center gap-1 text-sm font-medium text-emerald-600">
+                                <CheckCircle2 className="h-4 w-4" />
+                                {results.englishConvertedScore.toFixed(1)} / 10
+                              </div>
+                            )}
+                            {state.englishType === 'TOEIC' && (
+                              <div className="flex items-center gap-1 text-sm font-medium text-emerald-600 sm:col-span-3">
+                                <CheckCircle2 className="h-4 w-4" />
+                                Quy đổi: {results.englishConvertedScore.toFixed(1)} / 10
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     </div>
                     <QuickScoreInput
+                      className="mt-4"
                       title="Nhập nhanh tổng THPT"
                       value={hasThptDetail ? results.thptTotal.toFixed(2) : state.thptQuickTotal}
                       onChange={(event) => setQuickTotal(state.setThptQuickTotal, event.target.value)}
@@ -421,8 +427,10 @@ export const IuCalculator = () => {
                 )}
 
                 {needsDgnl && (
-                  <div className="space-y-4">
-                    <h4 className="font-semibold text-slate-800">Kỳ thi ĐGNL 2026</h4>
+                  <div>
+                    <label className="mb-4 flex items-center gap-2 text-sm font-semibold text-red-900">
+                      <Settings className="w-4 h-4 text-red-600" /> Kỳ thi ĐGNL 2026
+                    </label>
                     <input
                       type="number"
                       min="0"
@@ -430,7 +438,7 @@ export const IuCalculator = () => {
                       value={state.dgnl}
                       onChange={(event) => state.setDgnl(clampScore(event.target.value, 1200))}
                       className="w-full rounded-md border border-slate-200 px-3 py-2 text-lg font-medium focus:outline-none focus:ring-2 focus:ring-red-500"
-                      placeholder="VD: 850"
+                      placeholder="850"
                     />
                   </div>
                 )}

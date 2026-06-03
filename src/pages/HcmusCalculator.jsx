@@ -234,7 +234,9 @@ export const HcmusCalculator = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* THPT */}
               <div className="flex flex-col gap-4">
-                <h4 className="font-semibold text-slate-800">Kỳ thi THPT 2026</h4>
+                <label className="block text-sm font-semibold text-blue-900 mb-3 flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-blue-700" /> Kỳ thi tốt nghiệp THPT 2026
+                </label>
                 <QuickScoreInput
                   title="Nhập nhanh tổng THPT"
                   value={hasThptDetail ? results.tongTHPT.toFixed(2) : state.thptQuickTotal}
@@ -254,7 +256,7 @@ export const HcmusCalculator = () => {
                         className={`flex-1 px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                           hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''
                         }`}
-                        placeholder="Điểm thi..."
+                        placeholder="0.00"
                       />
                     </div>
                   ))}
@@ -271,7 +273,7 @@ export const HcmusCalculator = () => {
                         className={`flex-1 px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                           hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : 'bg-white'
                         }`}
-                        placeholder="Điểm thi..."
+                        placeholder="0.00"
                       />
                     </div>
                     
@@ -329,7 +331,9 @@ export const HcmusCalculator = () => {
 
               {/* DGNL */}
               <div className="space-y-4">
-                <h4 className="font-semibold text-slate-800">Kỳ thi ĐGNL (V-ACT) 2026</h4>
+                <label className="block text-sm font-semibold text-blue-900 mb-3 flex items-center gap-2">
+                  <Settings className="w-4 h-4 text-blue-700" /> Kỳ thi ĐGNL 2026
+                </label>
                 <div className="space-y-3">
                   <div>
                     <label className="block text-sm text-slate-600 mb-1">Điểm thi ĐGNL</label>
@@ -341,7 +345,7 @@ export const HcmusCalculator = () => {
                          state.setDgnl(clampScore(e.target.value, maxVal));
                       }}
                       className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium text-lg"
-                      placeholder="VD: 850"
+                      placeholder="850"
                     />
                   </div>
                   <div>

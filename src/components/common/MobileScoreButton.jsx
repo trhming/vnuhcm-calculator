@@ -20,22 +20,40 @@ export const MobileScoreButton = ({
 
   useEffect(() => {
     const viewport = window.visualViewport;
-    if (!viewport) return undefined;
+    const isTextInputFocused = () => {
+      const activeElement = document.activeElement;
+      return activeElement?.matches?.('input, textarea, select, [contenteditable="true"]');
+    };
 
     const updateKeyboardInset = () => {
+      if (!viewport || !isTextInputFocused()) {
+        setKeyboardInset(0);
+        return;
+      }
+
       const inset = Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop);
       setKeyboardInset(Math.round(inset));
     };
 
+    const updateSoon = () => {
+      window.requestAnimationFrame(updateKeyboardInset);
+    };
+
     updateKeyboardInset();
-    viewport.addEventListener('resize', updateKeyboardInset);
-    viewport.addEventListener('scroll', updateKeyboardInset);
-    window.addEventListener('resize', updateKeyboardInset);
+    viewport?.addEventListener('resize', updateSoon);
+    viewport?.addEventListener('scroll', updateSoon);
+    window.addEventListener('resize', updateSoon);
+    window.addEventListener('scroll', updateSoon, { passive: true });
+    document.addEventListener('focusin', updateSoon);
+    document.addEventListener('focusout', updateSoon);
 
     return () => {
-      viewport.removeEventListener('resize', updateKeyboardInset);
-      viewport.removeEventListener('scroll', updateKeyboardInset);
-      window.removeEventListener('resize', updateKeyboardInset);
+      viewport?.removeEventListener('resize', updateSoon);
+      viewport?.removeEventListener('scroll', updateSoon);
+      window.removeEventListener('resize', updateSoon);
+      window.removeEventListener('scroll', updateSoon);
+      document.removeEventListener('focusin', updateSoon);
+      document.removeEventListener('focusout', updateSoon);
     };
   }, []);
 
@@ -43,7 +61,7 @@ export const MobileScoreButton = ({
     <button
       type="button"
       onClick={onClick}
-      className={`fixed right-4 z-40 inline-flex items-center rounded-full px-4 py-3 text-white shadow-2xl shadow-slate-900/20 transition-[background-color,bottom] focus:outline-none focus:ring-2 focus:ring-offset-2 lg:hidden ${colorClass}`}
+      className={`fixed right-4 z-40 inline-flex items-center rounded-full px-4 py-3 text-white shadow-2xl shadow-slate-900/20 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 lg:hidden ${colorClass}`}
       style={{ bottom: `calc(1rem + ${keyboardInset}px)` }}
       aria-label="Xem chi tiết điểm xét tuyển"
     >

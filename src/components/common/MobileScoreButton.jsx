@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+
 const toneClass = {
   blue: 'bg-blue-700 hover:bg-blue-800 focus:ring-blue-500',
   hcmut: 'bg-blue-800 hover:bg-blue-900 focus:ring-blue-700',
@@ -14,12 +16,35 @@ export const MobileScoreButton = ({
   onClick,
 }) => {
   const colorClass = toneClass[tone] || toneClass.blue;
+  const [keyboardInset, setKeyboardInset] = useState(0);
+
+  useEffect(() => {
+    const viewport = window.visualViewport;
+    if (!viewport) return undefined;
+
+    const updateKeyboardInset = () => {
+      const inset = Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop);
+      setKeyboardInset(Math.round(inset));
+    };
+
+    updateKeyboardInset();
+    viewport.addEventListener('resize', updateKeyboardInset);
+    viewport.addEventListener('scroll', updateKeyboardInset);
+    window.addEventListener('resize', updateKeyboardInset);
+
+    return () => {
+      viewport.removeEventListener('resize', updateKeyboardInset);
+      viewport.removeEventListener('scroll', updateKeyboardInset);
+      window.removeEventListener('resize', updateKeyboardInset);
+    };
+  }, []);
 
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`fixed bottom-4 right-4 z-40 inline-flex items-center rounded-full px-4 py-3 text-white shadow-2xl shadow-slate-900/20 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 lg:hidden ${colorClass}`}
+      className={`fixed right-4 z-40 inline-flex items-center rounded-full px-4 py-3 text-white shadow-2xl shadow-slate-900/20 transition-[background-color,bottom] focus:outline-none focus:ring-2 focus:ring-offset-2 lg:hidden ${colorClass}`}
+      style={{ bottom: `calc(1rem + ${keyboardInset}px)` }}
       aria-label="Xem chi tiết điểm xét tuyển"
     >
       <span className="text-xl font-extrabold leading-none">

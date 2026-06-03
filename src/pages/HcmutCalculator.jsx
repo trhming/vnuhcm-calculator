@@ -278,7 +278,7 @@ export const HcmutCalculator = () => {
                  ))}
                  
                  {/* Môn 3 */}
-                 <div className="col-span-1 md:col-span-3 border-t border-slate-100 pt-4 mt-2">
+                 <div className="col-span-1 md:col-span-3 md:mt-2 md:border-t md:border-slate-100 md:pt-4">
                     <label className="block text-sm font-medium text-slate-700 mb-3">Môn 3</label>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>

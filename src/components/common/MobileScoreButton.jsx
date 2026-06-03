@@ -22,20 +22,29 @@ export const MobileScoreButton = ({
     const viewport = window.visualViewport;
     if (!viewport) return undefined;
 
+    const isFormFieldFocused = () => {
+      const activeElement = document.activeElement;
+      return activeElement?.matches?.('input, textarea, select, [contenteditable="true"]');
+    };
+
     const updateKeyboardInset = () => {
       const inset = Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop);
-      setKeyboardInset(Math.round(inset));
+      setKeyboardInset(isFormFieldFocused() && inset > 80 ? Math.round(inset) : 0);
     };
 
     updateKeyboardInset();
     viewport.addEventListener('resize', updateKeyboardInset);
     viewport.addEventListener('scroll', updateKeyboardInset);
     window.addEventListener('resize', updateKeyboardInset);
+    document.addEventListener('focusin', updateKeyboardInset);
+    document.addEventListener('focusout', updateKeyboardInset);
 
     return () => {
       viewport.removeEventListener('resize', updateKeyboardInset);
       viewport.removeEventListener('scroll', updateKeyboardInset);
       window.removeEventListener('resize', updateKeyboardInset);
+      document.removeEventListener('focusin', updateKeyboardInset);
+      document.removeEventListener('focusout', updateKeyboardInset);
     };
   }, []);
 

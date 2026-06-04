@@ -392,7 +392,7 @@ export const HcmusCalculator = () => {
         <ResponsiveScorePanel
           isOpen={showMobileResultModal}
           onClose={() => setShowMobileResultModal(false)}
-          borderClassName="border-blue-100"
+          variant="card"
           backdropClassName="bg-slate-900/50"
         >
           <ScoreDetailCard

@@ -178,7 +178,8 @@ export const UsshCalculator = () => {
         <ResponsiveScorePanel
           isOpen={showMobileResultModal}
           onClose={() => setShowMobileResultModal(false)}
-          borderClassName="border-emerald-200"
+          variant="card"
+          backdropClassName="bg-slate-900/50"
         >
           <ScoreDetailCard
             theme="emerald"

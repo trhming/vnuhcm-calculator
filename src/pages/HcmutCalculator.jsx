@@ -388,7 +388,8 @@ export const HcmutCalculator = () => {
         <ResponsiveScorePanel
           isOpen={showMobileResultModal}
           onClose={() => setShowMobileResultModal(false)}
-          borderClassName="border-blue-200"
+          variant="card"
+          backdropClassName="bg-slate-900/50"
         >
           <ScoreDetailCard
             theme="hcmut"

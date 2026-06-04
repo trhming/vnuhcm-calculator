@@ -98,9 +98,9 @@ export const UEL_ENGLISH_CONVERSION = {
   ]
 };
 
-export const CCQT_TYPES = pickCertificates(['SAT', 'ACT', 'IB', 'A_LEVEL']);
+export const UEL_INTL_CERT_TYPES = pickCertificates(['SAT', 'ACT', 'IB', 'A_LEVEL']);
 
-export const UEL_CCQT_TABLE = [
+export const UEL_INTL_CERT_CONVERSION_TABLE = [
   { sat: 1600, act: 36, ib: 42, aLevel: '', point: 100 },
   { sat: 1584, act: '', ib: '', aLevel: '', point: 99 },
   { sat: 1568, act: 35, ib: 41, aLevel: '', point: 98 },

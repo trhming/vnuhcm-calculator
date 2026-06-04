@@ -3,6 +3,7 @@ import { useUsshCalculator } from '../hooks/useUsshCalculator';
 import { CardSection } from '../components/common/CardSection';
 import { TranscriptScoreTable } from '../components/common/TranscriptScoreTable';
 import { QuickScoreInput } from '../components/score/QuickScoreInput';
+import { ScoreInput } from '../components/score/ScoreInput';
 import { MobileScoreButton } from '../components/score/MobileScoreButton';
 import { ResponsiveScorePanel } from '../components/score/ResponsiveScorePanel';
 import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
@@ -92,12 +93,12 @@ export const UsshCalculator = () => {
                       <label className="block text-sm font-medium text-slate-700 mb-1">
                         Môn {idx + 1}
                       </label>
-                      <input
-                        type="number" min="0" max="10" step="0.1"
+                      <ScoreInput
+                        max={10}
                         value={state.thpt[idx]}
-                        onChange={(e) => handleThptChange(idx, e.target.value)}
+                        onValueChange={(value) => handleThptChange(idx, value)}
                         disabled={hasThptQuickTotal}
-                        className={`w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600 ${hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`}
+                        tone="emerald"
                         placeholder="0.00"
                       />
                     </div>
@@ -121,13 +122,12 @@ export const UsshCalculator = () => {
                   <Settings className="w-4 h-4 text-emerald-600" />
                   Kỳ thi ĐGNL 2026
                 </label>
-                <input
-                  type="number" min="0" max="1200"
+                <ScoreInput
+                  max={1200}
                   value={state.dgnl}
-                  onChange={(e) => {
-                     state.setDgnl(clampScore(e.target.value, 1200));
-                  }}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600 font-medium text-lg"
+                  onValueChange={state.setDgnl}
+                  tone="emerald"
+                  inputClassName="font-medium text-lg"
                   placeholder="850"
                 />
               </div>
@@ -161,11 +161,11 @@ export const UsshCalculator = () => {
                <div className="border-t border-slate-100 pt-5">
                  <div>
                    <label className="block text-sm font-medium text-slate-700 mb-1">Điểm cộng thành tích (Max 10)</label>
-                   <input 
-                     type="number" min="0" max="10" step="0.1" 
-                     value={state.thanhTich} 
-                     onChange={e => state.setThanhTich(clampScore(e.target.value, 10))} 
-                     className="w-full px-3 py-2 border border-slate-200 rounded-md focus:ring-2 focus:ring-emerald-600" 
+                   <ScoreInput
+                     max={10}
+                     value={state.thanhTich}
+                     onValueChange={state.setThanhTich}
+                     tone="emerald"
                      placeholder="VD: 5"
                    />
                  </div>

@@ -13,6 +13,7 @@ import {
 import { CardSection } from '../components/common/CardSection';
 import { TranscriptScoreTable } from '../components/common/TranscriptScoreTable';
 import { QuickScoreInput } from '../components/score/QuickScoreInput';
+import { ScoreInput } from '../components/score/ScoreInput';
 import { MobileScoreButton } from '../components/score/MobileScoreButton';
 import { ResponsiveScorePanel } from '../components/score/ResponsiveScorePanel';
 import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
@@ -20,6 +21,7 @@ import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { UHS_LANG_TYPES } from '../constants/uhs';
 import { useUhsCalculator } from '../hooks/useUhsCalculator';
 import { clampNumber, clampScore } from '../utils/input';
+import { findById } from '../utils/collection';
 
 export const UhsCalculator = () => {
   const { state, results } = useUhsCalculator();
@@ -28,7 +30,7 @@ export const UhsCalculator = () => {
   const subjects = ['Môn 1', 'Môn 2', 'Môn 3'];
   const computedC = 100 - state.a - state.b;
   const isWeightValid = computedC >= 0 && computedC <= 25 && state.a >= 40 && state.b <= 35;
-  const selectedLanguageType = UHS_LANG_TYPES.find((type) => type.id === state.languageType);
+  const selectedLanguageType = findById(UHS_LANG_TYPES, state.languageType);
 
   const updateArrayValue = (values, setter, index, value, max) => {
     const nextValues = [...values];
@@ -183,19 +185,16 @@ export const UhsCalculator = () => {
                 <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-teal-900">
                   <BookOpen className="h-4 w-4 text-teal-700" /> Kỳ thi tốt nghiệp THPT 2026
                 </label>
-                <div className="space-y-3">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                   {subjects.map((subject, index) => (
-                    <div key={`thpt-${subject}`} className="flex items-center gap-3">
-                      <label className="w-16 text-sm text-slate-600">{subject}</label>
-                      <input
-                        type="number"
-                        min="0"
-                        max="10"
-                        step="0.1"
+                    <div key={`thpt-${subject}`}>
+                      <label className="mb-1 block text-sm font-medium text-slate-700">{subject}</label>
+                      <ScoreInput
+                        max={10}
                         value={state.thpt[index]}
-                        onChange={(event) => updateArrayValue(state.thpt, state.setThpt, index, event.target.value, 10)}
+                        onValueChange={(value) => updateArrayValue(state.thpt, state.setThpt, index, value, 10)}
                         disabled={hasThptQuickTotal}
-                        className={`w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-700 ${hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`}
+                        tone="teal"
                         placeholder="0.00"
                       />
                     </div>
@@ -217,13 +216,12 @@ export const UhsCalculator = () => {
                 <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-teal-900">
                   <Settings className="h-4 w-4 text-teal-700" /> Kỳ thi ĐGNL 2026
                 </label>
-                <input
-                  type="number"
-                  min="0"
-                  max="1200"
+                <ScoreInput
+                  max={1200}
                   value={state.dgnl}
-                  onChange={(event) => state.setDgnl(clampScore(event.target.value, 1200))}
-                  className="w-full rounded-md border border-slate-200 px-3 py-2 text-lg font-medium focus:outline-none focus:ring-2 focus:ring-teal-700"
+                  onValueChange={state.setDgnl}
+                  tone="teal"
+                  inputClassName="text-lg font-medium"
                   placeholder="850"
                 />
               </div>
@@ -256,23 +254,21 @@ export const UhsCalculator = () => {
                       <option key={type.id} value={type.id}>{type.name}</option>
                     ))}
                   </select>
-                  <input
-                    type="number"
-                    min="0"
+                  <ScoreInput
                     max={state.languageType === 'TOEIC' ? selectedLanguageType?.maxLr : selectedLanguageType?.max}
                     value={state.languageScore}
-                    onChange={(event) => state.setLanguageScore(clampScore(event.target.value, state.languageType === 'TOEIC' ? selectedLanguageType?.maxLr : selectedLanguageType?.max))}
-                    className="rounded-md border border-teal-200 px-3 py-2 focus:ring-2 focus:ring-teal-700"
+                    onValueChange={state.setLanguageScore}
+                    tone="teal"
+                    inputClassName="border-teal-200"
                     placeholder={state.languageType === 'TOEIC' ? 'L&R' : 'Điểm chứng chỉ'}
                   />
                   {state.languageType === 'TOEIC' ? (
-                    <input
-                      type="number"
-                      min="0"
+                    <ScoreInput
                       max={selectedLanguageType?.maxSw}
                       value={state.languageScore2}
-                      onChange={(event) => state.setLanguageScore2(clampScore(event.target.value, selectedLanguageType?.maxSw))}
-                      className="rounded-md border border-teal-200 px-3 py-2 focus:ring-2 focus:ring-teal-700"
+                      onValueChange={state.setLanguageScore2}
+                      tone="teal"
+                      inputClassName="border-teal-200"
                       placeholder="S&W"
                     />
                   ) : (
@@ -299,13 +295,11 @@ export const UhsCalculator = () => {
                 <span className="text-sm font-medium text-slate-700">Có SAT từ 1280 trở lên</span>
               </label>
               {state.hasSat && (
-                <input
-                  type="number"
-                  min="0"
-                  max="1600"
+                <ScoreInput
+                  max={1600}
                   value={state.satScore}
-                  onChange={(event) => state.setSatScore(clampScore(event.target.value, 1600))}
-                    className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-700"
+                  onValueChange={state.setSatScore}
+                  tone="teal"
                   placeholder="Điểm SAT"
                 />
               )}
@@ -330,14 +324,12 @@ export const UhsCalculator = () => {
                   <span className="text-sm font-medium text-slate-700">Trung bình học lực 3 năm từ Tốt trở lên</span>
                 </label>
                 {(state.hasSpecialSchool || state.hasGoodAcademic) && (
-                  <input
-                    type="number"
-                    min="0"
-                    max="10"
-                    step="0.1"
+                  <ScoreInput
+                    max={10}
                     value={state.hsgAverage}
-                    onChange={(event) => state.setHsgAverage(clampScore(event.target.value, 10))}
-                    className="mt-3 w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-teal-700"
+                    onValueChange={state.setHsgAverage}
+                    tone="teal"
+                    className="mt-3"
                     placeholder="Trung bình cộng 3 năm THPT"
                   />
                 )}

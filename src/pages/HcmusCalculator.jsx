@@ -5,6 +5,7 @@ import { ConversionModal } from '../components/common/ConversionModal';
 import { ConversionTable, ConversionTableGrid } from '../components/common/ConversionTable';
 import { TranscriptScoreTable } from '../components/common/TranscriptScoreTable';
 import { QuickScoreInput } from '../components/score/QuickScoreInput';
+import { ScoreInput } from '../components/score/ScoreInput';
 import { MobileScoreButton } from '../components/score/MobileScoreButton';
 import { ResponsiveScorePanel } from '../components/score/ResponsiveScorePanel';
 import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
@@ -12,6 +13,7 @@ import { Settings, BookOpen, PenTool, Award, Info, AlertTriangle, CheckCircle2, 
 import { HCMUS_ENGLISH_TYPES, NGOAI_NGU_CONVERSION } from '../constants/hcmus';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { clampDecimal, clampScore } from '../utils/input';
+import { findById } from '../utils/collection';
 
 export const HcmusCalculator = () => {
   const { state, results } = useHcmusCalculator();
@@ -42,7 +44,7 @@ export const HcmusCalculator = () => {
   const hasHocBaQuickTotal = state.hocBaQuickTotal !== '';
   const hasThptDetail = state.thpt.some(val => val !== '') || (state.isNgoaiNgu && state.diemChungChi !== '');
   const hasThptQuickTotal = state.thptQuickTotal !== '';
-  const selectedEnglishType = HCMUS_ENGLISH_TYPES.find((type) => type.id === state.chungChiType);
+  const selectedEnglishType = findById(HCMUS_ENGLISH_TYPES, state.chungChiType);
   const isHocBaTouched = state.hocBa.some(val => val !== '');
 
   const getHocBaSubjectStatus = (subjectIndex) => {
@@ -231,14 +233,13 @@ export const HcmusCalculator = () => {
                   {[0, 1].map((idx) => (
                     <div key={`thpt-${idx}`} className="flex items-center gap-3">
                       <label className="text-sm text-slate-600 w-16">Môn {idx + 1}</label>
-                      <input
-                        type="number" min="0" max="10" step="0.1"
+                      <ScoreInput
+                        max={10}
                         value={state.thpt[idx]}
-                        onChange={(e) => handleThptChange(idx, e.target.value)}
+                        onValueChange={(value) => handleThptChange(idx, value)}
                         disabled={hasThptQuickTotal}
-                        className={`flex-1 px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                          hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''
-                        }`}
+                        tone="blue"
+                        widthClass="flex-1"
                         placeholder="0.00"
                       />
                     </div>
@@ -248,14 +249,14 @@ export const HcmusCalculator = () => {
                   <div className="p-3 border border-slate-200 rounded-xl bg-slate-50 space-y-3">
                     <div className="flex items-center gap-3">
                       <label className="text-sm font-medium text-slate-700 w-16">Môn 3</label>
-                      <input
-                        type="number" min="0" max="10" step="0.1"
+                      <ScoreInput
+                        max={10}
                         value={state.thpt[2]}
-                        onChange={(e) => handleThptChange(2, e.target.value)}
+                        onValueChange={(value) => handleThptChange(2, value)}
                         disabled={hasThptQuickTotal}
-                        className={`flex-1 px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                          hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : 'bg-white'
-                        }`}
+                        tone="blue"
+                        widthClass="flex-1"
+                        inputClassName={hasThptQuickTotal ? '' : 'bg-white'}
                         placeholder="0.00"
                       />
                     </div>
@@ -292,12 +293,14 @@ export const HcmusCalculator = () => {
                               <option key={type.id} value={type.id}>{type.name}</option>
                             ))}
                           </select>
-                          <input
-                            type="number" min="0" step="0.1"
+                          <ScoreInput
                             max={selectedEnglishType?.max}
                             value={state.diemChungChi}
-                            onChange={(e) => state.setDiemChungChi(clampScore(e.target.value, selectedEnglishType?.max))}
-                            className="w-full min-w-0 px-2 py-1.5 text-sm border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-blue-500"
+                            onValueChange={state.setDiemChungChi}
+                            tone="blue"
+                            widthClass="w-full min-w-0"
+                            className="py-1.5"
+                            inputClassName="border-slate-300 bg-white px-2 text-sm"
                             placeholder="Điểm CC..."
                           />
                         </div>
@@ -321,26 +324,22 @@ export const HcmusCalculator = () => {
                 <div className="space-y-3">
                   <div>
                     <label className="block text-sm text-slate-600 mb-1">Điểm thi ĐGNL</label>
-                    <input
-                      type="number" min="0" max={state.maxDgnl || 1200}
+                    <ScoreInput
+                      max={parseFloat(state.maxDgnl) || 1200}
                       value={state.dgnl}
-                      onChange={(e) => {
-                         const maxVal = parseFloat(state.maxDgnl) || 1200;
-                         state.setDgnl(clampScore(e.target.value, maxVal));
-                      }}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium text-lg"
+                      onValueChange={state.setDgnl}
+                      tone="blue"
+                      inputClassName="font-medium text-lg"
                       placeholder="850"
                     />
                   </div>
                   <div>
                     <label className="block text-sm text-slate-600 mb-1">Max ĐGNL dự kiến</label>
-                    <input
-                      type="number" min="0" max="1200"
+                    <ScoreInput
+                      max={1200}
                       value={state.maxDgnl}
-                      onChange={(e) => {
-                         state.setMaxDgnl(clampScore(e.target.value, 1200));
-                      }}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      onValueChange={state.setMaxDgnl}
+                      tone="blue"
                     />
                   </div>
                 </div>
@@ -377,11 +376,11 @@ export const HcmusCalculator = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">Điểm cộng (Max 1.5)</label>
-                <input
-                  type="number" min="0" max="1.5" step="0.1"
+                <ScoreInput
+                  max={1.5}
                   value={state.khuyenKhich}
-                  onChange={(e) => state.setKhuyenKhich(clampScore(e.target.value, 1.5))}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onValueChange={state.setKhuyenKhich}
+                  tone="blue"
                   placeholder="0.0"
                 />
               </div>

@@ -5,12 +5,19 @@ import { ConversionModal } from '../components/common/ConversionModal';
 import { ConversionTable } from '../components/common/ConversionTable';
 import { TranscriptScoreTable } from '../components/common/TranscriptScoreTable';
 import { QuickScoreInput } from '../components/score/QuickScoreInput';
+import { ScoreInput } from '../components/score/ScoreInput';
 import { MobileScoreButton } from '../components/score/MobileScoreButton';
 import { ResponsiveScorePanel } from '../components/score/ResponsiveScorePanel';
 import { Settings, BookOpen, PenTool, Award, BookHeart, GraduationCap, Info, ExternalLink } from 'lucide-react';
-import { KHU_VUC, DOI_TUONG } from '../constants/common';
-import { UEL_ENGLISH_BONUS, CCQT_TYPES, UEL_ENGLISH_CERT_TYPES, UEL_CCQT_TABLE } from '../constants/uel';
+import { DOI_TUONG, INTL_CERT_TABLE_COLUMNS, KHU_VUC } from '../constants/common';
+import {
+  UEL_ENGLISH_BONUS,
+  UEL_ENGLISH_CERT_TYPES,
+  UEL_INTL_CERT_CONVERSION_TABLE,
+  UEL_INTL_CERT_TYPES,
+} from '../constants/uel';
 import { clampScore } from '../utils/input';
+import { findById } from '../utils/collection';
 import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
 
 export const UelCalculator = () => {
@@ -41,8 +48,8 @@ export const UelCalculator = () => {
   const hasThptQuickTotal = state.thptQuickTotal !== '';
   const hasHocBaDetail = state.hocBa.some((value) => value !== '');
   const hasHocBaQuickTotal = state.hocBaQuickTotal !== '';
-  const selectedCcqtType = CCQT_TYPES.find((type) => type.id === state.loaiCCQT);
-  const selectedEnglishCertType = UEL_ENGLISH_CERT_TYPES.find((type) => type.id === state.loaiNgoaiNgu);
+  const selectedCcqtType = findById(UEL_INTL_CERT_TYPES, state.loaiCCQT);
+  const selectedEnglishCertType = findById(UEL_ENGLISH_CERT_TYPES, state.loaiNgoaiNgu);
   const learningWeights = (() => {
     if (state.dtXetTuyen === 'DT1') return { dgnl: 55, thpt: 35, hocBa: 10 };
     if (state.dtXetTuyen === 'DT2') return { dgnl: 0, thpt: isChinhQuy ? 90 : 50, hocBa: isChinhQuy ? 10 : 50 };
@@ -167,12 +174,12 @@ export const UelCalculator = () => {
                       {[0, 1, 2].map((idx) => (
                         <div key={`thpt-${idx}`}>
                           <label className="block text-sm font-medium text-slate-700 mb-1">Môn {idx + 1}</label>
-                          <input
-                            type="number" min="0" max="10" step="0.1"
+                          <ScoreInput
+                            max={10}
                             value={state.thpt[idx]}
-                            onChange={(e) => handleThptChange(idx, e.target.value)}
+                            onValueChange={(value) => handleThptChange(idx, value)}
                             disabled={hasThptQuickTotal}
-                            className={`w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600 ${hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`}
+                            tone="indigo"
                             placeholder="0.00"
                           />
                         </div>
@@ -197,13 +204,12 @@ export const UelCalculator = () => {
                     <label className="block text-sm font-semibold text-indigo-900 mb-2 flex items-center gap-2">
                       <Settings className="w-4 h-4 text-indigo-600" /> Kỳ thi ĐGNL 2026
                     </label>
-                    <input
-                      type="number" min="0" max="1200"
+                    <ScoreInput
+                      max={1200}
                       value={state.dgnl}
-                      onChange={(e) => {
-                         state.setDgnl(clampScore(e.target.value, 1200));
-                      }}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600 font-medium text-lg"
+                      onValueChange={state.setDgnl}
+                      tone="indigo"
+                      inputClassName="font-medium text-lg"
                       placeholder="850"
                     />
                   </div>
@@ -226,7 +232,7 @@ export const UelCalculator = () => {
                      }}
                      className="w-full px-3 py-2 border border-slate-200 rounded-md focus:ring-2 focus:ring-indigo-600"
                    >
-                     {CCQT_TYPES.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                     {UEL_INTL_CERT_TYPES.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                    </select>
                  </div>
                  <div>
@@ -246,13 +252,11 @@ export const UelCalculator = () => {
                            <option value="C">C</option>
                          </select>
                        ) : (
-                         <input 
-                           type="number"
-                           min="0"
-                            max={selectedCcqtType?.max}
-                            value={state.diemCCQT} 
-                            onChange={e => state.setDiemCCQT(clampScore(e.target.value, selectedCcqtType?.max))}
-                           className="w-full px-3 py-2 border border-slate-200 rounded-md focus:ring-2 focus:ring-indigo-600" 
+                         <ScoreInput
+                           max={selectedCcqtType?.max}
+                           value={state.diemCCQT}
+                           onValueChange={state.setDiemCCQT}
+                           tone="indigo"
                            placeholder="VD: 1450"
                          />
                        )}
@@ -333,21 +337,25 @@ export const UelCalculator = () => {
                            <>
                              <div className="flex-1">
                                <label className="block text-xs font-medium text-slate-500 mb-1">Nghe-Đọc</label>
-                               <input 
-                                 type="number" step="5" min="0" max={selectedEnglishCertType?.maxLr}
+                               <ScoreInput
+                                 step="5"
+                                 max={selectedEnglishCertType?.maxLr}
                                  value={state.diemNgoaiNgu}
-                                onChange={e => state.setDiemNgoaiNgu(clampScore(e.target.value, selectedEnglishCertType?.maxLr))}
-                                 className="w-full px-3 py-2 border border-slate-200 rounded-md focus:ring-2 focus:ring-indigo-600 text-sm"
+                                 onValueChange={state.setDiemNgoaiNgu}
+                                 tone="indigo"
+                                 inputClassName="text-sm"
                                  placeholder="VD: 785"
                                />
                              </div>
                              <div className="flex-1">
                                <label className="block text-xs font-medium text-slate-500 mb-1">Nói-Viết</label>
-                               <input 
-                                 type="number" step="5" min="0" max={selectedEnglishCertType?.maxSw}
+                               <ScoreInput
+                                 step="5"
+                                 max={selectedEnglishCertType?.maxSw}
                                  value={state.diemNgoaiNgu2}
-                                onChange={e => state.setDiemNgoaiNgu2(clampScore(e.target.value, selectedEnglishCertType?.maxSw))}
-                                 className="w-full px-3 py-2 border border-slate-200 rounded-md focus:ring-2 focus:ring-indigo-600 text-sm"
+                                 onValueChange={state.setDiemNgoaiNgu2}
+                                 tone="indigo"
+                                 inputClassName="text-sm"
                                  placeholder="VD: 310"
                                />
                              </div>
@@ -355,11 +363,12 @@ export const UelCalculator = () => {
                          ) : (
                            <div className="flex-1">
                              <label className="block text-xs font-medium text-slate-500 mb-1">Điểm số</label>
-                             <input 
-                              type="number" step="0.1" min="0" max={selectedEnglishCertType?.max}
+                             <ScoreInput
+                               max={selectedEnglishCertType?.max}
                                value={state.diemNgoaiNgu}
-                              onChange={e => state.setDiemNgoaiNgu(clampScore(e.target.value, selectedEnglishCertType?.max))}
-                               className="w-full px-3 py-2 border border-slate-200 rounded-md focus:ring-2 focus:ring-indigo-600 text-sm"
+                               onValueChange={state.setDiemNgoaiNgu}
+                               tone="indigo"
+                               inputClassName="text-sm"
                                placeholder="VD: 6.5"
                              />
                            </div>
@@ -492,14 +501,8 @@ export const UelCalculator = () => {
       >
         <div className="overflow-x-auto">
           <ConversionTable
-            columns={[
-              { key: 'sat', header: 'Điểm SAT' },
-              { key: 'act', header: 'Điểm ACT' },
-              { key: 'ib', header: 'Điểm IB' },
-              { key: 'aLevel', header: 'Hạng A-Level' },
-              { key: 'point', header: 'Quy đổi', value: true },
-            ]}
-            rows={UEL_CCQT_TABLE}
+            columns={INTL_CERT_TABLE_COLUMNS}
+            rows={UEL_INTL_CERT_CONVERSION_TABLE}
           />
         </div>
       </ConversionModal>

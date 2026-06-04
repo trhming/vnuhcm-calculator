@@ -48,3 +48,11 @@ export const pickCertificates = (ids) => (
     ...CERTIFICATE_DEFINITIONS[id],
   }))
 );
+
+export const INTL_CERT_TABLE_COLUMNS = [
+  { key: 'sat', header: 'Điểm SAT' },
+  { key: 'act', header: 'Điểm ACT' },
+  { key: 'ib', header: 'Điểm IB' },
+  { key: 'aLevel', header: 'Hạng A-Level' },
+  { key: 'point', header: 'Quy đổi', value: true },
+];

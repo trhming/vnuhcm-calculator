@@ -5,18 +5,20 @@ import { ConversionModal } from '../components/common/ConversionModal';
 import { ConversionTable, ConversionTableGrid } from '../components/common/ConversionTable';
 import { TranscriptScoreTable } from '../components/common/TranscriptScoreTable';
 import { QuickScoreInput } from '../components/score/QuickScoreInput';
+import { ScoreInput } from '../components/score/ScoreInput';
 import { MobileScoreButton } from '../components/score/MobileScoreButton';
 import { ResponsiveScorePanel } from '../components/score/ResponsiveScorePanel';
 import { Settings, BookOpen, PenTool, Award, Info, CheckCircle2, Building2, ExternalLink } from 'lucide-react';
-import { KHU_VUC, DOI_TUONG } from '../constants/common';
+import { DOI_TUONG, INTL_CERT_TABLE_COLUMNS, KHU_VUC } from '../constants/common';
 import {
   DOI_TUONG_HCMUT,
-  HCMUT_CCQT_TABLE,
   HCMUT_ENGLISH_TABLES,
   HCMUT_ENGLISH_TYPES,
-  INTL_CERT_TYPES,
+  HCMUT_INTL_CERT_CONVERSION_TABLE,
+  HCMUT_INTL_CERT_TYPES,
 } from '../constants/hcmut';
 import { clampScore } from '../utils/input';
+import { findById } from '../utils/collection';
 import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
 
 export const HcmutCalculator = () => {
@@ -56,8 +58,8 @@ export const HcmutCalculator = () => {
   const dgnlDetailTotal = (parseFloat(state.dgnlTv) || 0) + (parseFloat(state.dgnlTa) || 0) + ((parseFloat(state.dgnlToan) || 0) * 2) + (parseFloat(state.dgnlKh) || 0);
   const hasDgnlDetail = state.dgnlTv !== '' || state.dgnlTa !== '' || state.dgnlToan !== '' || state.dgnlKh !== '';
   const hasDgnlQuickTotal = state.dgnlQuickTotal !== '';
-  const selectedIntlCert = INTL_CERT_TYPES.find((type) => type.id === state.intlCertType);
-  const selectedEnglishType = HCMUT_ENGLISH_TYPES.find((type) => type.id === state.ngoaiNguType);
+  const selectedIntlCert = findById(HCMUT_INTL_CERT_TYPES, state.intlCertType);
+  const selectedEnglishType = findById(HCMUT_ENGLISH_TYPES, state.ngoaiNguType);
 
   return (
     <div className="max-w-7xl mx-auto animate-in fade-in duration-500 pb-28">
@@ -103,19 +105,19 @@ export const HcmutCalculator = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-medium text-blue-800 mb-1">Tiếng Việt</label>
-                      <input type="number" min="0" max="300" value={state.dgnlTv} onChange={e => state.setDgnlTv(clampScore(e.target.value, 300))} disabled={hasDgnlQuickTotal} className={`w-full px-3 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-800 ${hasDgnlQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`} placeholder="VD: 300" />
+                      <ScoreInput max={300} value={state.dgnlTv} onValueChange={state.setDgnlTv} disabled={hasDgnlQuickTotal} tone="hcmut" inputClassName="border-blue-200" placeholder="VD: 300" />
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-blue-800 mb-1">Tiếng Anh</label>
-                      <input type="number" min="0" max="300" value={state.dgnlTa} onChange={e => state.setDgnlTa(clampScore(e.target.value, 300))} disabled={hasDgnlQuickTotal} className={`w-full px-3 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-800 ${hasDgnlQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`} placeholder="VD: 300" />
+                      <ScoreInput max={300} value={state.dgnlTa} onValueChange={state.setDgnlTa} disabled={hasDgnlQuickTotal} tone="hcmut" inputClassName="border-blue-200" placeholder="VD: 300" />
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-blue-800 mb-1">Toán <span className="font-bold">(x2)</span></label>
-                      <input type="number" min="0" max="300" value={state.dgnlToan} onChange={e => state.setDgnlToan(clampScore(e.target.value, 300))} disabled={hasDgnlQuickTotal} className={`w-full px-3 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-800 ${hasDgnlQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`} placeholder="VD: 300" />
+                      <ScoreInput max={300} value={state.dgnlToan} onValueChange={state.setDgnlToan} disabled={hasDgnlQuickTotal} tone="hcmut" inputClassName="border-blue-200" placeholder="VD: 300" />
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-blue-800 mb-1">Tư duy khoa học</label>
-                      <input type="number" min="0" max="300" value={state.dgnlKh} onChange={e => state.setDgnlKh(clampScore(e.target.value, 300))} disabled={hasDgnlQuickTotal} className={`w-full px-3 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-800 ${hasDgnlQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`} placeholder="VD: 300" />
+                      <ScoreInput max={300} value={state.dgnlKh} onValueChange={state.setDgnlKh} disabled={hasDgnlQuickTotal} tone="hcmut" inputClassName="border-blue-200" placeholder="VD: 300" />
                     </div>
                   </div>
                   <QuickScoreInput
@@ -145,7 +147,7 @@ export const HcmutCalculator = () => {
                       }}
                       className="px-3 py-2 border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-blue-800"
                     >
-                      {INTL_CERT_TYPES.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                      {HCMUT_INTL_CERT_TYPES.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                     </select>
                     {state.intlCertType === 'ALEVEL' ? (
                        <select 
@@ -159,11 +161,12 @@ export const HcmutCalculator = () => {
                          <option value="C">C</option>
                        </select>
                     ) : (
-                       <input
-                        type="number" min="0" max={selectedIntlCert?.max}
+                       <ScoreInput
+                        max={selectedIntlCert?.max}
                         value={state.intlCertScore}
-                        onChange={e => state.setIntlCertScore(clampScore(e.target.value, selectedIntlCert?.max))}
-                        className="flex-1 px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-800 font-bold text-lg"
+                        onValueChange={state.setIntlCertScore}
+                        tone="hcmut"
+                        inputClassName="flex-1 border-slate-300 font-bold text-lg"
                         placeholder="Nhập điểm CC..."
                       />
                     )}
@@ -216,14 +219,12 @@ export const HcmutCalculator = () => {
                      <label className="block text-sm font-medium text-slate-700 mb-1">
                        Môn {idx + 1} {idx === 0 && <span className="text-blue-700 font-bold">(Toán x2)</span>}
                      </label>
-                     <input
-                       type="number" min="0" max="10" step="0.1"
+                     <ScoreInput
+                       max={10}
                        value={state.thpt[idx]}
-                       onChange={(e) => handleThptChange(idx, e.target.value)}
-                      disabled={hasThptQuickTotal}
-                      className={`w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-800 ${
-                        hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''
-                      }`}
+                       onValueChange={(value) => handleThptChange(idx, value)}
+                       disabled={hasThptQuickTotal}
+                       tone="hcmut"
                        placeholder="0.00"
                      />
                    </div>
@@ -234,14 +235,13 @@ export const HcmutCalculator = () => {
                     <label className="block text-sm font-medium text-slate-700 mb-3">Môn 3</label>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <input
-                           type="number" min="0" max="10" step="0.1"
+                        <ScoreInput
+                           max={10}
                            value={state.thpt[2]}
-                           onChange={(e) => handleThptChange(2, e.target.value)}
+                           onValueChange={(value) => handleThptChange(2, value)}
                            disabled={hasThptQuickTotal}
-                           className={`w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-800 ${
-                             hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : 'bg-white'
-                           }`}
+                           tone="hcmut"
+                           inputClassName={hasThptQuickTotal ? '' : 'bg-white'}
                            placeholder="0.00"
                         />
                       </div>
@@ -283,26 +283,32 @@ export const HcmutCalculator = () => {
                              
                              {state.ngoaiNguType === 'TOEIC' ? (
                                <div className="flex gap-2">
-                                  <input
-                                    type="number" min="0"
+                                  <ScoreInput
                                     max={selectedEnglishType?.maxLr}
-                                    value={state.toeicLr} onChange={e => state.setToeicLr(clampScore(e.target.value, selectedEnglishType?.maxLr))}
-                                    className="w-1/2 px-3 py-2 text-sm border border-slate-300 rounded-md" placeholder="Nghe Đọc..."
+                                    value={state.toeicLr}
+                                    onValueChange={state.setToeicLr}
+                                    tone="hcmut"
+                                    widthClass="w-1/2"
+                                    inputClassName="border-slate-300 text-sm"
+                                    placeholder="Nghe Đọc..."
                                   />
-                                  <input
-                                    type="number" min="0"
+                                  <ScoreInput
                                     max={selectedEnglishType?.maxSw}
-                                    value={state.toeicSw} onChange={e => state.setToeicSw(clampScore(e.target.value, selectedEnglishType?.maxSw))}
-                                    className="w-1/2 px-3 py-2 text-sm border border-slate-300 rounded-md" placeholder="Nói Viết..."
+                                    value={state.toeicSw}
+                                    onValueChange={state.setToeicSw}
+                                    tone="hcmut"
+                                    widthClass="w-1/2"
+                                    inputClassName="border-slate-300 text-sm"
+                                    placeholder="Nói Viết..."
                                   />
                                </div>
                              ) : (
-                               <input
-                                 type="number" min="0" step="0.1"
+                               <ScoreInput
                                  max={selectedEnglishType?.max}
                                  value={state.diemNgoaiNgu}
-                                 onChange={(e) => state.setDiemNgoaiNgu(clampScore(e.target.value, selectedEnglishType?.max))}
-                                 className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md"
+                                 onValueChange={state.setDiemNgoaiNgu}
+                                 tone="hcmut"
+                                 inputClassName="border-slate-300 text-sm"
                                  placeholder={`Điểm ${state.ngoaiNguType}...`}
                                />
                              )}
@@ -362,15 +368,15 @@ export const HcmutCalculator = () => {
                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                    <div>
                      <label className="block text-xs text-slate-500 mb-1">Điểm thưởng (Tối đa 10)</label>
-                     <input type="number" min="0" max="10" step="0.1" value={state.thuong} onChange={e => state.setThuong(clampScore(e.target.value, 10))} className="w-full px-3 py-2 border border-slate-200 rounded-md focus:ring-2 focus:ring-blue-800" />
+                     <ScoreInput max={10} value={state.thuong} onValueChange={state.setThuong} tone="hcmut" />
                    </div>
                    <div>
                      <label className="block text-xs text-slate-500 mb-1">Xét thưởng (Tối đa 5)</label>
-                     <input type="number" min="0" max="5" step="0.1" value={state.xetThuong} onChange={e => state.setXetThuong(clampScore(e.target.value, 5))} className="w-full px-3 py-2 border border-slate-200 rounded-md focus:ring-2 focus:ring-blue-800" />
+                     <ScoreInput max={5} value={state.xetThuong} onValueChange={state.setXetThuong} tone="hcmut" />
                    </div>
                    <div>
                      <label className="block text-xs text-slate-500 mb-1">Khuyến khích (Tối đa 5)</label>
-                     <input type="number" min="0" max="5" step="0.1" value={state.khuyenKhich} onChange={e => state.setKhuyenKhich(clampScore(e.target.value, 5))} className="w-full px-3 py-2 border border-slate-200 rounded-md focus:ring-2 focus:ring-blue-800" />
+                     <ScoreInput max={5} value={state.khuyenKhich} onValueChange={state.setKhuyenKhich} tone="hcmut" />
                    </div>
                  </div>
                </div>
@@ -441,14 +447,8 @@ export const HcmutCalculator = () => {
       >
         <div className="overflow-x-auto">
           <ConversionTable
-            columns={[
-              { key: 'sat', header: 'Điểm SAT' },
-              { key: 'act', header: 'Điểm ACT' },
-              { key: 'ib', header: 'Điểm IB' },
-              { key: 'aLevel', header: 'Hạng A-Level' },
-              { key: 'point', header: 'Quy đổi', value: true },
-            ]}
-            rows={HCMUT_CCQT_TABLE}
+            columns={INTL_CERT_TABLE_COLUMNS}
+            rows={HCMUT_INTL_CERT_CONVERSION_TABLE}
           />
         </div>
       </ConversionModal>
@@ -457,14 +457,3 @@ export const HcmutCalculator = () => {
   );
 };
 
-const Building2Icon = (props) => (
-  <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18" />
-    <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
-    <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" />
-    <path d="M10 6h4" />
-    <path d="M10 10h4" />
-    <path d="M10 14h4" />
-    <path d="M10 18h4" />
-  </svg>
-);

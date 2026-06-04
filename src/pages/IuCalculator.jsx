@@ -16,6 +16,7 @@ import { ConversionModal } from '../components/common/ConversionModal';
 import { ConversionTable } from '../components/common/ConversionTable';
 import { TranscriptScoreTable } from '../components/common/TranscriptScoreTable';
 import { QuickScoreInput } from '../components/score/QuickScoreInput';
+import { ScoreInput } from '../components/score/ScoreInput';
 import { MobileScoreButton } from '../components/score/MobileScoreButton';
 import { ResponsiveScorePanel } from '../components/score/ResponsiveScorePanel';
 import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
@@ -23,6 +24,7 @@ import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { IU_ENGLISH_TYPES, IU_GROUPS } from '../constants/iu';
 import { useIuCalculator } from '../hooks/useIuCalculator';
 import { clampNumber, clampScore } from '../utils/input';
+import { findById } from '../utils/collection';
 
 export const IuCalculator = () => {
   const { state, results } = useIuCalculator();
@@ -37,7 +39,7 @@ export const IuCalculator = () => {
   const hasThptQuickTotal = state.thptQuickTotal !== '';
   const hasHocBaDetail = state.hocBa.some((value) => value !== '');
   const hasHocBaQuickTotal = state.hocBaQuickTotal !== '';
-  const selectedEnglishType = IU_ENGLISH_TYPES.find((type) => type.id === state.englishType);
+  const selectedEnglishType = findById(IU_ENGLISH_TYPES, state.englishType);
   const setQuickTotal = (setter, value) => setter(clampScore(value, 30));
 
   const updateK1 = (value) => {
@@ -219,15 +221,12 @@ export const IuCalculator = () => {
                       {[0, 1].map((index) => (
                         <div key={`thpt-${index}`} className="flex items-center gap-3">
                           <label className="w-16 text-sm text-slate-600">Môn {index + 1}</label>
-                          <input
-                            type="number"
-                            min="0"
-                            max="10"
-                            step="0.1"
+                          <ScoreInput
+                            max={10}
                             value={state.thpt[index]}
-                            onChange={(event) => updateArrayValue(state.thpt, state.setThpt, index, event.target.value, 10)}
+                            onValueChange={(value) => updateArrayValue(state.thpt, state.setThpt, index, value, 10)}
                             disabled={hasThptQuickTotal}
-                            className={`w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 ${hasThptQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`}
+                            tone="red"
                             placeholder="0.00"
                           />
                         </div>
@@ -235,15 +234,13 @@ export const IuCalculator = () => {
                       <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
                         <div className="flex items-center gap-3">
                           <label className="w-16 text-sm font-medium text-slate-700">Môn 3</label>
-                          <input
-                            type="number"
-                            min="0"
-                            max="10"
-                            step="0.1"
+                          <ScoreInput
+                            max={10}
                             value={state.useEnglishCertificate ? results.englishConvertedScore : state.thpt[2]}
-                            onChange={(event) => updateArrayValue(state.thpt, state.setThpt, 2, event.target.value, 10)}
+                            onValueChange={(value) => updateArrayValue(state.thpt, state.setThpt, 2, value, 10)}
                             disabled={state.useEnglishCertificate || hasThptQuickTotal}
-                            className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:bg-slate-100 disabled:text-slate-500"
+                            tone="red"
+                            inputClassName="bg-white disabled:bg-slate-100 disabled:text-slate-500"
                             placeholder="0.00"
                           />
                         </div>
@@ -280,25 +277,21 @@ export const IuCalculator = () => {
                                 <option key={type.id} value={type.id}>{type.name}</option>
                               ))}
                             </select>
-                            <input
-                              type="number"
-                              min="0"
+                            <ScoreInput
                               max={state.englishType === 'TOEIC' ? selectedEnglishType?.maxLr : selectedEnglishType?.max}
-                              step="0.1"
                               value={state.englishScore}
-                              onChange={(event) => state.setEnglishScore(clampScore(event.target.value, state.englishType === 'TOEIC' ? selectedEnglishType?.maxLr : selectedEnglishType?.max))}
-                              className="rounded-md border border-slate-300 px-2 py-2 text-sm focus:ring-2 focus:ring-red-500"
+                              onValueChange={state.setEnglishScore}
+                              tone="red"
+                              inputClassName="border-slate-300 px-2 text-sm"
                               placeholder={state.englishType === 'TOEIC' ? 'Nghe đọc' : 'Điểm CC'}
                             />
                             {state.englishType === 'TOEIC' ? (
-                              <input
-                                type="number"
-                                min="0"
+                              <ScoreInput
                                 max={selectedEnglishType?.maxSw}
-                                step="0.1"
                                 value={state.englishScore2}
-                                onChange={(event) => state.setEnglishScore2(clampScore(event.target.value, selectedEnglishType?.maxSw))}
-                                className="rounded-md border border-slate-300 px-2 py-2 text-sm focus:ring-2 focus:ring-red-500"
+                                onValueChange={state.setEnglishScore2}
+                                tone="red"
+                                inputClassName="border-slate-300 px-2 text-sm"
                                 placeholder="Nói viết"
                               />
                             ) : (
@@ -335,13 +328,12 @@ export const IuCalculator = () => {
                     <label className="mb-4 flex items-center gap-2 text-sm font-semibold text-red-900">
                       <Settings className="w-4 h-4 text-red-600" /> Kỳ thi ĐGNL 2026
                     </label>
-                    <input
-                      type="number"
-                      min="0"
-                      max="1200"
+                    <ScoreInput
+                      max={1200}
                       value={state.dgnl}
-                      onChange={(event) => state.setDgnl(clampScore(event.target.value, 1200))}
-                      className="w-full rounded-md border border-slate-200 px-3 py-2 text-lg font-medium focus:outline-none focus:ring-2 focus:ring-red-500"
+                      onValueChange={state.setDgnl}
+                      tone="red"
+                      inputClassName="text-lg font-medium"
                       placeholder="850"
                     />
                   </div>
@@ -383,41 +375,33 @@ export const IuCalculator = () => {
               <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                 <div>
                   <label className="mb-2 block text-sm font-medium text-slate-700">Điểm thưởng (Max 10)</label>
-                  <input
-                    type="number"
-                    min="0"
-                    max="10"
-                    step="0.1"
+                  <ScoreInput
+                    max={10}
                     value={state.achievementBonus}
-                    onChange={(event) => state.setAchievementBonus(clampScore(event.target.value, 10))}
-                    className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                    onValueChange={state.setAchievementBonus}
+                    tone="red"
                     placeholder="0.0"
                   />
                 </div>
                 <div>
                   <label className="mb-2 block text-sm font-medium text-slate-700">Xét thưởng (Max 5)</label>
-                  <input
-                    type="number"
-                    min="0"
-                    max="5"
-                    step="0.1"
+                  <ScoreInput
+                    max={5}
                     value={state.awardBonus}
-                    onChange={(event) => state.setAwardBonus(clampScore(event.target.value, 5))}
-                    className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                    onValueChange={state.setAwardBonus}
+                    tone="red"
                     placeholder="0.0"
                   />
                 </div>
                 <div>
                   <label className="mb-2 block text-sm font-medium text-slate-700">Khuyến khích NN (Max 5)</label>
-                  <input
-                    type="number"
-                    min="0"
-                    max="5"
-                    step="0.1"
+                  <ScoreInput
+                    max={5}
                     value={state.englishBonus}
-                    onChange={(event) => state.setEnglishBonus(clampScore(event.target.value, 5))}
+                    onValueChange={state.setEnglishBonus}
                     disabled={state.useEnglishCertificate}
-                    className="w-full rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:bg-slate-100 disabled:text-slate-400"
+                    tone="red"
+                    inputClassName="disabled:bg-slate-100 disabled:text-slate-400"
                     placeholder="0.0"
                   />
                 </div>

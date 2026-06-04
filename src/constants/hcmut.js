@@ -6,7 +6,7 @@ export const DOI_TUONG_HCMUT = [
   { id: '2.4', name: 'ĐT 2.4: Có Chứng chỉ Quốc tế (SAT, ACT, IB, A-Level)' },
 ];
 
-export const INTL_CERT_TYPES = pickCertificates(['SAT', 'ACT', 'IB', 'ALEVEL']);
+export const HCMUT_INTL_CERT_TYPES = pickCertificates(['SAT', 'ACT', 'IB', 'ALEVEL']);
 
 export const HCMUT_ENGLISH_TYPES = pickCertificates(['IELTS', 'TOEFL', 'PTE', 'TOEIC']);
 
@@ -61,7 +61,7 @@ export const HCMUT_ENGLISH_TABLES = [
   },
 ];
 
-export const HCMUT_CCQT_TABLE = [
+export const HCMUT_INTL_CERT_CONVERSION_TABLE = [
   { sat: 1600, act: 36, ib: 45, aLevel: '', point: 100 },
   { sat: 1590, act: '', ib: '', aLevel: '', point: 99 },
   { sat: 1580, act: '', ib: '', aLevel: '', point: 98 },

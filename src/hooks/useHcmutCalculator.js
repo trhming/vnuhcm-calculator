@@ -87,7 +87,7 @@ export const useHcmutCalculator = () => {
     } else if (doiTuongUT === '2.2') {
       diemNangLuc = diemThptQuyDoi * 0.75;
     } else if (doiTuongUT === '2.4') {
-      const certScoreStr = intlCertType === 'ALEVEL' ? intlCertScore : (parseFloat(intlCertScore) || 0);
+      const certScoreStr = intlCertType === 'A_LEVEL' ? intlCertScore : (parseFloat(intlCertScore) || 0);
       diemNangLuc = convertIntlCert(intlCertType, certScoreStr);
     }
 

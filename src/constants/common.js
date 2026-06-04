@@ -38,7 +38,6 @@ export const CERTIFICATE_DEFINITIONS = {
   SAT: { name: 'SAT', min: 0, max: 1600 },
   ACT: { name: 'ACT', min: 0, max: 36 },
   IB: { name: 'IB', min: 0, max: 45 },
-  ALEVEL: { name: 'A-Level' },
   A_LEVEL: { name: 'A-Level' },
 };
 

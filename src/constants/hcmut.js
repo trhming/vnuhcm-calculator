@@ -6,7 +6,7 @@ export const DOI_TUONG_HCMUT = [
   { id: '2.4', name: 'ĐT 2.4: Có Chứng chỉ Quốc tế (SAT, ACT, IB, A-Level)' },
 ];
 
-export const HCMUT_INTL_CERT_TYPES = pickCertificates(['SAT', 'ACT', 'IB', 'ALEVEL']);
+export const HCMUT_INTL_CERT_TYPES = pickCertificates(['SAT', 'ACT', 'IB', 'A_LEVEL']);
 
 export const HCMUT_ENGLISH_TYPES = pickCertificates(['IELTS', 'TOEFL', 'PTE', 'TOEIC']);
 
@@ -149,7 +149,7 @@ export const convertIntlCert = (type, score) => {
     return map[score] || 0;
   }
 
-  if (type === 'ALEVEL') {
+  if (type === 'A_LEVEL') {
     const map = { 'A*': 95, A: 85, B: 75, C: 65 };
     return map[score] || 0;
   }

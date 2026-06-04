@@ -149,7 +149,7 @@ export const HcmutCalculator = () => {
                     >
                       {HCMUT_INTL_CERT_TYPES.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                     </select>
-                    {state.intlCertType === 'ALEVEL' ? (
+                    {state.intlCertType === 'A_LEVEL' ? (
                        <select 
                           value={state.intlCertScore} onChange={e => state.setIntlCertScore(e.target.value)}
                           className="flex-1 px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-800 font-bold text-lg"

@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { useHcmutCalculator } from '../hooks/useHcmutCalculator';
-import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 import { CardSection } from '../components/common/CardSection';
-import { QuickScoreInput } from '../components/common/QuickScoreInput';
-import { MobileScoreButton } from '../components/common/MobileScoreButton';
-import { Settings, BookOpen, PenTool, Award, Info, Calculator, CheckCircle2, X, Building2, ExternalLink } from 'lucide-react';
+import { QuickScoreInput } from '../components/score/QuickScoreInput';
+import { MobileScoreButton } from '../components/score/MobileScoreButton';
+import { ResponsiveScorePanel } from '../components/score/ResponsiveScorePanel';
+import { Settings, BookOpen, PenTool, Award, Info, CheckCircle2, X, Building2, ExternalLink } from 'lucide-react';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { DOI_TUONG_HCMUT, INTL_CERT_TYPES, HCMUT_CCQT_TABLE } from '../constants/hcmut';
 import { clampScore } from '../utils/input';
+import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
 
 const ENGLISH_SCORE_MAX = {
   IELTS: 9,
@@ -26,7 +27,6 @@ export const HcmutCalculator = () => {
   const [showMobileResultModal, setShowMobileResultModal] = useState(false);
   const [showConversionTable, setShowConversionTable] = useState(false);
   const [showIntlCertTable, setShowIntlCertTable] = useState(false);
-  useBodyScrollLock(showMobileResultModal);
   
   const handleHocBaChange = (index, val) => {
     const newHocBa = [...state.hocBa];
@@ -193,7 +193,7 @@ export const HcmutCalculator = () => {
           </CardSection>
 
           {/* Học bạ */}
-          <CardSection title="2. Điểm Học Bạ" icon={BookOpen}>
+          <CardSection title="2. Điểm học bạ" icon={BookOpen}>
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left border-collapse">
                 <thead className="bg-slate-50 text-slate-600">
@@ -258,7 +258,7 @@ export const HcmutCalculator = () => {
           </CardSection>
 
           {/* Điểm Thi THPT */}
-          <CardSection title="3. Điểm Thi THPT" icon={PenTool}>
+          <CardSection title="3. Điểm thi THPT" icon={PenTool}>
              <div className="space-y-4">
                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                  {[0, 1].map((idx) => (
@@ -430,96 +430,29 @@ export const HcmutCalculator = () => {
 
         </div>
 
-        {/* Right Column - Result */}
-        <div className={`
-          lg:block lg:w-96 lg:static
-          ${showMobileResultModal ? 'fixed inset-0 z-[60] bg-slate-900/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in' : 'hidden'}
-        `}>
-          <div className={`
-            w-full bg-white shadow-2xl relative flex flex-col overflow-hidden
-            ${showMobileResultModal ? 'rounded-t-3xl sm:rounded-2xl max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-full sm:zoom-in-95' : 'rounded-2xl border border-blue-200 sticky top-24'}
-          `}>
-            
-            {showMobileResultModal && (
-              <button onClick={() => setShowMobileResultModal(false)} className="absolute top-4 right-4 z-20 text-white/70 hover:text-white lg:hidden bg-black/20 rounded-full p-1.5">
-                <X className="w-5 h-5" />
-              </button>
-            )}
-
-            {/* Header */}
-            <div className="p-6 bg-gradient-to-br from-blue-800 to-slate-900 text-white relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-10">
-                <Calculator className="w-24 h-24" />
-              </div>
-              <h2 className="mb-1 text-lg font-medium text-blue-100">Điểm xét tuyển</h2>
-              <div className="text-5xl font-extrabold tracking-tight mb-2">
-                {results.total.toFixed(2)} <span className="text-xl font-normal text-blue-200">/ 100</span>
-              </div>
-            </div>
-
-            {/* Breakdown */}
-            <div className="p-6 space-y-6">
-               <div>
-                  <div className="mb-3 rounded-xl bg-blue-50 p-3 text-sm text-blue-900">
-                    <div className="font-semibold">
-                      ĐHL = ĐGNL x {(state.wNL * 100).toFixed(0)}% + THPT x {(state.wTHPT * 100).toFixed(0)}% + Học bạ x {(state.wHB * 100).toFixed(0)}%
-                    </div>
-                    <div className="mt-2 flex justify-between font-bold">
-                      <span>ĐHL</span>
-                      <span>{results.diemHL.toFixed(2)}</span>
-                    </div>
-                  </div>
-                  
-                  <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Điểm học lực</h3>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-600">ĐGNL chuẩn hóa</span>
-                      <span className="font-semibold">{results.diemNangLuc.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-600">THPT chuẩn hóa</span>
-                      <span className="font-semibold">{results.diemThptQuyDoi.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-slate-600">Học bạ chuẩn hóa</span>
-                      <span className="font-semibold">{results.diemHbQuyDoi.toFixed(2)}</span>
-                    </div>
-                  </div>
-               </div>
-
-               <div className="h-px w-full bg-slate-100"></div>
-
-               <div>
-                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Ưu tiên & Điểm cộng</h3>
-                  <div className="space-y-4 text-sm">
-                    {/* Điểm cộng */}
-                    <div className="space-y-1">
-                      <div className="flex justify-between items-center text-slate-600">
-                        <span>Điểm cộng (Gốc)</span>
-                        <span>+{results.tongCongGoc.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between items-center bg-amber-50 p-2 rounded text-amber-900 font-medium border border-amber-100">
-                        <span>Cộng thực nhận</span>
-                        <span className="font-bold text-amber-700">+{results.congThucNhan.toFixed(2)}</span>
-                      </div>
-                    </div>
-
-                    {/* Ưu tiên */}
-                    <div className="space-y-1">
-                      <div className="flex justify-between items-center text-slate-600">
-                        <span>Ưu tiên KV/ĐT (Gốc)</span>
-                        <span>+{results.uuTienQuyDoi.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between items-center bg-emerald-50 p-2 rounded text-emerald-900 font-medium border border-emerald-100">
-                        <span>Ưu tiên thực nhận</span>
-                        <span className="font-bold text-emerald-700">+{results.uuTienThucNhan.toFixed(2)}</span>
-                      </div>
-                    </div>
-                  </div>
-               </div>
-            </div>
-          </div>
-        </div>
+        <ResponsiveScorePanel
+          isOpen={showMobileResultModal}
+          onClose={() => setShowMobileResultModal(false)}
+          borderClassName="border-blue-200"
+        >
+          <ScoreDetailCard
+            theme="hcmut"
+            total={results.total}
+            formula={`ĐHL = ĐGNL x ${(state.wNL * 100).toFixed(0)}% + THPT x ${(state.wTHPT * 100).toFixed(0)}% + Học bạ x ${(state.wHB * 100).toFixed(0)}%`}
+            dhl={results.diemHL}
+            dgnlScore={results.diemNangLuc.toFixed(2)}
+            thptScore={results.diemThptQuyDoi.toFixed(2)}
+            hocBaScore={results.diemHbQuyDoi.toFixed(2)}
+            bonusRows={[
+              { label: 'Điểm cộng (Gốc)', value: `+${results.tongCongGoc.toFixed(2)}` },
+              { label: 'Cộng thực nhận', value: `+${results.congThucNhan.toFixed(2)}`, variant: 'bonusEffective' },
+            ]}
+            priorityRows={[
+              { label: 'Ưu tiên KV/ĐT (Gốc)', value: `+${results.uuTienQuyDoi.toFixed(2)}` },
+              { label: 'Ưu tiên thực nhận', value: `+${results.uuTienThucNhan.toFixed(2)}`, variant: 'priorityEffective' },
+            ]}
+          />
+        </ResponsiveScorePanel>
       </div>
 
       <MobileScoreButton

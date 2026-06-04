@@ -3,7 +3,6 @@ import {
   AlertTriangle,
   Award,
   BookOpen,
-  Calculator,
   CheckCircle2,
   ExternalLink,
   GraduationCap,
@@ -14,12 +13,13 @@ import {
   X,
 } from 'lucide-react';
 import { CardSection } from '../components/common/CardSection';
-import { QuickScoreInput } from '../components/common/QuickScoreInput';
-import { MobileScoreButton } from '../components/common/MobileScoreButton';
+import { QuickScoreInput } from '../components/score/QuickScoreInput';
+import { MobileScoreButton } from '../components/score/MobileScoreButton';
+import { ResponsiveScorePanel } from '../components/score/ResponsiveScorePanel';
+import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { IU_ENGLISH_TYPES, IU_GROUPS } from '../constants/iu';
 import { useIuCalculator } from '../hooks/useIuCalculator';
-import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 import { clampNumber, clampScore } from '../utils/input';
 
 const IU_ENGLISH_MAX = {
@@ -34,12 +34,10 @@ export const IuCalculator = () => {
   const { state, results } = useIuCalculator();
   const [showMobileResultModal, setShowMobileResultModal] = useState(false);
   const [showEnglishConversionTable, setShowEnglishConversionTable] = useState(false);
-  useBodyScrollLock(showMobileResultModal);
 
-  const isForeignGroup = state.group === 'G3_FOREIGN';
   const needsThpt = ['G1_DGNL', 'G1_NO_DGNL', 'G2_BOTH', 'G2_THPT'].includes(state.group);
   const needsDgnl = ['G1_DGNL', 'G2_BOTH', 'G2_DGNL'].includes(state.group);
-  const needsHocBa = ['G1_DGNL', 'G1_NO_DGNL', 'G3_FOREIGN'].includes(state.group);
+  const needsHocBa = ['G1_DGNL', 'G1_NO_DGNL'].includes(state.group);
   const isK3Valid = results.k3 >= 10 && results.k3 <= 20;
   const hasThptDetail = state.thpt.some((value) => value !== '') || state.useEnglishCertificate;
   const hasThptQuickTotal = state.thptQuickTotal !== '';
@@ -62,83 +60,24 @@ export const IuCalculator = () => {
   };
 
   const resultCard = (
-    <div className="w-full bg-white rounded-2xl border border-red-100 shadow-2xl overflow-hidden sticky top-24">
-      <div className="relative overflow-hidden bg-gradient-to-br from-red-700 to-slate-900 p-6 text-white">
-        <div className="absolute right-0 top-0 p-4 opacity-10">
-          <Calculator className="h-24 w-24" />
-        </div>
-        <h2 className="mb-1 text-lg font-medium text-red-100">Điểm xét tuyển</h2>
-        <div className="mb-2 text-5xl font-extrabold tracking-tight">
-          {results.total.toFixed(2)}
-          <span className="text-xl font-normal text-red-100"> / 100</span>
-        </div>
-        <p className="mt-2 text-sm text-red-100">Thang chuẩn 100 điểm</p>
-      </div>
-
-      <div className="space-y-5 p-6">
-        <div>
-          <div className="mb-3 rounded-xl bg-red-50 p-3 text-sm text-red-900">
-            <div className="font-semibold">
-              ĐHL = ĐGNL x {state.k2}% + THPT x {state.k1}% + Học bạ x {results.k3}%
-            </div>
-            {results.interpolation && <div className="mt-1 text-red-800/80">{results.interpolation}</div>}
-            <div className="mt-2 flex justify-between font-bold">
-              <span>ĐHL</span>
-              <span>{results.dhl.toFixed(2)}</span>
-            </div>
-          </div>
-          <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Điểm học lực</h3>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-slate-600">ĐGNL chuẩn hóa</span>
-              <span className="font-semibold text-slate-900">{results.dgnl100.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-600">THPT chuẩn hóa</span>
-              <span className="font-semibold text-slate-900">{results.thpt100.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-600">Học bạ chuẩn hóa</span>
-              <span className="font-semibold text-slate-900">{results.hocBa100.toFixed(2)}</span>
-            </div>
-            {isForeignGroup && (
-              <div className="flex justify-between">
-                <span className="text-slate-600">Phỏng vấn</span>
-                <span className="font-semibold text-slate-900">{results.interview100.toFixed(2)}</span>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <div className="h-px bg-slate-100" />
-
-        <div>
-          <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Ưu tiên & Điểm cộng</h3>
-          <div className="space-y-4 text-sm">
-            <div className="space-y-1">
-              <div className="flex items-center justify-between text-slate-600">
-                <span>Điểm cộng (Gốc)</span>
-                <span>+{results.bonusRaw.toFixed(2)}</span>
-              </div>
-              <div className="flex items-center justify-between rounded bg-amber-50 p-2 font-medium text-amber-900 border border-amber-100">
-                <span>Cộng thực nhận</span>
-                <span className="font-bold text-amber-700">+{results.bonusEffective.toFixed(2)}</span>
-              </div>
-            </div>
-            <div className="space-y-1">
-              <div className="flex items-center justify-between text-slate-600">
-                <span>Ưu tiên KV/ĐT (Gốc)</span>
-                <span>+{results.priority100.toFixed(2)}</span>
-              </div>
-              <div className="flex items-center justify-between rounded bg-emerald-50 p-2 font-medium text-emerald-900 border border-emerald-100">
-                <span>Ưu tiên thực nhận</span>
-                <span className="font-bold text-emerald-700">+{results.priorityAccepted.toFixed(2)}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <ScoreDetailCard
+      theme="red"
+      total={results.total}
+      formula={`ĐHL = ĐGNL x ${state.k2}% + THPT x ${state.k1}% + Học bạ x ${results.k3}%`}
+      formulaDetail={results.interpolation}
+      dhl={results.dhl}
+      dgnlScore={results.dgnl100.toFixed(2)}
+      thptScore={results.thpt100.toFixed(2)}
+      hocBaScore={results.hocBa100.toFixed(2)}
+      bonusRows={[
+        { label: 'Điểm cộng (Gốc)', value: `+${results.bonusRaw.toFixed(2)}` },
+        { label: 'Cộng thực nhận', value: `+${results.bonusEffective.toFixed(2)}`, variant: 'bonusEffective' },
+      ]}
+      priorityRows={[
+        { label: 'Ưu tiên KV/ĐT (Gốc)', value: `+${results.priority100.toFixed(2)}` },
+        { label: 'Ưu tiên thực nhận', value: `+${results.priorityAccepted.toFixed(2)}`, variant: 'priorityEffective' },
+      ]}
+    />
   );
 
   return (
@@ -248,7 +187,7 @@ export const IuCalculator = () => {
           </CardSection>
 
           {needsHocBa && (
-            <CardSection title="3. Học bạ" icon={PenTool}>
+            <CardSection title="3. Điểm học bạ" icon={PenTool}>
                   <div className="space-y-4">
                     <h4 className="font-semibold text-slate-800">Học bạ - Trung bình lớp 10, 11, 12</h4>
                     <div className="overflow-x-auto">
@@ -258,8 +197,7 @@ export const IuCalculator = () => {
                             <th className="w-24 rounded-tl-lg px-4 py-3 font-semibold">Môn</th>
                             <th className="px-4 py-3 text-center font-semibold">Lớp 10</th>
                             <th className="px-4 py-3 text-center font-semibold">Lớp 11</th>
-                            <th className="px-4 py-3 text-center font-semibold">Lớp 12</th>
-                            <th className="rounded-tr-lg px-4 py-3 text-center font-semibold">TB môn</th>
+                            <th className="rounded-tr-lg px-4 py-3 text-center font-semibold">Lớp 12</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
@@ -284,9 +222,6 @@ export const IuCalculator = () => {
                                   </td>
                                 );
                               })}
-                              <td className="px-4 py-3 text-center font-semibold text-red-700">
-                                {results.hocBaSubjectAverages[subjectIndex].toFixed(2)}
-                              </td>
                             </tr>
                           ))}
                         </tbody>
@@ -305,7 +240,7 @@ export const IuCalculator = () => {
             </CardSection>
           )}
 
-          {(needsThpt || needsDgnl || isForeignGroup) && (
+          {(needsThpt || needsDgnl) && (
             <CardSection title="4. Điểm thi" icon={PenTool}>
               <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 {needsThpt && (
@@ -444,21 +379,6 @@ export const IuCalculator = () => {
                     />
                   </div>
                 )}
-
-                {isForeignGroup && (
-                  <div className="space-y-4">
-                    <h4 className="font-semibold text-slate-800">Điểm phỏng vấn</h4>
-                    <input
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={state.interview}
-                      onChange={(event) => state.setInterview(clampScore(event.target.value, 100))}
-                      className="w-full rounded-md border border-slate-200 px-3 py-2 text-lg font-medium focus:outline-none focus:ring-2 focus:ring-red-500"
-                      placeholder="Thang 100"
-                    />
-                  </div>
-                )}
               </div>
             </CardSection>
           )}
@@ -549,7 +469,14 @@ export const IuCalculator = () => {
           </CardSection>
         </div>
 
-        <div className="hidden lg:block lg:w-96">{resultCard}</div>
+        <ResponsiveScorePanel
+          isOpen={showMobileResultModal}
+          onClose={() => setShowMobileResultModal(false)}
+          variant="card"
+          backdropClassName="bg-slate-900/50"
+        >
+          {resultCard}
+        </ResponsiveScorePanel>
       </div>
 
       <MobileScoreButton
@@ -557,23 +484,6 @@ export const IuCalculator = () => {
         tone="red"
         onClick={() => setShowMobileResultModal(true)}
       />
-
-      {showMobileResultModal && (
-        <div className="fixed inset-0 z-[60] flex items-end justify-center bg-slate-900/50 p-0 backdrop-blur-sm animate-in fade-in sm:items-center sm:p-4 lg:hidden">
-          <div className="relative max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-white sm:max-w-md sm:rounded-2xl">
-            <button
-              type="button"
-              onClick={() => setShowMobileResultModal(false)}
-              className="absolute right-4 top-4 z-20 rounded-full bg-black/20 p-1.5 text-white/70 backdrop-blur-sm transition-colors hover:text-white"
-            >
-              <X className="h-5 w-5" />
-            </button>
-            <div className="[&>div]:static [&>div]:rounded-none [&>div]:border-0 [&>div]:shadow-none">
-              {resultCard}
-            </div>
-          </div>
-        </div>
-      )}
 
       {showEnglishConversionTable && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in">

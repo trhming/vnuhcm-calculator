@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { useUelCalculator } from '../hooks/useUelCalculator';
-import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 import { CardSection } from '../components/common/CardSection';
-import { QuickScoreInput } from '../components/common/QuickScoreInput';
-import { MobileScoreButton } from '../components/common/MobileScoreButton';
-import { Settings, BookOpen, PenTool, Award, Calculator, X, BookHeart, GraduationCap, Info, ExternalLink } from 'lucide-react';
+import { QuickScoreInput } from '../components/score/QuickScoreInput';
+import { MobileScoreButton } from '../components/score/MobileScoreButton';
+import { ResponsiveScorePanel } from '../components/score/ResponsiveScorePanel';
+import { Settings, BookOpen, PenTool, Award, X, BookHeart, GraduationCap, Info, ExternalLink } from 'lucide-react';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { UEL_ENGLISH_BONUS, CCQT_TYPES, UEL_ENGLISH_CERT_TYPES, UEL_CCQT_TABLE, UEL_ENGLISH_CONVERSION } from '../constants/uel';
 import { clampScore } from '../utils/input';
+import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
 
 const ENGLISH_SCORE_MAX = {
   ...Object.fromEntries(
@@ -30,7 +31,6 @@ export const UelCalculator = () => {
   const [showMobileResultModal, setShowMobileResultModal] = useState(false);
   const [showConversionTable, setShowConversionTable] = useState(false);
   const [showCcqtConversionTable, setShowCcqtConversionTable] = useState(false);
-  useBodyScrollLock(showMobileResultModal);
 
   const handleHocBaChange = (index, val) => {
     const newHocBa = [...state.hocBa];
@@ -145,7 +145,7 @@ export const UelCalculator = () => {
 
           {/* Học bạ */}
           {showHocBa && (
-            <CardSection title="1. Điểm Học Bạ" icon={BookOpen}>
+            <CardSection title="1. Điểm học bạ" icon={BookOpen}>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm text-left border-collapse">
                   <thead className="bg-slate-50 text-slate-600">
@@ -194,7 +194,7 @@ export const UelCalculator = () => {
 
           {/* Điểm Thi */}
           {(showDgnl || showThpt) && (
-            <CardSection title="2. Điểm Thi (ĐGNL & THPT)" icon={PenTool}>
+            <CardSection title="2. Điểm thi" icon={PenTool}>
               <div className={`grid grid-cols-1 gap-6 ${showDgnl && showThpt ? 'lg:grid-cols-2' : ''}`}>
                 {/* Điểm Thi THPT */}
                 {showThpt && (
@@ -447,108 +447,31 @@ export const UelCalculator = () => {
 
         </div>
 
-        {/* Right Column - Result */}
-        <div className={`
-          lg:block lg:w-96 lg:static
-          ${showMobileResultModal ? 'fixed inset-0 z-[60] bg-slate-900/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in' : 'hidden'}
-        `}>
-          <div className={`
-            w-full bg-white shadow-2xl relative flex flex-col overflow-hidden
-            ${showMobileResultModal ? 'rounded-t-3xl sm:rounded-2xl max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-full sm:zoom-in-95' : 'rounded-2xl border border-indigo-200 sticky top-24'}
-          `}>
-            
-            {showMobileResultModal && (
-              <button onClick={() => setShowMobileResultModal(false)} className="absolute top-4 right-4 z-20 text-white/70 hover:text-white lg:hidden bg-black/20 rounded-full p-1.5">
-                <X className="w-5 h-5" />
-              </button>
-            )}
-
-            {/* Header */}
-            <div className="p-6 bg-gradient-to-br from-indigo-700 to-indigo-900 text-white relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-10">
-                <Calculator className="w-24 h-24" />
-              </div>
-              <h2 className="mb-1 text-lg font-medium text-indigo-100">Điểm xét tuyển</h2>
-              <div className="text-5xl font-extrabold tracking-tight mb-2">
-                {results.total.toFixed(2)} <span className="text-xl font-normal text-indigo-200">/ 100</span>
-              </div>
-            </div>
-
-            {/* Breakdown */}
-            <div className="p-6 space-y-6">
-               <div>
-                  <div className="mb-3 rounded-xl bg-indigo-50 p-3 text-sm text-indigo-900">
-                    <div className="font-semibold">
-                      {learningWeights
-                        ? `ĐHL = ĐGNL x ${learningWeights.dgnl}% + THPT x ${learningWeights.thpt}% + Học bạ x ${learningWeights.hocBa}%`
-                        : results.textFormula}
-                    </div>
-                    <div className="mt-2 flex justify-between font-bold">
-                      <span>ĐHL</span>
-                      <span>{results.dhl.toFixed(2)}</span>
-                    </div>
-                  </div>
-
-                  {state.dtXetTuyen !== 'DT4' && (
-                    <>
-                      <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Điểm học lực</h3>
-                      <div className="space-y-2 text-sm">
-                        {showDgnl && (
-                          <div className="flex justify-between items-center text-slate-600">
-                            <span>ĐGNL chuẩn hóa</span>
-                            <span className="font-medium text-slate-800">{results.X.toFixed(2)}</span>
-                          </div>
-                        )}
-                        {showThpt && (
-                          <div className="flex justify-between items-center text-slate-600">
-                            <span>THPT chuẩn hóa</span>
-                            <span className="font-medium text-slate-800">{results.Y.toFixed(2)}</span>
-                          </div>
-                        )}
-                        {showHocBa && (
-                          <div className="flex justify-between items-center text-slate-600">
-                            <span>Học bạ chuẩn hóa</span>
-                            <span className="font-medium text-slate-800">{results.Z.toFixed(2)}</span>
-                          </div>
-                        )}
-                      </div>
-                    </>
-                  )}
-               </div>
-
-               <div className="h-px w-full bg-slate-100"></div>
-
-               <div>
-                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Ưu tiên & Điểm cộng</h3>
-                  <div className="space-y-4 text-sm">
-                    {/* Điểm cộng */}
-                    <div className="space-y-1">
-                      <div className="flex justify-between items-center text-slate-600">
-                        <span>Điểm cộng (Gốc)</span>
-                        <span>+{results.dcGoc.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between items-center bg-amber-50 p-2 rounded text-amber-900 font-medium border border-amber-100">
-                        <span>Cộng thực nhận</span>
-                        <span className="font-bold text-amber-700">+{results.dcThucNhan.toFixed(2)}</span>
-                      </div>
-                    </div>
-
-                    {/* Ưu tiên */}
-                    <div className="space-y-1">
-                      <div className="flex justify-between items-center text-slate-600">
-                        <span>Ưu tiên KV/ĐT (Gốc)</span>
-                        <span>+{results.uuTien100.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between items-center bg-emerald-50 p-2 rounded text-emerald-900 font-medium border border-emerald-100">
-                        <span>Ưu tiên thực nhận</span>
-                        <span className="font-bold text-emerald-700">+{results.uuTienThucNhan.toFixed(2)}</span>
-                      </div>
-                    </div>
-                  </div>
-               </div>
-            </div>
-          </div>
-        </div>
+        <ResponsiveScorePanel
+          isOpen={showMobileResultModal}
+          onClose={() => setShowMobileResultModal(false)}
+          borderClassName="border-indigo-200"
+        >
+          <ScoreDetailCard
+            theme="indigo"
+            total={results.total}
+            formula={learningWeights
+              ? `ĐHL = ĐGNL x ${learningWeights.dgnl}% + THPT x ${learningWeights.thpt}% + Học bạ x ${learningWeights.hocBa}%`
+              : results.textFormula}
+            dhl={results.dhl}
+            dgnlScore={state.dtXetTuyen !== 'DT4' && showDgnl ? results.X.toFixed(2) : undefined}
+            thptScore={state.dtXetTuyen !== 'DT4' && showThpt ? results.Y.toFixed(2) : undefined}
+            hocBaScore={state.dtXetTuyen !== 'DT4' && showHocBa ? results.Z.toFixed(2) : undefined}
+            bonusRows={[
+              { label: 'Điểm cộng (Gốc)', value: `+${results.dcGoc.toFixed(2)}` },
+              { label: 'Cộng thực nhận', value: `+${results.dcThucNhan.toFixed(2)}`, variant: 'bonusEffective' },
+            ]}
+            priorityRows={[
+              { label: 'Ưu tiên KV/ĐT (Gốc)', value: `+${results.uuTien100.toFixed(2)}` },
+              { label: 'Ưu tiên thực nhận', value: `+${results.uuTienThucNhan.toFixed(2)}`, variant: 'priorityEffective' },
+            ]}
+          />
+        </ResponsiveScorePanel>
       </div>
 
       <MobileScoreButton

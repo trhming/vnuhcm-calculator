@@ -24,7 +24,6 @@ export const useIuCalculator = () => {
   const [dgnl, setDgnl] = useState('');
   const [hocBa, setHocBa] = useState(Array(9).fill(''));
   const [hocBaQuickTotal, setHocBaQuickTotal] = useState('');
-  const [interview, setInterview] = useState('');
 
   const [achievementBonus, setAchievementBonus] = useState('');
   const [awardBonus, setAwardBonus] = useState('');
@@ -60,12 +59,10 @@ export const useIuCalculator = () => {
       ? capScore(parseNumber(hocBaQuickTotal), 30)
       : hocBaSubjectAverages.reduce((total, value) => total + value, 0);
     const dgnlRaw = parseNumber(dgnl);
-    const interviewRaw = parseNumber(interview);
 
     const thpt100 = (thptTotal / 30) * 100;
     const dgnl100 = (dgnlRaw / 1200) * 100;
     const hocBa100 = (hocBaTotal / 30) * 100;
-    const interview100 = capScore(interviewRaw, 100);
 
     let dhl = 0;
     let formula = '';
@@ -96,11 +93,6 @@ export const useIuCalculator = () => {
       dhl = k1Ratio * inferredThpt + k2Ratio * dgnl100 + k3Ratio * inferredHocBa;
       formula = 'ĐHL = k1 x THPT nội suy + k2 x ĐGNL + k3 x Học bạ nội suy';
       interpolation = `THPT = ĐGNL x ${IU_COEFFICIENTS.Hs1}; Học bạ = ĐGNL x ${IU_COEFFICIENTS.Hs2}`;
-    } else if (group === 'G3_FOREIGN') {
-      const inferredThpt = IU_COEFFICIENTS.Hs5 * hocBa100;
-      dhl = k1Ratio * inferredThpt + k2Ratio * interview100 + k3Ratio * hocBa100;
-      formula = 'ĐHL = k1 x THPT nội suy + k2 x Phỏng vấn + k3 x Học bạ';
-      interpolation = `THPT nội suy = Học bạ x ${IU_COEFFICIENTS.Hs5}`;
     }
 
     const achievement = parseNumber(achievementBonus);
@@ -132,7 +124,6 @@ export const useIuCalculator = () => {
       thpt100,
       dgnl100,
       hocBa100,
-      interview100,
       englishConvertedScore,
       dhl,
       formula,
@@ -157,7 +148,6 @@ export const useIuCalculator = () => {
     dgnl,
     hocBa,
     hocBaQuickTotal,
-    interview,
     achievementBonus,
     awardBonus,
     englishBonus,
@@ -177,7 +167,6 @@ export const useIuCalculator = () => {
       englishScore2, setEnglishScore2,
       dgnl, setDgnl,
       hocBa, setHocBa, hocBaQuickTotal, setHocBaQuickTotal,
-      interview, setInterview,
       achievementBonus, setAchievementBonus,
       awardBonus, setAwardBonus,
       englishBonus, setEnglishBonus,

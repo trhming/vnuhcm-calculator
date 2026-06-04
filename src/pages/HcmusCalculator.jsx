@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useHcmusCalculator } from '../hooks/useHcmusCalculator';
-import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 import { CardSection } from '../components/common/CardSection';
-import { QuickScoreInput } from '../components/common/QuickScoreInput';
-import { MobileScoreButton } from '../components/common/MobileScoreButton';
-import { Settings, BookOpen, PenTool, Award, Info, Calculator, AlertTriangle, CheckCircle2, X, GraduationCap, ExternalLink } from 'lucide-react';
+import { QuickScoreInput } from '../components/score/QuickScoreInput';
+import { MobileScoreButton } from '../components/score/MobileScoreButton';
+import { ResponsiveScorePanel } from '../components/score/ResponsiveScorePanel';
+import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
+import { Settings, BookOpen, PenTool, Award, Info, AlertTriangle, CheckCircle2, X, GraduationCap, ExternalLink } from 'lucide-react';
 import { NGOAI_NGU_CONVERSION } from '../constants/hcmus';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { clampDecimal, clampScore } from '../utils/input';
@@ -20,7 +21,6 @@ export const HcmusCalculator = () => {
   const { state, results } = useHcmusCalculator();
   const [showConversionTable, setShowConversionTable] = useState(false);
   const [showMobileResultModal, setShowMobileResultModal] = useState(false);
-  useBodyScrollLock(showMobileResultModal);
   
   const handleHocBaChange = (index, val) => {
     const newHocBa = [...state.hocBa];
@@ -141,7 +141,7 @@ export const HcmusCalculator = () => {
           </CardSection>
 
           {/* Học bạ */}
-          <CardSection title="2. Điểm Học Bạ" icon={BookOpen}>
+          <CardSection title="2. Điểm học bạ" icon={BookOpen}>
             <div className="flex flex-col gap-4">
               <QuickScoreInput
                 title="Nhập nhanh tổng học bạ"
@@ -232,7 +232,7 @@ export const HcmusCalculator = () => {
           </CardSection>
 
           {/* Điểm Thi */}
-          <CardSection title="3. Điểm Thi" icon={PenTool}>
+          <CardSection title="3. Điểm thi" icon={PenTool}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* THPT */}
               <div className="flex flex-col gap-4">
@@ -408,151 +408,74 @@ export const HcmusCalculator = () => {
 
         </div>
 
-        {/* Right Column - Sticky Result */}
-        <div className={`
-          lg:block lg:w-96 lg:static
-          ${showMobileResultModal ? 'fixed inset-0 z-[60] bg-slate-900/50 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in' : 'hidden'}
-        `}>
-          <div className={`
-            w-full bg-white shadow-2xl relative flex flex-col overflow-hidden
-            ${showMobileResultModal ? 'rounded-t-3xl sm:rounded-2xl max-h-[90vh] animate-in slide-in-from-bottom-full sm:zoom-in-95' : 'rounded-2xl border border-blue-100 sticky top-24'}
-          `}>
-            
-            {/* Close button for mobile */}
-            {showMobileResultModal && (
-              <button 
-                onClick={() => setShowMobileResultModal(false)}
-                className="absolute top-4 right-4 z-20 text-white/70 hover:text-white lg:hidden bg-black/20 rounded-full p-1.5 backdrop-blur-sm transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            )}
-
-            {/* Overlay Cảnh Báo Nếu Hồ Sơ Không Hợp Lệ */}
-              {results.hocBaStatus === 3 && (
-                <div className="absolute inset-0 bg-red-900/10 backdrop-blur-[2px] z-10 flex items-center justify-center p-6">
-                  <div className="bg-white p-5 rounded-xl shadow-2xl text-center border-2 border-red-500">
-                    <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-3" />
-                    <h3 className="text-lg font-bold text-red-700 mb-1">Hồ Sơ Không Hợp Lệ</h3>
-                    <p className="text-sm text-slate-600">Khuyết điểm học bạ lớp 11 hoặc 12.</p>
-                  </div>
-                </div>
-              )}
-
-              {/* Header */}
-              <div className={`p-6 text-white relative overflow-hidden transition-colors ${results.hocBaStatus === 3 ? 'bg-slate-500' : 'bg-gradient-to-br from-blue-700 to-blue-900'}`}>
-                <div className="absolute top-0 right-0 p-4 opacity-10">
-                  <Calculator className="w-24 h-24" />
-                </div>
-                <h2 className="mb-1 text-lg font-medium text-blue-100">Điểm xét tuyển</h2>
-                <div className="text-5xl font-extrabold tracking-tight mb-2">
-                  {results.base100.toFixed(2)} <span className="text-xl font-normal text-blue-200">/ 100</span>
-                </div>
-                <div className="text-lg font-medium text-blue-100">
-                  Thang 30: <span className="font-bold text-white">{results.base30.toFixed(2)}</span>
-                </div>
-              </div>
-
-              {/* Breakdown */}
-            <div className="p-6 space-y-6">
-                
-                {/* Branch Selection */}
-                <div>
-                  <div className="space-y-2">
-                    <div className={`p-3 rounded-xl border flex justify-between items-center transition-colors ${results.branchSelected === 1 ? 'bg-emerald-50 border-emerald-200' : 'bg-slate-50 border-slate-100'}`}>
-                      <div>
-                        <div className="text-sm font-semibold text-slate-700">THPT + Học bạ</div>
-                        <div className="text-xs text-slate-500">{Math.round(state.w1 * 100)}% + {Math.round((1 - state.w1) * 100)}%</div>
-                      </div>
-                      <div className="text-right">
-                        <div className={`font-bold text-lg ${results.branchSelected === 1 ? 'text-emerald-700' : 'text-slate-400'}`}>
-                          {((results.diemHL1 / 30) * 100).toFixed(2)}
-                        </div>
-                        <div className="text-xs text-slate-500 mt-0.5 font-medium">
-                          ~ {results.diemHL1.toFixed(2)} / 30
-                        </div>
-                      </div>
+        <ResponsiveScorePanel
+          isOpen={showMobileResultModal}
+          onClose={() => setShowMobileResultModal(false)}
+          borderClassName="border-blue-100"
+          backdropClassName="bg-slate-900/50"
+        >
+          <ScoreDetailCard
+            theme="blue"
+            className="relative"
+            total={results.base100}
+            headerClassName={results.hocBaStatus === 3 ? 'bg-slate-500' : undefined}
+            headerNote={<>Thang 30: <span className="font-bold text-white">{results.base30.toFixed(2)}</span></>}
+            beforeLearning={
+              <>
+                {results.hocBaStatus === 3 && (
+                  <div className="absolute inset-0 z-10 flex items-center justify-center bg-red-900/10 p-6 backdrop-blur-[2px]">
+                    <div className="rounded-xl border-2 border-red-500 bg-white p-5 text-center shadow-2xl">
+                      <AlertTriangle className="mx-auto mb-3 h-12 w-12 text-red-500" />
+                      <h3 className="mb-1 text-lg font-bold text-red-700">Hồ Sơ Không Hợp Lệ</h3>
+                      <p className="text-sm text-slate-600">Khuyết điểm học bạ lớp 11 hoặc 12.</p>
                     </div>
-                    
-                    <div className={`p-3 rounded-xl border flex justify-between items-center transition-colors ${results.branchSelected === 2 ? 'bg-emerald-50 border-emerald-200' : 'bg-slate-50 border-slate-100'}`}>
-                      <div>
-                        <div className="text-sm font-semibold text-slate-700">ĐGNL + Học bạ</div>
-                        <div className="text-xs text-slate-500">{Math.round(state.w3 * 100)}% + {Math.round((1 - state.w3) * 100)}%</div>
+                  </div>
+                )}
+                <div className="space-y-2">
+                  <div className={`flex items-center justify-between rounded-xl border p-3 transition-colors ${results.branchSelected === 1 ? 'border-emerald-200 bg-emerald-50' : 'border-slate-100 bg-slate-50'}`}>
+                    <div>
+                      <div className="text-sm font-semibold text-slate-700">THPT + Học bạ</div>
+                      <div className="text-xs text-slate-500">{Math.round(state.w1 * 100)}% + {Math.round((1 - state.w1) * 100)}%</div>
+                    </div>
+                    <div className="text-right">
+                      <div className={`text-lg font-bold ${results.branchSelected === 1 ? 'text-emerald-700' : 'text-slate-400'}`}>
+                        {((results.diemHL1 / 30) * 100).toFixed(2)}
                       </div>
-                      <div className="text-right">
-                        <div className={`font-bold text-lg ${results.branchSelected === 2 ? 'text-emerald-700' : 'text-slate-400'}`}>
-                          {((results.diemHL2 / 30) * 100).toFixed(2)}
-                        </div>
-                        <div className="text-xs text-slate-500 mt-0.5 font-medium">
-                          ~ {results.diemHL2.toFixed(2)} / 30
-                        </div>
+                      <div className="mt-0.5 text-xs font-medium text-slate-500">
+                        ~ {results.diemHL1.toFixed(2)} / 30
                       </div>
                     </div>
                   </div>
-                  <div className="mt-4 space-y-2 text-sm">
-                    <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Điểm học lực</h3>
-                    <div className="flex justify-between text-slate-600">
-                      <span>ĐGNL chuẩn hóa</span>
-                      <span className="font-semibold text-slate-900">{((results.dgnlChuanHoa / 30) * 100).toFixed(2)}</span>
+                  <div className={`flex items-center justify-between rounded-xl border p-3 transition-colors ${results.branchSelected === 2 ? 'border-emerald-200 bg-emerald-50' : 'border-slate-100 bg-slate-50'}`}>
+                    <div>
+                      <div className="text-sm font-semibold text-slate-700">ĐGNL + Học bạ</div>
+                      <div className="text-xs text-slate-500">{Math.round(state.w3 * 100)}% + {Math.round((1 - state.w3) * 100)}%</div>
                     </div>
-                    <div className="flex justify-between text-slate-600">
-                      <span>THPT chuẩn hóa</span>
-                      <span className="font-semibold text-slate-900">{((results.tongTHPT / 30) * 100).toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between text-slate-600">
-                      <span>Học bạ chuẩn hóa</span>
-                      <span className="font-semibold text-slate-900">{((results.tongHocBa / 30) * 100).toFixed(2)}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="h-px w-full bg-slate-100"></div>
-
-                {/* Phân tích điểm cộng & ưu tiên */}
-                <div>
-                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Ưu tiên & Điểm cộng</h3>
-                  <div className="space-y-4 text-sm">
-                    {/* Điểm cộng */}
-                    <div className="space-y-1">
-                      <div className="flex justify-between items-center text-slate-600">
-                        <span>Điểm cộng (Gốc)</span>
-                        <span>
-                          ~+{((results.congGoc / 30) * 100).toFixed(2)}
-                          <span className="ml-2 text-xs text-slate-500">(+{results.congGoc.toFixed(2)} / 30)</span>
-                        </span>
+                    <div className="text-right">
+                      <div className={`text-lg font-bold ${results.branchSelected === 2 ? 'text-emerald-700' : 'text-slate-400'}`}>
+                        {((results.diemHL2 / 30) * 100).toFixed(2)}
                       </div>
-                      <div className="flex justify-between items-center bg-amber-50 p-2 rounded text-amber-900 border border-amber-100">
-                        <span>Cộng thực nhận</span>
-                        <span className="font-bold text-amber-700">
-                          ~+{((results.congThuc / 30) * 100).toFixed(2)}
-                          <span className="ml-2 text-xs font-medium text-amber-700/70">(+{results.congThuc.toFixed(2)} / 30)</span>
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Ưu tiên */}
-                    <div className="space-y-1">
-                      <div className="flex justify-between items-center text-slate-600">
-                        <span>Ưu tiên KV/ĐT (Gốc)</span>
-                        <span>
-                          ~+{((results.uuTienGoc / 30) * 100).toFixed(2)}
-                          <span className="ml-2 text-xs text-slate-500">(+{results.uuTienGoc.toFixed(2)} / 30)</span>
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center bg-emerald-50 p-2 rounded text-emerald-900 border border-emerald-100">
-                        <span>Ưu tiên thực nhận</span>
-                        <span className="font-bold text-emerald-700">
-                          ~+{((results.uuTienThuc / 30) * 100).toFixed(2)}
-                          <span className="ml-2 text-xs font-medium text-emerald-700/70">(+{results.uuTienThuc.toFixed(2)} / 30)</span>
-                        </span>
+                      <div className="mt-0.5 text-xs font-medium text-slate-500">
+                        ~ {results.diemHL2.toFixed(2)} / 30
                       </div>
                     </div>
                   </div>
                 </div>
-
-              </div>
-            </div>
-        </div>
+              </>
+            }
+            dgnlScore={((results.dgnlChuanHoa / 30) * 100).toFixed(2)}
+            thptScore={((results.tongTHPT / 30) * 100).toFixed(2)}
+            hocBaScore={((results.tongHocBa / 30) * 100).toFixed(2)}
+            bonusRows={[
+              { label: 'Điểm cộng (Gốc)', value: `~+${((results.congGoc / 30) * 100).toFixed(2)}`, secondaryValue: `(+${results.congGoc.toFixed(2)} / 30)` },
+              { label: 'Cộng thực nhận', value: `~+${((results.congThuc / 30) * 100).toFixed(2)}`, secondaryValue: `(+${results.congThuc.toFixed(2)} / 30)`, variant: 'bonusEffective' },
+            ]}
+            priorityRows={[
+              { label: 'Ưu tiên KV/ĐT (Gốc)', value: `~+${((results.uuTienGoc / 30) * 100).toFixed(2)}`, secondaryValue: `(+${results.uuTienGoc.toFixed(2)} / 30)` },
+              { label: 'Ưu tiên thực nhận', value: `~+${((results.uuTienThuc / 30) * 100).toFixed(2)}`, secondaryValue: `(+${results.uuTienThuc.toFixed(2)} / 30)`, variant: 'priorityEffective' },
+            ]}
+          />
+        </ResponsiveScorePanel>
       </div>
 
       <MobileScoreButton

@@ -1,17 +1,17 @@
 import { useState } from 'react';
 import { useUsshCalculator } from '../hooks/useUsshCalculator';
-import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 import { CardSection } from '../components/common/CardSection';
-import { QuickScoreInput } from '../components/common/QuickScoreInput';
-import { MobileScoreButton } from '../components/common/MobileScoreButton';
-import { Settings, BookOpen, PenTool, Award, Calculator, X, Globe, ExternalLink } from 'lucide-react';
+import { QuickScoreInput } from '../components/score/QuickScoreInput';
+import { MobileScoreButton } from '../components/score/MobileScoreButton';
+import { ResponsiveScorePanel } from '../components/score/ResponsiveScorePanel';
+import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
+import { Settings, BookOpen, PenTool, Award, Globe, ExternalLink } from 'lucide-react';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { clampScore } from '../utils/input';
 
 export const UsshCalculator = () => {
   const { state, results } = useUsshCalculator();
   const [showMobileResultModal, setShowMobileResultModal] = useState(false);
-  useBodyScrollLock(showMobileResultModal);
   const hasThptDetail = state.thpt.some((value) => value !== '');
   const hasThptQuickTotal = state.thptQuickTotal !== '';
   const hasHocBaDetail = state.hocBa.some((value) => value !== '');
@@ -56,7 +56,7 @@ export const UsshCalculator = () => {
         <div className="flex-1 space-y-6">
           
           {/* Học bạ */}
-          <CardSection title="1. Điểm Học Bạ" icon={BookOpen}>
+          <CardSection title="1. Điểm học bạ" icon={BookOpen}>
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left border-collapse">
                 <thead className="bg-slate-50 text-slate-600">
@@ -105,7 +105,7 @@ export const UsshCalculator = () => {
           </CardSection>
 
           {/* Điểm Thi */}
-          <CardSection title="2. Điểm Thi (ĐGNL & THPT)" icon={PenTool}>
+          <CardSection title="2. Điểm thi" icon={PenTool}>
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               {/* Điểm Thi THPT */}
               <div>
@@ -148,18 +148,15 @@ export const UsshCalculator = () => {
                   <Settings className="w-4 h-4 text-emerald-600" />
                   Kỳ thi ĐGNL 2026
                 </label>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Điểm thi ĐGNL (tối đa 1200)</label>
-                    <input
-                      type="number" min="0" max="1200"
-                      value={state.dgnl}
-                      onChange={(e) => {
-                         state.setDgnl(clampScore(e.target.value, 1200));
-                      }}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600 font-medium text-lg"
-                      placeholder="850"
-                    />
-                </div>
+                <input
+                  type="number" min="0" max="1200"
+                  value={state.dgnl}
+                  onChange={(e) => {
+                     state.setDgnl(clampScore(e.target.value, 1200));
+                  }}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600 font-medium text-lg"
+                  placeholder="850"
+                />
               </div>
             </div>
           </CardSection>
@@ -205,108 +202,49 @@ export const UsshCalculator = () => {
 
         </div>
 
-        {/* Right Column - Result */}
-        <div className={`
-          lg:block lg:w-96 lg:static
-          ${showMobileResultModal ? 'fixed inset-0 z-[60] bg-slate-900/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in' : 'hidden'}
-        `}>
-          <div className={`
-            w-full bg-white shadow-2xl relative flex flex-col overflow-hidden
-            ${showMobileResultModal ? 'rounded-t-3xl sm:rounded-2xl max-h-[90vh] overflow-y-auto animate-in slide-in-from-bottom-full sm:zoom-in-95' : 'rounded-2xl border border-emerald-200 sticky top-24'}
-          `}>
-            
-            {showMobileResultModal && (
-              <button onClick={() => setShowMobileResultModal(false)} className="absolute top-4 right-4 z-20 text-white/70 hover:text-white lg:hidden bg-black/20 rounded-full p-1.5">
-                <X className="w-5 h-5" />
-              </button>
-            )}
-
-            {/* Header */}
-            <div className="p-6 bg-gradient-to-br from-emerald-700 to-emerald-900 text-white relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-10">
-                <Calculator className="w-24 h-24" />
+        <ResponsiveScorePanel
+          isOpen={showMobileResultModal}
+          onClose={() => setShowMobileResultModal(false)}
+          borderClassName="border-emerald-200"
+        >
+          <ScoreDetailCard
+            theme="emerald"
+            total={results.total}
+            beforeLearning={
+              <div className="space-y-3">
+                <div className={`rounded-xl border p-3 ${results.selectedScenario === 'all' ? 'border-emerald-300 bg-emerald-50 ring-1 ring-emerald-300' : 'border-slate-100 bg-slate-50 opacity-60'}`}>
+                  <div className="mb-1 text-xs font-semibold text-slate-500">ĐHL Tổng (THPT 45% + ĐGNL 45% + HB 10%)</div>
+                  <div className={`text-xl font-bold ${results.selectedScenario === 'all' ? 'text-emerald-700' : 'text-slate-600'}`}>
+                    {results.dhlAll !== null ? results.dhlAll.toFixed(2) : '-'}
+                  </div>
+                </div>
+                <div className={`rounded-xl border p-3 ${results.selectedScenario === '1' ? 'border-emerald-300 bg-emerald-50 ring-1 ring-emerald-300' : 'border-slate-100 bg-slate-50 opacity-60'}`}>
+                  <div className="mb-1 text-xs font-semibold text-slate-500">ĐHL 1 (THPT 90% + HB 10%)</div>
+                  <div className={`text-xl font-bold ${results.selectedScenario === '1' ? 'text-emerald-700' : 'text-slate-600'}`}>
+                    {results.dhl1 !== null ? results.dhl1.toFixed(2) : '-'}
+                  </div>
+                </div>
+                <div className={`rounded-xl border p-3 ${results.selectedScenario === '2' ? 'border-emerald-300 bg-emerald-50 ring-1 ring-emerald-300' : 'border-slate-100 bg-slate-50 opacity-60'}`}>
+                  <div className="mb-1 text-xs font-semibold text-slate-500">ĐHL 2 (ĐGNL 90% + HB 10%)</div>
+                  <div className={`text-xl font-bold ${results.selectedScenario === '2' ? 'text-emerald-700' : 'text-slate-600'}`}>
+                    {results.dhl2 !== null ? results.dhl2.toFixed(2) : '-'}
+                  </div>
+                </div>
               </div>
-              <h2 className="mb-1 text-lg font-medium text-emerald-100">Điểm xét tuyển</h2>
-              <div className="text-5xl font-extrabold tracking-tight mb-2">
-                {results.total.toFixed(2)} <span className="text-xl font-normal text-emerald-200">/ 100</span>
-              </div>
-            </div>
-
-            {/* Breakdown */}
-            <div className="p-6 space-y-6">
-               <div>
-                  <div className="space-y-3">
-                    <div className={`p-3 rounded-xl border ${results.selectedScenario === 'all' ? 'bg-emerald-50 border-emerald-300 ring-1 ring-emerald-300' : 'bg-slate-50 border-slate-100 opacity-60'}`}>
-                      <div className="text-xs font-semibold text-slate-500 mb-1">ĐHL Tổng (THPT 45% + ĐGNL 45% + HB 10%)</div>
-                      <div className={`text-xl font-bold ${results.selectedScenario === 'all' ? 'text-emerald-700' : 'text-slate-600'}`}>
-                        {results.dhlAll !== null ? results.dhlAll.toFixed(2) : '-'}
-                      </div>
-                    </div>
-                    
-                    <div className={`p-3 rounded-xl border ${results.selectedScenario === '1' ? 'bg-emerald-50 border-emerald-300 ring-1 ring-emerald-300' : 'bg-slate-50 border-slate-100 opacity-60'}`}>
-                      <div className="text-xs font-semibold text-slate-500 mb-1">ĐHL 1 (THPT 90% + HB 10%)</div>
-                      <div className={`text-xl font-bold ${results.selectedScenario === '1' ? 'text-emerald-700' : 'text-slate-600'}`}>
-                        {results.dhl1 !== null ? results.dhl1.toFixed(2) : '-'}
-                      </div>
-                    </div>
-
-                    <div className={`p-3 rounded-xl border ${results.selectedScenario === '2' ? 'bg-emerald-50 border-emerald-300 ring-1 ring-emerald-300' : 'bg-slate-50 border-slate-100 opacity-60'}`}>
-                      <div className="text-xs font-semibold text-slate-500 mb-1">ĐHL 2 (ĐGNL 90% + HB 10%)</div>
-                      <div className={`text-xl font-bold ${results.selectedScenario === '2' ? 'text-emerald-700' : 'text-slate-600'}`}>
-                        {results.dhl2 !== null ? results.dhl2.toFixed(2) : '-'}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-4 space-y-2 text-sm">
-                    <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Điểm học lực</h3>
-                    <div className="flex justify-between text-slate-600">
-                      <span>ĐGNL chuẩn hóa</span>
-                      <span className="font-semibold text-slate-900">{results.dgnl100.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between text-slate-600">
-                      <span>THPT chuẩn hóa</span>
-                      <span className="font-semibold text-slate-900">{results.thpt100.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between text-slate-600">
-                      <span>Học bạ chuẩn hóa</span>
-                      <span className="font-semibold text-slate-900">{results.hb100.toFixed(2)}</span>
-                    </div>
-                  </div>
-               </div>
-
-               <div className="h-px w-full bg-slate-100"></div>
-
-               <div>
-                  <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Ưu tiên & Điểm cộng</h3>
-                  <div className="space-y-4 text-sm">
-                    {/* Điểm cộng */}
-                    <div className="space-y-1">
-                      <div className="flex justify-between items-center text-slate-600">
-                        <span>Điểm cộng (Gốc)</span>
-                        <span>+{results.dcGoc.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between items-center bg-amber-50 p-2 rounded text-amber-900 font-medium border border-amber-100">
-                        <span>Cộng thực nhận</span>
-                        <span className="font-bold text-amber-700">+{results.dcThucNhan.toFixed(2)}</span>
-                      </div>
-                    </div>
-
-                    {/* Ưu tiên */}
-                    <div className="space-y-1">
-                      <div className="flex justify-between items-center text-slate-600">
-                        <span>Ưu tiên KV/ĐT (Gốc)</span>
-                        <span>+{results.uuTien100.toFixed(2)}</span>
-                      </div>
-                      <div className="flex justify-between items-center bg-emerald-50 p-2 rounded text-emerald-900 font-medium border border-emerald-100">
-                        <span>Ưu tiên thực nhận</span>
-                        <span className="font-bold text-emerald-700">+{results.uuTienThucNhan.toFixed(2)}</span>
-                      </div>
-                    </div>
-                  </div>
-               </div>
-            </div>
-          </div>
-        </div>
+            }
+            dgnlScore={results.dgnl100.toFixed(2)}
+            thptScore={results.thpt100.toFixed(2)}
+            hocBaScore={results.hb100.toFixed(2)}
+            bonusRows={[
+              { label: 'Điểm cộng (Gốc)', value: `+${results.dcGoc.toFixed(2)}` },
+              { label: 'Cộng thực nhận', value: `+${results.dcThucNhan.toFixed(2)}`, variant: 'bonusEffective' },
+            ]}
+            priorityRows={[
+              { label: 'Ưu tiên KV/ĐT (Gốc)', value: `+${results.uuTien100.toFixed(2)}` },
+              { label: 'Ưu tiên thực nhận', value: `+${results.uuTienThucNhan.toFixed(2)}`, variant: 'priorityEffective' },
+            ]}
+          />
+        </ResponsiveScorePanel>
       </div>
 
       <MobileScoreButton

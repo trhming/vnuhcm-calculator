@@ -2,7 +2,6 @@ import { useState } from 'react';
 import {
   Award,
   BookOpen,
-  Calculator,
   CheckCircle2,
   ExternalLink,
   HeartPulse,
@@ -10,15 +9,15 @@ import {
   PenTool,
   Settings,
   SlidersHorizontal,
-  X,
 } from 'lucide-react';
 import { CardSection } from '../components/common/CardSection';
-import { QuickScoreInput } from '../components/common/QuickScoreInput';
-import { MobileScoreButton } from '../components/common/MobileScoreButton';
+import { QuickScoreInput } from '../components/score/QuickScoreInput';
+import { MobileScoreButton } from '../components/score/MobileScoreButton';
+import { ResponsiveScorePanel } from '../components/score/ResponsiveScorePanel';
+import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { UHS_LANG_MAX, UHS_LANG_TYPES } from '../constants/uhs';
 import { useUhsCalculator } from '../hooks/useUhsCalculator';
-import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 import { clampNumber, clampScore } from '../utils/input';
 
 const UHS_TOEIC_MAX = {
@@ -29,7 +28,6 @@ const UHS_TOEIC_MAX = {
 export const UhsCalculator = () => {
   const { state, results } = useUhsCalculator();
   const [showMobileResultModal, setShowMobileResultModal] = useState(false);
-  useBodyScrollLock(showMobileResultModal);
 
   const subjects = ['Môn 1', 'Môn 2', 'Môn 3'];
   const computedC = 100 - state.a - state.b;
@@ -53,88 +51,29 @@ export const UhsCalculator = () => {
   };
 
   const resultCard = (
-    <div className="w-full overflow-hidden rounded-2xl border border-teal-100 bg-white shadow-2xl sticky top-24">
-      <div className="relative overflow-hidden bg-gradient-to-br from-teal-700 to-cyan-800 p-6 text-white">
-        <div className="absolute right-0 top-0 p-4 opacity-10">
-          <Calculator className="h-24 w-24" />
-        </div>
-        <h2 className="mb-1 text-lg font-medium text-teal-100">Điểm xét tuyển</h2>
-        <div className="mb-2 text-5xl font-extrabold tracking-tight">
-          {results.total.toFixed(1)}
-          <span className="text-xl font-normal text-teal-100"> / 100</span>
-        </div>
-        <p className="mt-2 text-sm text-teal-100">Các điểm thành phần làm tròn 0.1</p>
-      </div>
-
-      <div className="space-y-5 p-6">
-        <div>
-          <div className="mb-3 rounded-xl bg-teal-50 p-3 text-sm text-teal-900">
-            <div className="font-semibold">
-              ĐHL = ĐGNL x {state.a}% + THPT x {state.b}% + Học bạ x {results.cWeight}%
-            </div>
-            <div className="mt-2 flex justify-between font-bold">
-              <span>ĐHL</span>
-              <span>{results.dhl.toFixed(1)}</span>
-            </div>
-          </div>
-          <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Điểm học lực</h3>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-slate-600">ĐGNL chuẩn hóa</span>
-              <span className="font-semibold">{results.dgnl100.toFixed(1)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-600">THPT chuẩn hóa</span>
-              <span className="font-semibold">{results.thpt100.toFixed(1)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-600">Học bạ chuẩn hóa</span>
-              <span className="font-semibold">{results.hocBa100.toFixed(1)}</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="h-px bg-slate-100" />
-
-        <div>
-          <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">Ưu tiên & Điểm cộng</h3>
-          <div className="space-y-4 text-sm">
-            <div className="space-y-1">
-              <div className="flex items-center justify-between text-slate-600">
-                <span>Cộng ngoại ngữ</span>
-                <span>+{results.bonusLanguage.toFixed(1)}</span>
-              </div>
-              <div className="flex items-center justify-between text-slate-600">
-                <span>Cộng SAT</span>
-                <span>+{results.bonusSat.toFixed(1)}</span>
-              </div>
-              <div className="flex items-center justify-between text-slate-600">
-                <span>Cộng HSG</span>
-                <span>+{results.bonusHsg.toFixed(1)}</span>
-              </div>
-              <div className="flex items-center justify-between text-slate-600">
-                <span>Tổng điểm cộng (Gốc)</span>
-                <span>+{results.bonusTotal.toFixed(1)}</span>
-              </div>
-              <div className="flex items-center justify-between rounded bg-amber-50 p-2 font-medium text-amber-900 border border-amber-100">
-                <span>Cộng thực nhận</span>
-                <span className="font-bold text-amber-700">+{results.bonusEffective.toFixed(1)}</span>
-              </div>
-            </div>
-            <div className="space-y-1">
-              <div className="flex items-center justify-between text-slate-600">
-                <span>Ưu tiên KV/ĐT (Gốc)</span>
-                <span>+{results.priority100.toFixed(1)}</span>
-              </div>
-              <div className="flex items-center justify-between rounded bg-emerald-50 p-2 font-medium text-emerald-900 border border-emerald-100">
-                <span>Ưu tiên thực nhận</span>
-                <span className="font-bold text-emerald-700">+{results.priorityAccepted.toFixed(1)}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <ScoreDetailCard
+      theme="teal"
+      total={results.total}
+      totalPrecision={1}
+      headerNote="Các điểm thành phần làm tròn 0.1"
+      formula={`ĐHL = ĐGNL x ${state.a}% + THPT x ${state.b}% + Học bạ x ${results.cWeight}%`}
+      dhl={results.dhl}
+      dhlPrecision={1}
+      dgnlScore={results.dgnl100.toFixed(1)}
+      thptScore={results.thpt100.toFixed(1)}
+      hocBaScore={results.hocBa100.toFixed(1)}
+      bonusRows={[
+        { label: 'Cộng ngoại ngữ', value: `+${results.bonusLanguage.toFixed(1)}` },
+        { label: 'Cộng SAT', value: `+${results.bonusSat.toFixed(1)}` },
+        { label: 'Cộng HSG', value: `+${results.bonusHsg.toFixed(1)}` },
+        { label: 'Tổng điểm cộng (Gốc)', value: `+${results.bonusTotal.toFixed(1)}` },
+        { label: 'Cộng thực nhận', value: `+${results.bonusEffective.toFixed(1)}`, variant: 'bonusEffective' },
+      ]}
+      priorityRows={[
+        { label: 'Ưu tiên KV/ĐT (Gốc)', value: `+${results.priority100.toFixed(1)}` },
+        { label: 'Ưu tiên thực nhận', value: `+${results.priorityAccepted.toFixed(1)}`, variant: 'priorityEffective' },
+      ]}
+    />
   );
 
   return (
@@ -215,7 +154,7 @@ export const UhsCalculator = () => {
             </div>
           </CardSection>
 
-          <CardSection title="2. Học bạ" icon={PenTool}>
+          <CardSection title="2. Điểm học bạ" icon={PenTool}>
             <div className="space-y-4">
               <h4 className="mb-3 font-semibold text-slate-800">Học bạ 3 môn</h4>
               <div className="overflow-x-auto">
@@ -465,7 +404,14 @@ export const UhsCalculator = () => {
           </CardSection>
         </div>
 
-        <div className="hidden lg:block lg:w-96">{resultCard}</div>
+        <ResponsiveScorePanel
+          isOpen={showMobileResultModal}
+          onClose={() => setShowMobileResultModal(false)}
+          variant="card"
+          backdropClassName="bg-slate-900/50"
+        >
+          {resultCard}
+        </ResponsiveScorePanel>
       </div>
 
       <MobileScoreButton
@@ -474,23 +420,6 @@ export const UhsCalculator = () => {
         tone="teal"
         onClick={() => setShowMobileResultModal(true)}
       />
-
-      {showMobileResultModal && (
-        <div className="fixed inset-0 z-[60] flex items-end justify-center bg-slate-900/50 p-0 backdrop-blur-sm animate-in fade-in sm:items-center sm:p-4 lg:hidden">
-          <div className="relative max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-white sm:max-w-md sm:rounded-2xl">
-            <button
-              type="button"
-              onClick={() => setShowMobileResultModal(false)}
-              className="absolute right-4 top-4 z-20 rounded-full bg-black/20 p-1.5 text-white/70 backdrop-blur-sm transition-colors hover:text-white"
-            >
-              <X className="h-5 w-5" />
-            </button>
-            <div className="[&>div]:static [&>div]:rounded-none [&>div]:border-0 [&>div]:shadow-none">
-              {resultCard}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

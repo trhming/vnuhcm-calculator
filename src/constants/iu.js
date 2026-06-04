@@ -3,7 +3,6 @@ export const IU_COEFFICIENTS = {
   Hs2: 1.31,
   Hs3: 0.78,
   Hs4: 1.02,
-  Hs5: 1.0,
 };
 
 export const IU_GROUPS = [
@@ -12,7 +11,6 @@ export const IU_GROUPS = [
   { id: 'G2_BOTH', name: '2.1 Tốt nghiệp trước 2026 - Có THPT 2026 và ĐGNL 2026' },
   { id: 'G2_THPT', name: '2.2 Tốt nghiệp trước 2026 - Chỉ có THPT 2026' },
   { id: 'G2_DGNL', name: '2.3 Tốt nghiệp trước 2026 - Chỉ có ĐGNL 2026' },
-  { id: 'G3_FOREIGN', name: '3. Tốt nghiệp THPT nước ngoài' },
 ];
 
 export const IU_ENGLISH_TYPES = [

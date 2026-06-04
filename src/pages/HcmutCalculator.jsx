@@ -119,29 +119,18 @@ export const HcmutCalculator = () => {
                       <input type="number" min="0" max="300" value={state.dgnlKh} onChange={e => state.setDgnlKh(clampScore(e.target.value, 300))} disabled={hasDgnlQuickTotal} className={`w-full px-3 py-2 border border-blue-200 rounded-md focus:ring-2 focus:ring-blue-800 ${hasDgnlQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`} placeholder="VD: 300" />
                     </div>
                   </div>
-                  <div className="mt-4 rounded-xl border border-blue-100 bg-white/70 p-4">
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                      <div>
-                        <label className="mb-1 block text-sm font-semibold text-blue-900">Nhập nhanh tổng ĐGNL</label>
-                        <p className="text-xs text-blue-700">Tổng điểm 4 phần thi trên thang 1500.</p>
-                      </div>
-                      <input
-                        type="number"
-                        min="0"
-                        max="1500"
-                        step="1"
-                        value={hasDgnlDetail ? dgnlDetailTotal.toFixed(0) : state.dgnlQuickTotal}
-                        onChange={(e) => handleDgnlQuickTotalChange(e.target.value)}
-                        disabled={hasDgnlDetail}
-                        className={`w-full rounded-md border px-3 py-2 text-right text-lg font-bold focus:outline-none focus:ring-2 focus:ring-blue-800 sm:w-40 ${
-                          hasDgnlDetail
-                            ? 'cursor-not-allowed border-blue-100 bg-slate-100 text-slate-500'
-                            : 'border-blue-200 bg-white text-blue-800'
-                        }`}
-                        placeholder="0"
-                      />
-                    </div>
-                  </div>
+                  <QuickScoreInput
+                    title="Nhập nhanh tổng ĐGNL"
+                    description="Tổng điểm 4 phần thi trên thang 1500."
+                    value={hasDgnlDetail ? dgnlDetailTotal.toFixed(0) : state.dgnlQuickTotal}
+                    onChange={(e) => handleDgnlQuickTotalChange(e.target.value)}
+                    disabled={hasDgnlDetail}
+                    max={1500}
+                    step="1"
+                    placeholder="0"
+                    tone="hcmut"
+                    className="mt-4"
+                  />
                 </div>
               )}
 
@@ -231,29 +220,16 @@ export const HcmutCalculator = () => {
                   ))}
                 </tbody>
               </table>
-              <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                  <div>
-                    <label className="mb-1 block text-sm font-semibold text-slate-700">Nhập nhanh trung bình học bạ</label>
-                    <p className="text-xs text-slate-500">Điểm trung bình học bạ trên thang 10.</p>
-                  </div>
-                  <input
-                    type="number"
-                    min="0"
-                    max="10"
-                    step="0.01"
-                    value={hasHocBaDetail ? (results.diemHbQuyDoi / 10).toFixed(2) : state.hocBaQuickAverage}
-                    onChange={(e) => handleHocBaQuickAverageChange(e.target.value)}
-                    disabled={hasHocBaDetail}
-                    className={`w-full rounded-md border px-3 py-2 text-right text-lg font-bold focus:outline-none focus:ring-2 focus:ring-blue-800 sm:w-40 ${
-                      hasHocBaDetail
-                        ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-500'
-                        : 'border-slate-200 bg-white text-blue-800'
-                    }`}
-                    placeholder="0.00"
-                  />
-                </div>
-              </div>
+              <QuickScoreInput
+                title="Nhập nhanh trung bình học bạ"
+                description="Điểm trung bình học bạ trên thang 10."
+                value={hasHocBaDetail ? (results.diemHbQuyDoi / 10).toFixed(2) : state.hocBaQuickAverage}
+                onChange={(e) => handleHocBaQuickAverageChange(e.target.value)}
+                disabled={hasHocBaDetail}
+                max={10}
+                tone="hcmut"
+                className="mt-4"
+              />
             </div>
           </CardSection>
 

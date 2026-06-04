@@ -70,7 +70,10 @@ export const IuCalculator = () => {
       thptScore={results.thpt100.toFixed(2)}
       hocBaScore={results.hocBa100.toFixed(2)}
       bonusRows={[
-        { label: 'Điểm cộng (Gốc)', value: `+${results.bonusRaw.toFixed(2)}` },
+        { label: 'Điểm thưởng', value: `+${results.achievement.toFixed(2)}` },
+        { label: 'Xét thưởng', value: `+${results.award.toFixed(2)}` },
+        { label: 'Khuyến khích NN', value: `+${results.english.toFixed(2)}` },
+        { label: 'Tổng điểm cộng (Gốc)', value: `+${results.bonusRaw.toFixed(2)}`, separatorBefore: true },
         { label: 'Cộng thực nhận', value: `+${results.bonusEffective.toFixed(2)}`, variant: 'bonusEffective' },
       ]}
       priorityRows={[

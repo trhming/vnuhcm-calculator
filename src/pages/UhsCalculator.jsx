@@ -66,7 +66,11 @@ export const UhsCalculator = () => {
         { label: 'Cộng ngoại ngữ', value: `+${results.bonusLanguage.toFixed(1)}` },
         { label: 'Cộng SAT', value: `+${results.bonusSat.toFixed(1)}` },
         { label: 'Cộng HSG', value: `+${results.bonusHsg.toFixed(1)}` },
-        { label: 'Tổng điểm cộng (Gốc)', value: `+${results.bonusTotal.toFixed(1)}` },
+        {
+          label: 'Tổng điểm cộng (Gốc)',
+          value: `+${results.bonusTotal.toFixed(1)}`,
+          separatorBefore: true,
+        },
         { label: 'Cộng thực nhận', value: `+${results.bonusEffective.toFixed(1)}`, variant: 'bonusEffective' },
       ]}
       priorityRows={[

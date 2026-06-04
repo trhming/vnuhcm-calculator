@@ -444,7 +444,10 @@ export const HcmutCalculator = () => {
             thptScore={results.diemThptQuyDoi.toFixed(2)}
             hocBaScore={results.diemHbQuyDoi.toFixed(2)}
             bonusRows={[
-              { label: 'Điểm cộng (Gốc)', value: `+${results.tongCongGoc.toFixed(2)}` },
+              { label: 'Điểm thưởng', value: `+${results.thuongPoint.toFixed(2)}` },
+              { label: 'Xét thưởng', value: `+${results.xetThuongPoint.toFixed(2)}` },
+              { label: 'Khuyến khích', value: `+${results.khuyenKhichPoint.toFixed(2)}` },
+              { label: 'Tổng điểm cộng (Gốc)', value: `+${results.tongCongGoc.toFixed(2)}`, separatorBefore: true },
               { label: 'Cộng thực nhận', value: `+${results.congThucNhan.toFixed(2)}`, variant: 'bonusEffective' },
             ]}
             priorityRows={[

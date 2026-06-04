@@ -463,7 +463,9 @@ export const UelCalculator = () => {
             thptScore={state.dtXetTuyen !== 'DT4' && showThpt ? results.Y.toFixed(2) : undefined}
             hocBaScore={state.dtXetTuyen !== 'DT4' && showHocBa ? results.Z.toFixed(2) : undefined}
             bonusRows={[
-              { label: 'Điểm cộng (Gốc)', value: `+${results.dcGoc.toFixed(2)}` },
+              { label: 'Cộng ngoại ngữ', value: `+${results.nnPoint.toFixed(2)}` },
+              { label: 'Cộng trường ưu tiên', value: `+${results.truongUuTienPoint.toFixed(2)}` },
+              { label: 'Tổng điểm cộng (Gốc)', value: `+${results.dcGoc.toFixed(2)}`, separatorBefore: true },
               { label: 'Cộng thực nhận', value: `+${results.dcThucNhan.toFixed(2)}`, variant: 'bonusEffective' },
             ]}
             priorityRows={[

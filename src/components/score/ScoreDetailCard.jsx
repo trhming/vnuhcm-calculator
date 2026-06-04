@@ -135,7 +135,7 @@ export const ScoreDetailCard = ({
   );
 };
 
-export const Divider = () => <div className="h-px w-full bg-slate-100" />;
+export const Divider = () => <div className="h-px w-full bg-slate-200" />;
 
 const ScoreSection = ({ title, children }) => (
   <div>
@@ -150,7 +150,14 @@ const ScoreRow = ({
   secondaryValue,
   variant = 'plain',
   valueClassName = 'font-semibold text-slate-900',
+  labelClassName = '',
+  separatorBefore = false,
+  emphasis = false,
 }) => {
+  const isDefaultEmphasis = label === 'Điểm cộng (Gốc)'
+    || label === 'Tổng điểm cộng (Gốc)'
+    || label === 'Ưu tiên KV/ĐT (Gốc)';
+  const shouldEmphasize = emphasis || isDefaultEmphasis;
   const variantClass = {
     plain: 'text-slate-600',
     bonusEffective: 'rounded bg-amber-50 p-2 font-medium text-amber-900 border border-amber-100',
@@ -164,9 +171,9 @@ const ScoreRow = ({
   }[variant] || valueClassName;
 
   return (
-    <div className={`flex items-center justify-between gap-3 ${variantClass}`}>
-      <span>{label}</span>
-      <span className={`text-right ${effectiveValueClass}`}>
+    <div className={`flex items-center justify-between gap-3 ${separatorBefore ? 'mt-2 border-t border-slate-200 pt-2' : ''} ${variantClass}`}>
+      <span className={`${shouldEmphasize ? 'font-semibold text-slate-700' : ''} ${labelClassName}`}>{label}</span>
+      <span className={`text-right ${shouldEmphasize ? 'font-bold text-slate-900' : effectiveValueClass}`}>
         {value}
         {secondaryValue && (
           <span className="ml-2 text-xs font-medium opacity-70">{secondaryValue}</span>

@@ -22,3 +22,29 @@ export const DOI_TUONG = [
   { id: 'UT2', name: 'Nhóm UT2 (ĐT5..7)', points: 1.0 },
   { id: 'UT1', name: 'Nhóm UT1 (ĐT1..4)', points: 2.0 },
 ];
+
+export const CERTIFICATE_DEFINITIONS = {
+  IELTS: { name: 'IELTS', min: 0, max: 9 },
+  TOEFL: { name: 'TOEFL iBT', min: 0, max: 120 },
+  TOEFL_iBT: { name: 'TOEFL iBT', min: 0, max: 120 },
+  TOEFL_IBT: { name: 'TOEFL iBT', min: 0, max: 120 },
+  TOEFL_ITP: { name: 'TOEFL ITP', min: 0, max: 677 },
+  TOEIC: { name: 'TOEIC (4 kỹ năng)', min: 0, max: 1390, maxLr: 990, maxSw: 400 },
+  PTE: { name: 'PTE Academic', min: 0, max: 90 },
+  CAMBRIDGE: { name: 'Cambridge', min: 0, max: 230 },
+  Linguaskill_B1: { name: 'Linguaskill (B1)', min: 0, max: 159 },
+  Linguaskill_B2: { name: 'Linguaskill (B2)', min: 0, max: 180 },
+  VSTEP: { name: 'VSTEP Bậc 4', min: 0, max: 10 },
+  SAT: { name: 'SAT', min: 0, max: 1600 },
+  ACT: { name: 'ACT', min: 0, max: 36 },
+  IB: { name: 'IB', min: 0, max: 45 },
+  ALEVEL: { name: 'A-Level' },
+  A_LEVEL: { name: 'A-Level' },
+};
+
+export const pickCertificates = (ids) => (
+  ids.map((id) => ({
+    id,
+    ...CERTIFICATE_DEFINITIONS[id],
+  }))
+);

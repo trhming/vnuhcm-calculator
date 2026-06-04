@@ -1,3 +1,5 @@
+import { pickCertificates } from './common';
+
 export const IU_COEFFICIENTS = {
   Hs1: 1.28,
   Hs2: 1.31,
@@ -13,12 +15,7 @@ export const IU_GROUPS = [
   { id: 'G2_DGNL', name: '2.3 Tốt nghiệp trước 2026 - Chỉ có ĐGNL 2026' },
 ];
 
-export const IU_ENGLISH_TYPES = [
-  { id: 'IELTS', name: 'IELTS' },
-  { id: 'TOEFL', name: 'TOEFL iBT' },
-  { id: 'TOEIC', name: 'TOEIC' },
-  { id: 'CAMBRIDGE', name: 'Cambridge' },
-];
+export const IU_ENGLISH_TYPES = pickCertificates(['IELTS', 'TOEFL', 'TOEIC', 'CAMBRIDGE']);
 
 export const convertIuEnglishScore = (type, score, score2 = '') => {
   const value = parseFloat(score);

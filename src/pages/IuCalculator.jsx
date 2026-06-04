@@ -10,9 +10,11 @@ import {
   PenTool,
   Settings,
   SlidersHorizontal,
-  X,
 } from 'lucide-react';
 import { CardSection } from '../components/common/CardSection';
+import { ConversionModal } from '../components/common/ConversionModal';
+import { ConversionTable } from '../components/common/ConversionTable';
+import { TranscriptScoreTable } from '../components/common/TranscriptScoreTable';
 import { QuickScoreInput } from '../components/score/QuickScoreInput';
 import { MobileScoreButton } from '../components/score/MobileScoreButton';
 import { ResponsiveScorePanel } from '../components/score/ResponsiveScorePanel';
@@ -21,14 +23,6 @@ import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { IU_ENGLISH_TYPES, IU_GROUPS } from '../constants/iu';
 import { useIuCalculator } from '../hooks/useIuCalculator';
 import { clampNumber, clampScore } from '../utils/input';
-
-const IU_ENGLISH_MAX = {
-  IELTS: 9,
-  TOEFL: 120,
-  TOEIC_LR: 990,
-  TOEIC_SW: 400,
-  CAMBRIDGE: 230,
-};
 
 export const IuCalculator = () => {
   const { state, results } = useIuCalculator();
@@ -43,6 +37,7 @@ export const IuCalculator = () => {
   const hasThptQuickTotal = state.thptQuickTotal !== '';
   const hasHocBaDetail = state.hocBa.some((value) => value !== '');
   const hasHocBaQuickTotal = state.hocBaQuickTotal !== '';
+  const selectedEnglishType = IU_ENGLISH_TYPES.find((type) => type.id === state.englishType);
   const setQuickTotal = (setter, value) => setter(clampScore(value, 30));
 
   const updateK1 = (value) => {
@@ -193,43 +188,12 @@ export const IuCalculator = () => {
             <CardSection title="3. Điểm học bạ" icon={PenTool}>
                   <div className="space-y-4">
                     <h4 className="font-semibold text-slate-800">Học bạ - Trung bình lớp 10, 11, 12</h4>
-                    <div className="overflow-x-auto">
-                      <table className="w-full text-left text-sm">
-                        <thead className="bg-slate-50 text-slate-600">
-                          <tr>
-                            <th className="w-24 rounded-tl-lg px-4 py-3 font-semibold">Môn</th>
-                            <th className="px-4 py-3 text-center font-semibold">Lớp 10</th>
-                            <th className="px-4 py-3 text-center font-semibold">Lớp 11</th>
-                            <th className="rounded-tr-lg px-4 py-3 text-center font-semibold">Lớp 12</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100">
-                          {[0, 1, 2].map((subjectIndex) => (
-                            <tr key={`hocba-${subjectIndex}`}>
-                              <td className="px-4 py-3 font-medium text-slate-700">Môn {subjectIndex + 1}</td>
-                              {[0, 1, 2].map((yearIndex) => {
-                                const cellIndex = subjectIndex * 3 + yearIndex;
-                                return (
-                                  <td key={cellIndex} className="px-2 py-2">
-                                    <input
-                                      type="number"
-                                      min="0"
-                                      max="10"
-                                      step="0.1"
-                                      value={state.hocBa[cellIndex]}
-                                      onChange={(event) => updateArrayValue(state.hocBa, state.setHocBa, cellIndex, event.target.value, 10)}
-                                      disabled={hasHocBaQuickTotal}
-                                      className={`w-full rounded-md border border-slate-200 px-3 py-2 text-center focus:outline-none focus:ring-2 focus:ring-red-500 ${hasHocBaQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`}
-                                      placeholder="0.0"
-                                    />
-                                  </td>
-                                );
-                              })}
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+                    <TranscriptScoreTable
+                      values={state.hocBa}
+                      onChange={(cellIndex, value) => updateArrayValue(state.hocBa, state.setHocBa, cellIndex, value, 10)}
+                      disabled={hasHocBaQuickTotal}
+                      tone="red"
+                    />
                     <QuickScoreInput
                       title="Nhập nhanh tổng học bạ"
                       value={hasHocBaDetail ? results.hocBaTotal.toFixed(2) : state.hocBaQuickTotal}
@@ -319,10 +283,10 @@ export const IuCalculator = () => {
                             <input
                               type="number"
                               min="0"
-                              max={state.englishType === 'TOEIC' ? IU_ENGLISH_MAX.TOEIC_LR : IU_ENGLISH_MAX[state.englishType]}
+                              max={state.englishType === 'TOEIC' ? selectedEnglishType?.maxLr : selectedEnglishType?.max}
                               step="0.1"
                               value={state.englishScore}
-                              onChange={(event) => state.setEnglishScore(clampScore(event.target.value, state.englishType === 'TOEIC' ? IU_ENGLISH_MAX.TOEIC_LR : IU_ENGLISH_MAX[state.englishType]))}
+                              onChange={(event) => state.setEnglishScore(clampScore(event.target.value, state.englishType === 'TOEIC' ? selectedEnglishType?.maxLr : selectedEnglishType?.max))}
                               className="rounded-md border border-slate-300 px-2 py-2 text-sm focus:ring-2 focus:ring-red-500"
                               placeholder={state.englishType === 'TOEIC' ? 'Nghe đọc' : 'Điểm CC'}
                             />
@@ -330,10 +294,10 @@ export const IuCalculator = () => {
                               <input
                                 type="number"
                                 min="0"
-                                max={IU_ENGLISH_MAX.TOEIC_SW}
+                                max={selectedEnglishType?.maxSw}
                                 step="0.1"
                                 value={state.englishScore2}
-                                onChange={(event) => state.setEnglishScore2(clampScore(event.target.value, IU_ENGLISH_MAX.TOEIC_SW))}
+                                onChange={(event) => state.setEnglishScore2(clampScore(event.target.value, selectedEnglishType?.maxSw))}
                                 className="rounded-md border border-slate-300 px-2 py-2 text-sm focus:ring-2 focus:ring-red-500"
                                 placeholder="Nói viết"
                               />
@@ -488,20 +452,12 @@ export const IuCalculator = () => {
         onClick={() => setShowMobileResultModal(true)}
       />
 
-      {showEnglishConversionTable && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-5xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
-              <h3 className="text-lg font-bold text-slate-800">Bảng quy đổi chứng chỉ ngoại ngữ IU</h3>
-              <button
-                type="button"
-                onClick={() => setShowEnglishConversionTable(false)}
-                className="text-slate-400 hover:text-slate-600"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <div className="p-6 overflow-y-auto max-h-[70vh]">
+      <ConversionModal
+        isOpen={showEnglishConversionTable}
+        title="Bảng quy đổi chứng chỉ ngoại ngữ IU"
+        onClose={() => setShowEnglishConversionTable(false)}
+        maxWidthClassName="max-w-5xl"
+      >
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1.45fr_1fr]">
                 {[
                   {
@@ -548,48 +504,23 @@ export const IuCalculator = () => {
                       ['154 - 159', '8.0'],
                     ],
                   },
-                ].map((table) => {
-                  const toneClass = {
-                    blue: 'bg-blue-50 text-blue-800',
-                    emerald: 'bg-emerald-50 text-emerald-800',
-                    amber: 'bg-amber-50 text-amber-800',
-                    indigo: 'bg-indigo-50 text-indigo-800',
-                  }[table.tone];
-
-                  return (
-                    <div key={table.title}>
-                      <h4 className={`mb-3 rounded-lg py-2 text-center font-bold ${toneClass}`}>
-                        {table.title}
-                      </h4>
-                      <table className="w-full border-collapse text-center text-sm">
-                        <thead>
-                          <tr className="border-b-2 border-slate-200 text-slate-600">
-                            <th className="py-2 font-medium">
-                              {table.title === 'TOEIC' ? 'Điểm (L&R + S&W)' : 'Điểm'}
-                            </th>
-                            <th className="py-2 font-medium">Quy đổi</th>
-                          </tr>
-                        </thead>
-                        <tbody className="divide-y divide-slate-100">
-                          {table.rows.map(([score, converted]) => (
-                          <tr key={`${table.title}-${converted}`} className="hover:bg-slate-50">
-                              <td className="whitespace-nowrap px-2 py-2 text-slate-700">{score}</td>
-                              <td className="w-20 whitespace-nowrap px-2 py-2 font-semibold text-blue-700">{converted}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  );
-                })}
+                ].map((table) => (
+                  <ConversionTable
+                    key={table.title}
+                    title={table.title}
+                    tone={table.tone}
+                    columns={[
+                      { key: 'score', header: table.title === 'TOEIC' ? 'Điểm (L&R + S&W)' : 'Điểm' },
+                      { key: 'point', header: 'Quy đổi', value: true },
+                    ]}
+                    rows={table.rows.map(([score, point]) => ({ score, point }))}
+                  />
+                ))}
               </div>
               <div className="mt-4 rounded-lg border border-amber-100 bg-amber-50 p-4 text-sm text-amber-800">
                 Nếu đã dùng chứng chỉ ngoại ngữ để thay thế môn tiếng Anh trong tổ hợp THPT, chứng chỉ đó không được tính thêm vào điểm khuyến khích.
               </div>
-            </div>
-          </div>
-        </div>
-      )}
+      </ConversionModal>
     </div>
   );
 };

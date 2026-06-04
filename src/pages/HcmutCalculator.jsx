@@ -1,26 +1,23 @@
 import { useState } from 'react';
 import { useHcmutCalculator } from '../hooks/useHcmutCalculator';
 import { CardSection } from '../components/common/CardSection';
+import { ConversionModal } from '../components/common/ConversionModal';
+import { ConversionTable, ConversionTableGrid } from '../components/common/ConversionTable';
+import { TranscriptScoreTable } from '../components/common/TranscriptScoreTable';
 import { QuickScoreInput } from '../components/score/QuickScoreInput';
 import { MobileScoreButton } from '../components/score/MobileScoreButton';
 import { ResponsiveScorePanel } from '../components/score/ResponsiveScorePanel';
-import { Settings, BookOpen, PenTool, Award, Info, CheckCircle2, X, Building2, ExternalLink } from 'lucide-react';
+import { Settings, BookOpen, PenTool, Award, Info, CheckCircle2, Building2, ExternalLink } from 'lucide-react';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
-import { DOI_TUONG_HCMUT, INTL_CERT_TYPES, HCMUT_CCQT_TABLE } from '../constants/hcmut';
+import {
+  DOI_TUONG_HCMUT,
+  HCMUT_CCQT_TABLE,
+  HCMUT_ENGLISH_TABLES,
+  HCMUT_ENGLISH_TYPES,
+  INTL_CERT_TYPES,
+} from '../constants/hcmut';
 import { clampScore } from '../utils/input';
 import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
-
-const ENGLISH_SCORE_MAX = {
-  IELTS: 9,
-  TOEFL: 120,
-  PTE: 90,
-};
-
-const INTL_CERT_MAX = {
-  SAT: 1600,
-  ACT: 36,
-  IB: 45,
-};
 
 export const HcmutCalculator = () => {
   const { state, results } = useHcmutCalculator();
@@ -59,6 +56,8 @@ export const HcmutCalculator = () => {
   const dgnlDetailTotal = (parseFloat(state.dgnlTv) || 0) + (parseFloat(state.dgnlTa) || 0) + ((parseFloat(state.dgnlToan) || 0) * 2) + (parseFloat(state.dgnlKh) || 0);
   const hasDgnlDetail = state.dgnlTv !== '' || state.dgnlTa !== '' || state.dgnlToan !== '' || state.dgnlKh !== '';
   const hasDgnlQuickTotal = state.dgnlQuickTotal !== '';
+  const selectedIntlCert = INTL_CERT_TYPES.find((type) => type.id === state.intlCertType);
+  const selectedEnglishType = HCMUT_ENGLISH_TYPES.find((type) => type.id === state.ngoaiNguType);
 
   return (
     <div className="max-w-7xl mx-auto animate-in fade-in duration-500 pb-28">
@@ -161,9 +160,9 @@ export const HcmutCalculator = () => {
                        </select>
                     ) : (
                        <input
-                        type="number" min="0" max={INTL_CERT_MAX[state.intlCertType]}
+                        type="number" min="0" max={selectedIntlCert?.max}
                         value={state.intlCertScore}
-                        onChange={e => state.setIntlCertScore(clampScore(e.target.value, INTL_CERT_MAX[state.intlCertType]))}
+                        onChange={e => state.setIntlCertScore(clampScore(e.target.value, selectedIntlCert?.max))}
                         className="flex-1 px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-800 font-bold text-lg"
                         placeholder="Nhập điểm CC..."
                       />
@@ -183,43 +182,18 @@ export const HcmutCalculator = () => {
 
           {/* Học bạ */}
           <CardSection title="2. Điểm học bạ" icon={BookOpen}>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm text-left border-collapse">
-                <thead className="bg-slate-50 text-slate-600">
-                  <tr>
-                    <th className="px-4 py-3 rounded-tl-lg font-semibold w-1 whitespace-nowrap">Môn</th>
-                    <th className="px-4 py-3 font-semibold text-center w-1/4">Lớp 10</th>
-                    <th className="px-4 py-3 font-semibold text-center w-1/4">Lớp 11</th>
-                    <th className="px-4 py-3 font-semibold text-center w-1/4">Lớp 12</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {[0, 1, 2].map((subjectIndex) => (
-                    <tr key={`subject-${subjectIndex}`} className={subjectIndex === 0 ? "bg-blue-50/50" : ""}>
-                      <td className="px-4 py-3 font-medium text-slate-700 whitespace-nowrap">
-                        Môn {subjectIndex + 1} {subjectIndex === 0 && <span className="text-blue-700 font-bold ml-1">(Toán x2)</span>}
-                      </td>
-                      {[0, 1, 2].map((yearIndex) => {
-                        const cellIndex = subjectIndex * 3 + yearIndex;
-                        return (
-                          <td key={cellIndex} className="px-2 py-2">
-                            <input
-                              type="number" min="0" max="10" step="0.1"
-                              value={state.hocBa[cellIndex]}
-                              onChange={(e) => handleHocBaChange(cellIndex, e.target.value)}
-                              disabled={hasHocBaQuickAverage}
-                              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-800 text-center transition-colors border-slate-200 ${
-                                hasHocBaQuickAverage ? 'cursor-not-allowed bg-slate-100 text-slate-400' : `text-slate-900 ${subjectIndex === 0 ? "bg-white" : ""}`
-                              }`}
-                              placeholder="0.0"
-                            />
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div>
+              <TranscriptScoreTable
+                values={state.hocBa}
+                onChange={handleHocBaChange}
+                disabled={hasHocBaQuickAverage}
+                tone="hcmut"
+                subjectWeights={[2, 1, 1]}
+                highlightedSubjects={[0]}
+                getCellMeta={({ subjectIndex }) => ({
+                  className: `border-slate-200 text-slate-900 ${subjectIndex === 0 ? 'bg-white' : ''}`,
+                })}
+              />
               <QuickScoreInput
                 title="Nhập nhanh trung bình học bạ"
                 description="Điểm trung bình học bạ trên thang 10."
@@ -302,33 +276,32 @@ export const HcmutCalculator = () => {
                                }}
                                className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-blue-800"
                              >
-                               <option value="IELTS">IELTS</option>
-                               <option value="TOEFL">TOEFL iBT</option>
-                               <option value="PTE">PTE Academic</option>
-                               <option value="TOEIC">TOEIC (4 Kỹ năng)</option>
+                               {HCMUT_ENGLISH_TYPES.map((type) => (
+                                 <option key={type.id} value={type.id}>{type.name}</option>
+                               ))}
                              </select>
                              
                              {state.ngoaiNguType === 'TOEIC' ? (
                                <div className="flex gap-2">
                                   <input
                                     type="number" min="0"
-                                    max="990"
-                                    value={state.toeicLr} onChange={e => state.setToeicLr(clampScore(e.target.value, 990))}
+                                    max={selectedEnglishType?.maxLr}
+                                    value={state.toeicLr} onChange={e => state.setToeicLr(clampScore(e.target.value, selectedEnglishType?.maxLr))}
                                     className="w-1/2 px-3 py-2 text-sm border border-slate-300 rounded-md" placeholder="Nghe Đọc..."
                                   />
                                   <input
                                     type="number" min="0"
-                                    max="400"
-                                    value={state.toeicSw} onChange={e => state.setToeicSw(clampScore(e.target.value, 400))}
+                                    max={selectedEnglishType?.maxSw}
+                                    value={state.toeicSw} onChange={e => state.setToeicSw(clampScore(e.target.value, selectedEnglishType?.maxSw))}
                                     className="w-1/2 px-3 py-2 text-sm border border-slate-300 rounded-md" placeholder="Nói Viết..."
                                   />
                                </div>
                              ) : (
                                <input
                                  type="number" min="0" step="0.1"
-                                 max={ENGLISH_SCORE_MAX[state.ngoaiNguType]}
+                                 max={selectedEnglishType?.max}
                                  value={state.diemNgoaiNgu}
-                                 onChange={(e) => state.setDiemNgoaiNgu(clampScore(e.target.value, ENGLISH_SCORE_MAX[state.ngoaiNguType]))}
+                                 onChange={(e) => state.setDiemNgoaiNgu(clampScore(e.target.value, selectedEnglishType?.max))}
                                  className="w-full px-3 py-2 text-sm border border-slate-300 rounded-md"
                                  placeholder={`Điểm ${state.ngoaiNguType}...`}
                                />
@@ -440,135 +413,45 @@ export const HcmutCalculator = () => {
         onClick={() => setShowMobileResultModal(true)}
       />
 
-      {/* Modal Bảng Quy Đổi Ngoại Ngữ HCMUT */}
-      {showConversionTable && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
-              <h3 className="text-lg font-bold text-slate-800">Bảng Quy Đổi Ngoại Ngữ HCMUT</h3>
-              <button onClick={() => setShowConversionTable(false)} className="text-slate-400 hover:text-slate-600">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="p-6 overflow-y-auto max-h-[70vh]">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div>
-                  <h4 className="font-bold text-blue-800 mb-3 text-center bg-blue-50 py-2 rounded-lg">IELTS</h4>
-                  <table className="w-full text-sm text-center border-collapse">
-                    <thead>
-                      <tr className="border-b-2 border-slate-200 text-slate-600">
-                        <th className="py-2 font-medium">Band</th>
-                        <th className="py-2 font-medium">Quy đổi</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">≥ 8.0</td><td className="py-2 font-semibold text-blue-700">10.0</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">7.5</td><td className="py-2 font-semibold text-blue-700">9.5</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">7.0</td><td className="py-2 font-semibold text-blue-700">9.0</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">6.5</td><td className="py-2 font-semibold text-blue-700">8.5</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">6.0</td><td className="py-2 font-semibold text-blue-700">8.0</td></tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div>
-                  <h4 className="font-bold text-emerald-800 mb-3 text-center bg-emerald-50 py-2 rounded-lg">TOEFL iBT</h4>
-                  <table className="w-full text-sm text-center border-collapse">
-                    <thead>
-                      <tr className="border-b-2 border-slate-200 text-slate-600">
-                        <th className="py-2 font-medium">Điểm</th>
-                        <th className="py-2 font-medium">Quy đổi</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">≥ 110</td><td className="py-2 font-semibold text-emerald-700">10.0</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">102 - 109</td><td className="py-2 font-semibold text-emerald-700">9.5</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">94 - 101</td><td className="py-2 font-semibold text-emerald-700">9.0</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">79 - 93</td><td className="py-2 font-semibold text-emerald-700">8.5</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">60 - 78</td><td className="py-2 font-semibold text-emerald-700">8.0</td></tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div>
-                  <h4 className="font-bold text-indigo-800 mb-3 text-center bg-indigo-50 py-2 rounded-lg">PTE Academic</h4>
-                  <table className="w-full text-sm text-center border-collapse">
-                    <thead>
-                      <tr className="border-b-2 border-slate-200 text-slate-600">
-                        <th className="py-2 font-medium">Điểm</th>
-                        <th className="py-2 font-medium">Quy đổi</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">≥ 79</td><td className="py-2 font-semibold text-indigo-700">10.0</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">71 - 78</td><td className="py-2 font-semibold text-indigo-700">9.5</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">63 - 70</td><td className="py-2 font-semibold text-indigo-700">9.0</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">55 - 62</td><td className="py-2 font-semibold text-indigo-700">8.5</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">47 - 54</td><td className="py-2 font-semibold text-indigo-700">8.0</td></tr>
-                    </tbody>
-                  </table>
-                </div>
-                <div>
-                  <h4 className="font-bold text-amber-800 mb-3 text-center bg-amber-50 py-2 rounded-lg">TOEIC</h4>
-                  <table className="w-full text-sm text-center border-collapse">
-                    <thead>
-                      <tr className="border-b-2 border-slate-200 text-slate-600">
-                        <th className="py-2 font-medium">L&R + S&W</th>
-                        <th className="py-2 font-medium">Quy đổi</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">≥ 905 + 390</td><td className="py-2 font-semibold text-amber-700">10.0</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">835 + 380</td><td className="py-2 font-semibold text-amber-700">9.5</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">785 + 360</td><td className="py-2 font-semibold text-amber-700">9.0</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">685 + 330</td><td className="py-2 font-semibold text-amber-700">8.5</td></tr>
-                      <tr className="hover:bg-slate-50"><td className="py-2 text-slate-700">570 + 310</td><td className="py-2 font-semibold text-amber-700">8.0</td></tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConversionModal
+        isOpen={showConversionTable}
+        title="Bảng Quy Đổi Ngoại Ngữ HCMUT"
+        onClose={() => setShowConversionTable(false)}
+      >
+        <ConversionTableGrid>
+          {HCMUT_ENGLISH_TABLES.map((table) => (
+            <ConversionTable
+              key={table.title}
+              title={table.title}
+              tone={table.tone}
+              columns={[
+                { key: 'score', header: table.scoreHeader },
+                { key: 'point', header: 'Quy đổi', value: true },
+              ]}
+              rows={table.rows.map(([score, point]) => ({ score, point }))}
+            />
+          ))}
+        </ConversionTableGrid>
+      </ConversionModal>
 
-      {/* Modal Bảng Quy Đổi Chứng Chỉ Quốc Tế HCMUT */}
-      {showIntlCertTable && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
-              <h3 className="text-lg font-bold text-slate-800">Bảng Quy Đổi Chứng Chỉ Quốc Tế HCMUT</h3>
-              <button onClick={() => setShowIntlCertTable(false)} className="text-slate-400 hover:text-slate-600">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="p-6 overflow-y-auto max-h-[70vh]">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm text-center border-collapse">
-                  <thead>
-                    <tr className="border-b-2 border-slate-200 text-slate-600">
-                      <th className="px-4 py-2 font-medium">Điểm SAT</th>
-                      <th className="px-4 py-2 font-medium">Điểm ACT</th>
-                      <th className="px-4 py-2 font-medium">Điểm IB</th>
-                      <th className="px-4 py-2 font-medium">Hạng A-Level</th>
-                      <th className="px-4 py-2 font-medium">Quy đổi</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {HCMUT_CCQT_TABLE.map((row, index) => (
-                      <tr key={`${row.point}-${index}`} className="hover:bg-slate-50">
-                        <td className="px-4 py-2 text-slate-700">{row.sat}</td>
-                        <td className="px-4 py-2 text-slate-700">{row.act || '-'}</td>
-                        <td className="px-4 py-2 text-slate-700">{row.ib || '-'}</td>
-                        <td className="px-4 py-2 text-slate-700">{row.aLevel || '-'}</td>
-                        <td className="px-4 py-2 font-semibold text-blue-700">{row.point}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
+      <ConversionModal
+        isOpen={showIntlCertTable}
+        title="Bảng Quy Đổi Chứng Chỉ Quốc Tế HCMUT"
+        onClose={() => setShowIntlCertTable(false)}
+      >
+        <div className="overflow-x-auto">
+          <ConversionTable
+            columns={[
+              { key: 'sat', header: 'Điểm SAT' },
+              { key: 'act', header: 'Điểm ACT' },
+              { key: 'ib', header: 'Điểm IB' },
+              { key: 'aLevel', header: 'Hạng A-Level' },
+              { key: 'point', header: 'Quy đổi', value: true },
+            ]}
+            rows={HCMUT_CCQT_TABLE}
+          />
         </div>
-      )}
+      </ConversionModal>
 
     </div>
   );

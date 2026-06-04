@@ -1,3 +1,5 @@
+import { pickCertificates } from './common';
+
 export const UEL_ENGLISH_BONUS = [
   { 
     id: 'b5.0', point: 5.0, name: 'Cộng 5.0đ',
@@ -45,13 +47,7 @@ export const UEL_ENGLISH_BONUS = [
   }
 ];
 
-export const UEL_ENGLISH_CERT_TYPES = [
-  { id: 'IELTS', name: 'IELTS' },
-  { id: 'Linguaskill_B1', name: 'Linguaskill (B1)' },
-  { id: 'Linguaskill_B2', name: 'Linguaskill (B2)' },
-  { id: 'TOEIC', name: 'TOEIC (4 kỹ năng)' },
-  { id: 'TOEFL_iBT', name: 'TOEFL iBT' }
-];
+export const UEL_ENGLISH_CERT_TYPES = pickCertificates(['IELTS', 'Linguaskill_B1', 'Linguaskill_B2', 'TOEIC', 'TOEFL_iBT']);
 
 export const UEL_ENGLISH_CONVERSION = {
   IELTS: [
@@ -102,12 +98,7 @@ export const UEL_ENGLISH_CONVERSION = {
   ]
 };
 
-export const CCQT_TYPES = [
-  { id: 'SAT', name: 'SAT' },
-  { id: 'ACT', name: 'ACT' },
-  { id: 'IB', name: 'IB' },
-  { id: 'A_LEVEL', name: 'A-Level' }
-];
+export const CCQT_TYPES = pickCertificates(['SAT', 'ACT', 'IB', 'A_LEVEL']);
 
 export const UEL_CCQT_TABLE = [
   { sat: 1600, act: 36, ib: 42, aLevel: '', point: 100 },

@@ -1,21 +1,17 @@
 import { useState } from 'react';
 import { useHcmusCalculator } from '../hooks/useHcmusCalculator';
 import { CardSection } from '../components/common/CardSection';
+import { ConversionModal } from '../components/common/ConversionModal';
+import { ConversionTable, ConversionTableGrid } from '../components/common/ConversionTable';
+import { TranscriptScoreTable } from '../components/common/TranscriptScoreTable';
 import { QuickScoreInput } from '../components/score/QuickScoreInput';
 import { MobileScoreButton } from '../components/score/MobileScoreButton';
 import { ResponsiveScorePanel } from '../components/score/ResponsiveScorePanel';
 import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
-import { Settings, BookOpen, PenTool, Award, Info, AlertTriangle, CheckCircle2, X, GraduationCap, ExternalLink } from 'lucide-react';
-import { NGOAI_NGU_CONVERSION } from '../constants/hcmus';
+import { Settings, BookOpen, PenTool, Award, Info, AlertTriangle, CheckCircle2, GraduationCap, ExternalLink } from 'lucide-react';
+import { HCMUS_ENGLISH_TYPES, NGOAI_NGU_CONVERSION } from '../constants/hcmus';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { clampDecimal, clampScore } from '../utils/input';
-
-const ENGLISH_SCORE_MAX = Object.fromEntries(
-  Object.entries(NGOAI_NGU_CONVERSION).map(([type, rows]) => [
-    type,
-    Math.max(...rows.map((row) => row.max)),
-  ])
-);
 
 export const HcmusCalculator = () => {
   const { state, results } = useHcmusCalculator();
@@ -46,6 +42,25 @@ export const HcmusCalculator = () => {
   const hasHocBaQuickTotal = state.hocBaQuickTotal !== '';
   const hasThptDetail = state.thpt.some(val => val !== '') || (state.isNgoaiNgu && state.diemChungChi !== '');
   const hasThptQuickTotal = state.thptQuickTotal !== '';
+  const selectedEnglishType = HCMUS_ENGLISH_TYPES.find((type) => type.id === state.chungChiType);
+  const isHocBaTouched = state.hocBa.some(val => val !== '');
+
+  const getHocBaSubjectStatus = (subjectIndex) => {
+    const p10 = state.hocBa[subjectIndex * 3];
+    const p11 = state.hocBa[subjectIndex * 3 + 1];
+    const p12 = state.hocBa[subjectIndex * 3 + 2];
+    const isMissing10 = p10 === '' && p11 !== '' && p12 !== '';
+
+    if (!isHocBaTouched) return { isMissing10, note: '', noteClass: '' };
+    if (p11 === '' || p12 === '' || (p10 === '' && !isMissing10)) {
+      return { isMissing10, note: 'Thiếu điểm', noteClass: 'font-semibold text-red-500' };
+    }
+    if (isMissing10) {
+      return { isMissing10, note: 'Tự điền Lớp 10', noteClass: 'font-semibold text-amber-600' };
+    }
+    return { isMissing10, note: 'Hợp lệ', noteClass: 'text-emerald-600' };
+  };
+
   return (
     <div className="max-w-7xl mx-auto animate-in fade-in duration-500 pb-28">
       <div className="mb-8">
@@ -150,75 +165,41 @@ export const HcmusCalculator = () => {
                 disabled={hasHocBaDetail}
                 className="order-2"
               />
-              <div className="order-1 overflow-x-auto">
-              <table className="w-full text-sm text-left border-collapse">
-                <thead className="bg-slate-50 text-slate-600">
-                  <tr>
-                    <th className="px-4 py-3 rounded-tl-lg font-semibold">Môn</th>
-                    <th className="px-4 py-3 font-semibold text-center">Lớp 10</th>
-                    <th className="px-4 py-3 font-semibold text-center">Lớp 11</th>
-                    <th className="px-4 py-3 font-semibold text-center">Lớp 12</th>
-                    <th className="px-2 sm:px-4 py-3 rounded-tr-lg font-semibold text-center w-28 sm:w-32">Ghi chú</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {[0, 1, 2].map((subjectIndex) => {
-                    const p10_raw = state.hocBa[subjectIndex * 3];
-                    const p11_raw = state.hocBa[subjectIndex * 3 + 1];
-                    const p12_raw = state.hocBa[subjectIndex * 3 + 2];
-                    
-                    const isFormTouched = state.hocBa.some(val => val !== '');
-                    const isMissing10 = p10_raw === '' && p11_raw !== '' && p12_raw !== '';
-                    
-                    let rowNote = "";
-                    let noteClass = "";
-                    if (isFormTouched) {
-                      if (p11_raw === '' || p12_raw === '' || (p10_raw === '' && !isMissing10)) {
-                        rowNote = "Thiếu điểm";
-                        noteClass = "text-red-500 font-semibold";
-                      } else if (isMissing10) {
-                        rowNote = "Tự điền Lớp 10";
-                        noteClass = "text-amber-600 font-semibold";
-                      } else {
-                        rowNote = "Hợp lệ";
-                        noteClass = "text-emerald-600";
-                      }
+              <div className="order-1">
+                <TranscriptScoreTable
+                  values={state.hocBa}
+                  onChange={handleHocBaChange}
+                  disabled={hasHocBaQuickTotal}
+                  tone="blue"
+                  showNoteColumn
+                  getDisplayValue={({ cellIndex, subjectIndex, yearIndex }) => {
+                    const { isMissing10 } = getHocBaSubjectStatus(subjectIndex);
+                    const cellIsMissing10 = yearIndex === 0 && isMissing10;
+                    return state.hocBa[cellIndex] !== '' ? state.hocBa[cellIndex] : (cellIsMissing10 ? results.interpolatedHocBa[cellIndex] : '');
+                  }}
+                  getCellMeta={({ cellIndex, subjectIndex, yearIndex }) => {
+                    const { isMissing10 } = getHocBaSubjectStatus(subjectIndex);
+                    const cellIsMissing10 = yearIndex === 0 && isMissing10;
+                    const isMissingCell = isHocBaTouched && state.hocBa[cellIndex] === '' && !cellIsMissing10;
+
+                    if (cellIsMissing10) {
+                      return {
+                        className: 'border-amber-300 bg-amber-50 font-semibold text-amber-600',
+                        title: 'Điểm nội suy từ lớp 11 và 12',
+                      };
                     }
 
-                    return (
-                    <tr key={`subject-${subjectIndex}`}>
-                      <td className="px-4 py-3 font-medium text-slate-700 whitespace-nowrap">Môn {subjectIndex + 1}</td>
-                      {[0, 1, 2].map((yearIndex) => {
-                        const cellIndex = subjectIndex * 3 + yearIndex;
-                        const cellIsMissing10 = yearIndex === 0 && isMissing10;
-                        const displayVal = state.hocBa[cellIndex] !== '' ? state.hocBa[cellIndex] : (cellIsMissing10 ? results.interpolatedHocBa[cellIndex] : '');
-                        const isThieuDiemCell = isFormTouched && state.hocBa[cellIndex] === '' && !cellIsMissing10;
+                    if (isMissingCell) {
+                      return { className: 'border-red-300 bg-red-50 text-slate-900' };
+                    }
 
-                        return (
-                          <td key={cellIndex} className="px-2 py-2">
-                            <input
-                              type="number" min="0" max="10" step="0.1"
-                              value={displayVal}
-                              onChange={(e) => handleHocBaChange(cellIndex, e.target.value)}
-                              disabled={hasHocBaQuickTotal}
-                              className={`w-full px-2 sm:px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-center transition-colors
-                                ${hasHocBaQuickTotal ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400' :
-                                  cellIsMissing10 ? 'border-amber-300 text-amber-600 bg-amber-50 font-semibold' : 
-                                  isThieuDiemCell ? 'border-red-300 bg-red-50 text-slate-900' : 'border-slate-200 text-slate-900'}
-                              `}
-                              placeholder="0.0"
-                              title={cellIsMissing10 ? "Điểm nội suy từ lớp 11 và 12" : ""}
-                            />
-                          </td>
-                        );
-                      })}
-                      <td className="px-2 sm:px-3 py-2 text-center text-xs sm:text-sm w-28 sm:w-32 leading-tight">
-                        <span className={noteClass}>{rowNote}</span>
-                      </td>
-                    </tr>
-                  )})}
-                </tbody>
-              </table>
+                    return { className: 'border-slate-200 text-slate-900' };
+                  }}
+                  renderSubjectNote={({ subjectIndex }) => {
+                    const { note, noteClass } = getHocBaSubjectStatus(subjectIndex);
+                    return <span className={noteClass}>{note}</span>;
+                  }}
+                />
               </div>
               {results.hocBaStatus === 3 && (
                 <div className="order-3 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-3">
@@ -307,14 +288,15 @@ export const HcmusCalculator = () => {
                             }}
                             className="w-20 sm:w-24 px-2 py-1.5 text-sm border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-blue-500 shrink-0"
                           >
-                            <option value="IELTS">IELTS</option>
-                            <option value="TOEFL">TOEFL</option>
+                            {HCMUS_ENGLISH_TYPES.map((type) => (
+                              <option key={type.id} value={type.id}>{type.name}</option>
+                            ))}
                           </select>
                           <input
                             type="number" min="0" step="0.1"
-                            max={ENGLISH_SCORE_MAX[state.chungChiType]}
+                            max={selectedEnglishType?.max}
                             value={state.diemChungChi}
-                            onChange={(e) => state.setDiemChungChi(clampScore(e.target.value, ENGLISH_SCORE_MAX[state.chungChiType]))}
+                            onChange={(e) => state.setDiemChungChi(clampScore(e.target.value, selectedEnglishType?.max))}
                             className="w-full min-w-0 px-2 py-1.5 text-sm border border-slate-300 rounded-md bg-white focus:ring-2 focus:ring-blue-500"
                             placeholder="Điểm CC..."
                           />
@@ -483,61 +465,39 @@ export const HcmusCalculator = () => {
         onClick={() => setShowMobileResultModal(true)}
       />
 
-      {/* Modal Bảng Quy Đổi Ngoại Ngữ */}
-      {showConversionTable && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
-              <h3 className="text-lg font-bold text-slate-800">Bảng Quy Đổi Ngoại Ngữ</h3>
-              <button onClick={() => setShowConversionTable(false)} className="text-slate-400 hover:text-slate-600">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="p-6 overflow-y-auto max-h-[70vh]">
-              <div className="grid grid-cols-2 gap-6">
-                <div>
-                  <h4 className="font-bold text-blue-800 mb-3 text-center bg-blue-50 py-2 rounded-lg">IELTS</h4>
-                  <table className="w-full text-sm text-center border-collapse">
-                    <thead>
-                      <tr className="border-b-2 border-slate-200 text-slate-600">
-                        <th className="py-2 font-medium">Band</th>
-                        <th className="py-2 font-medium">Quy đổi</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      {NGOAI_NGU_CONVERSION.IELTS.map((row, i) => (
-                        <tr key={i} className="hover:bg-slate-50">
-                          <td className="py-2 text-slate-700">{row.min}{row.max !== 9.0 ? ` - ${row.max}` : ' - 9.0'}</td>
-                          <td className="py-2 font-semibold text-blue-700">{row.point}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                <div>
-                  <h4 className="font-bold text-emerald-800 mb-3 text-center bg-emerald-50 py-2 rounded-lg">TOEFL iBT</h4>
-                  <table className="w-full text-sm text-center border-collapse">
-                    <thead>
-                      <tr className="border-b-2 border-slate-200 text-slate-600">
-                        <th className="py-2 font-medium">Điểm</th>
-                        <th className="py-2 font-medium">Quy đổi</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      {NGOAI_NGU_CONVERSION.TOEFL.map((row, i) => (
-                        <tr key={i} className="hover:bg-slate-50">
-                          <td className="py-2 text-slate-700">{row.min} - {row.max}</td>
-                          <td className="py-2 font-semibold text-emerald-700">{row.point}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConversionModal
+        isOpen={showConversionTable}
+        title="Bảng Quy Đổi Ngoại Ngữ"
+        onClose={() => setShowConversionTable(false)}
+        maxWidthClassName="max-w-lg"
+      >
+        <ConversionTableGrid className="grid grid-cols-2 gap-6">
+          <ConversionTable
+            title="IELTS"
+            tone="blue"
+            columns={[
+              { key: 'band', header: 'Band' },
+              { key: 'point', header: 'Quy đổi', value: true },
+            ]}
+            rows={NGOAI_NGU_CONVERSION.IELTS.map((row) => ({
+              band: `${row.min}${row.max !== 9.0 ? ` - ${row.max}` : ' - 9.0'}`,
+              point: row.point,
+            }))}
+          />
+          <ConversionTable
+            title="TOEFL iBT"
+            tone="emerald"
+            columns={[
+              { key: 'score', header: 'Điểm' },
+              { key: 'point', header: 'Quy đổi', value: true },
+            ]}
+            rows={NGOAI_NGU_CONVERSION.TOEFL.map((row) => ({
+              score: `${row.min} - ${row.max}`,
+              point: row.point,
+            }))}
+          />
+        </ConversionTableGrid>
+      </ConversionModal>
 
     </div>
   );

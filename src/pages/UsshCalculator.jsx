@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useUsshCalculator } from '../hooks/useUsshCalculator';
 import { CardSection } from '../components/common/CardSection';
+import { TranscriptScoreTable } from '../components/common/TranscriptScoreTable';
 import { QuickScoreInput } from '../components/score/QuickScoreInput';
 import { MobileScoreButton } from '../components/score/MobileScoreButton';
 import { ResponsiveScorePanel } from '../components/score/ResponsiveScorePanel';
@@ -57,41 +58,13 @@ export const UsshCalculator = () => {
           
           {/* Học bạ */}
           <CardSection title="1. Điểm học bạ" icon={BookOpen}>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm text-left border-collapse">
-                <thead className="bg-slate-50 text-slate-600">
-                  <tr>
-                    <th className="px-4 py-3 rounded-tl-lg font-semibold w-1 whitespace-nowrap">Môn</th>
-                    <th className="px-4 py-3 font-semibold text-center w-1/4">Lớp 10</th>
-                    <th className="px-4 py-3 font-semibold text-center w-1/4">Lớp 11</th>
-                    <th className="px-4 py-3 font-semibold text-center w-1/4">Lớp 12</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {[0, 1, 2].map((subjectIndex) => (
-                    <tr key={`subject-${subjectIndex}`}>
-                      <td className="px-4 py-3 font-medium text-slate-700 whitespace-nowrap">
-                        Môn {subjectIndex + 1}
-                      </td>
-                      {[0, 1, 2].map((yearIndex) => {
-                        const cellIndex = subjectIndex * 3 + yearIndex;
-                        return (
-                          <td key={cellIndex} className="px-2 py-2">
-                            <input
-                              type="number" min="0" max="10" step="0.1"
-                              value={state.hocBa[cellIndex]}
-                              onChange={(e) => handleHocBaChange(cellIndex, e.target.value)}
-                              disabled={hasHocBaQuickTotal}
-                              className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600 text-center transition-colors border-slate-200 ${hasHocBaQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : 'text-slate-900'}`}
-                              placeholder="0.0"
-                            />
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div>
+              <TranscriptScoreTable
+                values={state.hocBa}
+                onChange={handleHocBaChange}
+                disabled={hasHocBaQuickTotal}
+                tone="emerald"
+              />
               <QuickScoreInput
                 title="Nhập nhanh tổng học bạ"
                 value={hasHocBaDetail ? ((results.hb100 / 100) * 30).toFixed(2) : state.hocBaQuickTotal}

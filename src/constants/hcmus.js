@@ -1,3 +1,5 @@
+import { pickCertificates } from './common';
+
 export const NGOAI_NGU_CONVERSION = {
   IELTS: [
     { min: 8.0, max: 9.0, point: 10 },
@@ -20,3 +22,5 @@ export const NGOAI_NGU_CONVERSION = {
     { min: 32, max: 34, point: 7.0 },
   ]
 };
+
+export const HCMUS_ENGLISH_TYPES = pickCertificates(Object.keys(NGOAI_NGU_CONVERSION));

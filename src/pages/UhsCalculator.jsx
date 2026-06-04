@@ -11,19 +11,15 @@ import {
   SlidersHorizontal,
 } from 'lucide-react';
 import { CardSection } from '../components/common/CardSection';
+import { TranscriptScoreTable } from '../components/common/TranscriptScoreTable';
 import { QuickScoreInput } from '../components/score/QuickScoreInput';
 import { MobileScoreButton } from '../components/score/MobileScoreButton';
 import { ResponsiveScorePanel } from '../components/score/ResponsiveScorePanel';
 import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
-import { UHS_LANG_MAX, UHS_LANG_TYPES } from '../constants/uhs';
+import { UHS_LANG_TYPES } from '../constants/uhs';
 import { useUhsCalculator } from '../hooks/useUhsCalculator';
 import { clampNumber, clampScore } from '../utils/input';
-
-const UHS_TOEIC_MAX = {
-  lr: 990,
-  sw: 400,
-};
 
 export const UhsCalculator = () => {
   const { state, results } = useUhsCalculator();
@@ -32,6 +28,7 @@ export const UhsCalculator = () => {
   const subjects = ['Môn 1', 'Môn 2', 'Môn 3'];
   const computedC = 100 - state.a - state.b;
   const isWeightValid = computedC >= 0 && computedC <= 25 && state.a >= 40 && state.b <= 35;
+  const selectedLanguageType = UHS_LANG_TYPES.find((type) => type.id === state.languageType);
 
   const updateArrayValue = (values, setter, index, value, max) => {
     const nextValues = [...values];
@@ -161,43 +158,13 @@ export const UhsCalculator = () => {
           <CardSection title="2. Điểm học bạ" icon={PenTool}>
             <div className="space-y-4">
               <h4 className="mb-3 font-semibold text-slate-800">Học bạ 3 môn</h4>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead className="bg-slate-50 text-slate-600">
-                    <tr>
-                      <th className="rounded-tl-lg px-3 py-2 text-left font-semibold">Môn</th>
-                      <th className="px-3 py-2 font-semibold">Lớp 10</th>
-                      <th className="px-3 py-2 font-semibold">Lớp 11</th>
-                      <th className="rounded-tr-lg px-3 py-2 font-semibold">Lớp 12</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {subjects.map((subject, subjectIndex) => (
-                      <tr key={`hocba-${subject}`}>
-                        <td className="px-3 py-2 font-medium text-slate-700">{subject}</td>
-                        {[0, 1, 2].map((yearIndex) => {
-                          const cellIndex = subjectIndex * 3 + yearIndex;
-                          return (
-                            <td key={cellIndex} className="px-1 py-2">
-                              <input
-                                type="number"
-                                min="0"
-                                max="10"
-                                step="0.1"
-                                value={state.hocBa[cellIndex]}
-                                onChange={(event) => updateArrayValue(state.hocBa, state.setHocBa, cellIndex, event.target.value, 10)}
-                                disabled={hasHocBaQuickTotal}
-                                className={`w-full rounded-md border border-slate-200 px-2 py-2 text-center focus:outline-none focus:ring-2 focus:ring-teal-700 ${hasHocBaQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''}`}
-                                placeholder="0.0"
-                              />
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <TranscriptScoreTable
+                values={state.hocBa}
+                onChange={(cellIndex, value) => updateArrayValue(state.hocBa, state.setHocBa, cellIndex, value, 10)}
+                disabled={hasHocBaQuickTotal}
+                tone="teal"
+                subjectLabels={subjects}
+              />
               <QuickScoreInput
                 title="Nhập nhanh tổng học bạ"
                 value={hasHocBaDetail ? results.hocBaTotal.toFixed(2) : state.hocBaQuickTotal}
@@ -292,9 +259,9 @@ export const UhsCalculator = () => {
                   <input
                     type="number"
                     min="0"
-                    max={state.languageType === 'TOEIC' ? UHS_TOEIC_MAX.lr : UHS_LANG_MAX[state.languageType]}
+                    max={state.languageType === 'TOEIC' ? selectedLanguageType?.maxLr : selectedLanguageType?.max}
                     value={state.languageScore}
-                    onChange={(event) => state.setLanguageScore(clampScore(event.target.value, state.languageType === 'TOEIC' ? UHS_TOEIC_MAX.lr : UHS_LANG_MAX[state.languageType]))}
+                    onChange={(event) => state.setLanguageScore(clampScore(event.target.value, state.languageType === 'TOEIC' ? selectedLanguageType?.maxLr : selectedLanguageType?.max))}
                     className="rounded-md border border-teal-200 px-3 py-2 focus:ring-2 focus:ring-teal-700"
                     placeholder={state.languageType === 'TOEIC' ? 'L&R' : 'Điểm chứng chỉ'}
                   />
@@ -302,9 +269,9 @@ export const UhsCalculator = () => {
                     <input
                       type="number"
                       min="0"
-                      max={UHS_TOEIC_MAX.sw}
+                      max={selectedLanguageType?.maxSw}
                       value={state.languageScore2}
-                      onChange={(event) => state.setLanguageScore2(clampScore(event.target.value, UHS_TOEIC_MAX.sw))}
+                      onChange={(event) => state.setLanguageScore2(clampScore(event.target.value, selectedLanguageType?.maxSw))}
                       className="rounded-md border border-teal-200 px-3 py-2 focus:ring-2 focus:ring-teal-700"
                       placeholder="S&W"
                     />

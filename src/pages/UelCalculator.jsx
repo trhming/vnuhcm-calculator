@@ -1,30 +1,17 @@
 import { useState } from 'react';
 import { useUelCalculator } from '../hooks/useUelCalculator';
 import { CardSection } from '../components/common/CardSection';
+import { ConversionModal } from '../components/common/ConversionModal';
+import { ConversionTable } from '../components/common/ConversionTable';
+import { TranscriptScoreTable } from '../components/common/TranscriptScoreTable';
 import { QuickScoreInput } from '../components/score/QuickScoreInput';
 import { MobileScoreButton } from '../components/score/MobileScoreButton';
 import { ResponsiveScorePanel } from '../components/score/ResponsiveScorePanel';
-import { Settings, BookOpen, PenTool, Award, X, BookHeart, GraduationCap, Info, ExternalLink } from 'lucide-react';
+import { Settings, BookOpen, PenTool, Award, BookHeart, GraduationCap, Info, ExternalLink } from 'lucide-react';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
-import { UEL_ENGLISH_BONUS, CCQT_TYPES, UEL_ENGLISH_CERT_TYPES, UEL_CCQT_TABLE, UEL_ENGLISH_CONVERSION } from '../constants/uel';
+import { UEL_ENGLISH_BONUS, CCQT_TYPES, UEL_ENGLISH_CERT_TYPES, UEL_CCQT_TABLE } from '../constants/uel';
 import { clampScore } from '../utils/input';
 import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
-
-const ENGLISH_SCORE_MAX = {
-  ...Object.fromEntries(
-    Object.entries(UEL_ENGLISH_CONVERSION)
-      .filter(([type]) => type !== 'TOEIC')
-      .map(([type, rows]) => [type, Math.max(...rows.map((row) => row.max))])
-  ),
-  TOEIC_LR: 990,
-  TOEIC_SW: 400,
-};
-
-const CCQT_SCORE_MAX = {
-  SAT: 1600,
-  ACT: 36,
-  IB: 45,
-};
 
 export const UelCalculator = () => {
   const { state, results } = useUelCalculator();
@@ -54,6 +41,8 @@ export const UelCalculator = () => {
   const hasThptQuickTotal = state.thptQuickTotal !== '';
   const hasHocBaDetail = state.hocBa.some((value) => value !== '');
   const hasHocBaQuickTotal = state.hocBaQuickTotal !== '';
+  const selectedCcqtType = CCQT_TYPES.find((type) => type.id === state.loaiCCQT);
+  const selectedEnglishCertType = UEL_ENGLISH_CERT_TYPES.find((type) => type.id === state.loaiNgoaiNgu);
   const learningWeights = (() => {
     if (state.dtXetTuyen === 'DT1') return { dgnl: 55, thpt: 35, hocBa: 10 };
     if (state.dtXetTuyen === 'DT2') return { dgnl: 0, thpt: isChinhQuy ? 90 : 50, hocBa: isChinhQuy ? 10 : 50 };
@@ -146,40 +135,12 @@ export const UelCalculator = () => {
           {/* Học bạ */}
           {showHocBa && (
             <CardSection title="1. Điểm học bạ" icon={BookOpen}>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left border-collapse">
-                  <thead className="bg-slate-50 text-slate-600">
-                    <tr>
-                      <th className="px-4 py-3 rounded-tl-lg font-semibold w-1 whitespace-nowrap">Môn</th>
-                      <th className="px-4 py-3 font-semibold text-center w-1/4">Lớp 10</th>
-                      <th className="px-4 py-3 font-semibold text-center w-1/4">Lớp 11</th>
-                      <th className="px-4 py-3 font-semibold text-center w-1/4">Lớp 12</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {[0, 1, 2].map((subjectIndex) => (
-                      <tr key={`subject-${subjectIndex}`}>
-                        <td className="px-4 py-3 font-medium text-slate-700 whitespace-nowrap">Môn {subjectIndex + 1}</td>
-                        {[0, 1, 2].map((yearIndex) => {
-                          const cellIndex = subjectIndex * 3 + yearIndex;
-                          return (
-                            <td key={cellIndex} className="px-2 py-2">
-                              <input
-                                type="number" min="0" max="10" step="0.1"
-                                value={state.hocBa[cellIndex]}
-                                onChange={(e) => handleHocBaChange(cellIndex, e.target.value)}
-                                disabled={hasHocBaQuickTotal}
-                                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600 text-center transition-colors border-slate-200 ${hasHocBaQuickTotal ? 'cursor-not-allowed bg-slate-100 text-slate-400' : 'text-slate-900'}`}
-                                placeholder="0.0"
-                              />
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <TranscriptScoreTable
+                values={state.hocBa}
+                onChange={handleHocBaChange}
+                disabled={hasHocBaQuickTotal}
+                tone="indigo"
+              />
               <QuickScoreInput
                 title="Nhập nhanh tổng học bạ"
                 value={hasHocBaDetail ? ((results.Z / 100) * 30).toFixed(2) : state.hocBaQuickTotal}
@@ -288,9 +249,9 @@ export const UelCalculator = () => {
                          <input 
                            type="number"
                            min="0"
-                           max={CCQT_SCORE_MAX[state.loaiCCQT]}
-                           value={state.diemCCQT} 
-                           onChange={e => state.setDiemCCQT(clampScore(e.target.value, CCQT_SCORE_MAX[state.loaiCCQT]))}
+                            max={selectedCcqtType?.max}
+                            value={state.diemCCQT} 
+                            onChange={e => state.setDiemCCQT(clampScore(e.target.value, selectedCcqtType?.max))}
                            className="w-full px-3 py-2 border border-slate-200 rounded-md focus:ring-2 focus:ring-indigo-600" 
                            placeholder="VD: 1450"
                          />
@@ -373,9 +334,9 @@ export const UelCalculator = () => {
                              <div className="flex-1">
                                <label className="block text-xs font-medium text-slate-500 mb-1">Nghe-Đọc</label>
                                <input 
-                                 type="number" step="5" min="0" max="990"
+                                 type="number" step="5" min="0" max={selectedEnglishCertType?.maxLr}
                                  value={state.diemNgoaiNgu}
-                                 onChange={e => state.setDiemNgoaiNgu(clampScore(e.target.value, ENGLISH_SCORE_MAX.TOEIC_LR))}
+                                onChange={e => state.setDiemNgoaiNgu(clampScore(e.target.value, selectedEnglishCertType?.maxLr))}
                                  className="w-full px-3 py-2 border border-slate-200 rounded-md focus:ring-2 focus:ring-indigo-600 text-sm"
                                  placeholder="VD: 785"
                                />
@@ -383,9 +344,9 @@ export const UelCalculator = () => {
                              <div className="flex-1">
                                <label className="block text-xs font-medium text-slate-500 mb-1">Nói-Viết</label>
                                <input 
-                                 type="number" step="5" min="0" max="400"
+                                 type="number" step="5" min="0" max={selectedEnglishCertType?.maxSw}
                                  value={state.diemNgoaiNgu2}
-                                 onChange={e => state.setDiemNgoaiNgu2(clampScore(e.target.value, ENGLISH_SCORE_MAX.TOEIC_SW))}
+                                onChange={e => state.setDiemNgoaiNgu2(clampScore(e.target.value, selectedEnglishCertType?.maxSw))}
                                  className="w-full px-3 py-2 border border-slate-200 rounded-md focus:ring-2 focus:ring-indigo-600 text-sm"
                                  placeholder="VD: 310"
                                />
@@ -395,9 +356,9 @@ export const UelCalculator = () => {
                            <div className="flex-1">
                              <label className="block text-xs font-medium text-slate-500 mb-1">Điểm số</label>
                              <input 
-                               type="number" step="0.1" min="0" max={ENGLISH_SCORE_MAX[state.loaiNgoaiNgu]}
+                              type="number" step="0.1" min="0" max={selectedEnglishCertType?.max}
                                value={state.diemNgoaiNgu}
-                               onChange={e => state.setDiemNgoaiNgu(clampScore(e.target.value, ENGLISH_SCORE_MAX[state.loaiNgoaiNgu]))}
+                              onChange={e => state.setDiemNgoaiNgu(clampScore(e.target.value, selectedEnglishCertType?.max))}
                                className="w-full px-3 py-2 border border-slate-200 rounded-md focus:ring-2 focus:ring-indigo-600 text-sm"
                                placeholder="VD: 6.5"
                              />
@@ -484,100 +445,64 @@ export const UelCalculator = () => {
 
     </div>
 
-      {/* Modal Bảng Quy đổi */}
-      {showConversionTable && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
-              <h3 className="text-lg font-bold text-slate-800">Bảng quy đổi Chứng chỉ Ngoại ngữ (UEL)</h3>
-              <button onClick={() => setShowConversionTable(false)} className="text-slate-400 hover:text-slate-600">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="p-6 overflow-y-auto max-h-[70vh]">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm text-left border-collapse">
-                  <thead>
-                    <tr className="border-b-2 border-slate-200 text-slate-600">
-                      <th className="px-4 py-2 font-medium">Điểm cộng</th>
-                      <th className="px-4 py-2 font-medium">IELTS</th>
-                      <th className="px-4 py-2 font-medium">Linguaskill B1</th>
-                      <th className="px-4 py-2 font-medium">Linguaskill B2</th>
-                      <th className="px-4 py-2 font-medium">TOEIC NĐ</th>
-                      <th className="px-4 py-2 font-medium">TOEIC NV</th>
-                      <th className="px-4 py-2 font-medium">TOEFL iBT</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {UEL_ENGLISH_BONUS.map((row) => {
-                       const parts = row.desc.split('|').map(p => p.trim());
-                       const getPart = (keyword) => {
-                         const match = parts.find(p => p.includes(keyword));
-                         if (!match) return '-';
-                         return match.replace(keyword, '').replace(':', '').replace('≥', '').trim();
-                       };
+      <ConversionModal
+        isOpen={showConversionTable}
+        title="Bảng quy đổi Chứng chỉ Ngoại ngữ (UEL)"
+        onClose={() => setShowConversionTable(false)}
+      >
+        <div className="overflow-x-auto">
+          <ConversionTable
+            align="left"
+            columns={[
+              { key: 'point', header: 'Điểm cộng', value: true, cellClassName: 'whitespace-nowrap px-4 py-2 font-semibold text-blue-700' },
+              { key: 'ielts', header: 'IELTS' },
+              { key: 'linguaskillB1', header: 'Linguaskill B1' },
+              { key: 'linguaskillB2', header: 'Linguaskill B2' },
+              { key: 'toeicNd', header: 'TOEIC NĐ' },
+              { key: 'toeicNv', header: 'TOEIC NV' },
+              { key: 'toefl', header: 'TOEFL iBT' },
+            ]}
+            rows={UEL_ENGLISH_BONUS.map((row) => {
+              const parts = row.desc.split('|').map((part) => part.trim());
+              const getPart = (keyword) => {
+                const match = parts.find((part) => part.includes(keyword));
+                if (!match) return '-';
+                return match.replace(keyword, '').replace(':', '').replace('≥', '').trim();
+              };
 
-                       return (
-                         <tr key={row.id} className="hover:bg-slate-50">
-                           <td className="px-4 py-2 font-semibold text-blue-700 whitespace-nowrap">+{row.point.toFixed(1)}</td>
-                           <td className="px-4 py-2 text-slate-700">{getPart('IELTS')}</td>
-                           <td className="px-4 py-2 text-slate-700">{getPart('Linguaskill/B1')}</td>
-                           <td className="px-4 py-2 text-slate-700">{getPart('Linguaskill/B2')}</td>
-                           <td className="px-4 py-2 text-slate-700">{getPart('TOEIC NĐ')}</td>
-                           <td className="px-4 py-2 text-slate-700">{getPart('TOEIC NV')}</td>
-                           <td className="px-4 py-2 text-slate-700">{getPart('TOEFL iBT')}</td>
-                         </tr>
-                       );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
+              return {
+                key: row.id,
+                point: `+${row.point.toFixed(1)}`,
+                ielts: getPart('IELTS'),
+                linguaskillB1: getPart('Linguaskill/B1'),
+                linguaskillB2: getPart('Linguaskill/B2'),
+                toeicNd: getPart('TOEIC NĐ'),
+                toeicNv: getPart('TOEIC NV'),
+                toefl: getPart('TOEFL iBT'),
+              };
+            })}
+          />
         </div>
-      )}
+      </ConversionModal>
 
-      {/* Modal Bảng Quy đổi CCQT */}
-      {showCcqtConversionTable && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
-              <h3 className="text-lg font-bold text-slate-800">Bảng quy đổi Chứng chỉ Quốc tế ra Thang điểm 100</h3>
-              <button onClick={() => setShowCcqtConversionTable(false)} className="text-slate-400 hover:text-slate-600">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            
-            <div className="p-6 overflow-y-auto max-h-[70vh]">
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm text-center border-collapse">
-                  <thead>
-                    <tr className="border-b-2 border-slate-200 text-slate-600">
-                      <th className="px-4 py-2 font-medium">Điểm SAT</th>
-                      <th className="px-4 py-2 font-medium">Điểm ACT</th>
-                      <th className="px-4 py-2 font-medium">Điểm IB</th>
-                      <th className="px-4 py-2 font-medium">Hạng A-Level</th>
-                      <th className="px-4 py-2 font-medium">Quy đổi</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {UEL_CCQT_TABLE.map((row, i) => (
-                      <tr key={i} className="hover:bg-slate-50">
-                        <td className="px-4 py-2 text-slate-700">{row.sat || '-'}</td>
-                        <td className="px-4 py-2 text-slate-700">{row.act || '-'}</td>
-                        <td className="px-4 py-2 text-slate-700">{row.ib || '-'}</td>
-                        <td className="px-4 py-2 text-slate-700">{row.aLevel || '-'}</td>
-                        <td className="px-4 py-2 font-semibold text-blue-700">{row.point}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
+      <ConversionModal
+        isOpen={showCcqtConversionTable}
+        title="Bảng quy đổi Chứng chỉ Quốc tế ra Thang điểm 100"
+        onClose={() => setShowCcqtConversionTable(false)}
+      >
+        <div className="overflow-x-auto">
+          <ConversionTable
+            columns={[
+              { key: 'sat', header: 'Điểm SAT' },
+              { key: 'act', header: 'Điểm ACT' },
+              { key: 'ib', header: 'Điểm IB' },
+              { key: 'aLevel', header: 'Hạng A-Level' },
+              { key: 'point', header: 'Quy đổi', value: true },
+            ]}
+            rows={UEL_CCQT_TABLE}
+          />
         </div>
-      )}
+      </ConversionModal>
 
     </>
   );

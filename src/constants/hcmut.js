@@ -1,14 +1,64 @@
+import { pickCertificates } from './common';
+
 export const DOI_TUONG_HCMUT = [
   { id: '2.1', name: 'ĐT 2.1: Có thi ĐGNL 2026' },
   { id: '2.2', name: 'ĐT 2.2: Không thi ĐGNL 2026 (Chỉ THPT)' },
   { id: '2.4', name: 'ĐT 2.4: Có Chứng chỉ Quốc tế (SAT, ACT, IB, A-Level)' },
 ];
 
-export const INTL_CERT_TYPES = [
-  { id: 'SAT', name: 'SAT' },
-  { id: 'ACT', name: 'ACT' },
-  { id: 'IB', name: 'IB' },
-  { id: 'ALEVEL', name: 'A-Level' },
+export const INTL_CERT_TYPES = pickCertificates(['SAT', 'ACT', 'IB', 'ALEVEL']);
+
+export const HCMUT_ENGLISH_TYPES = pickCertificates(['IELTS', 'TOEFL', 'PTE', 'TOEIC']);
+
+export const HCMUT_ENGLISH_TABLES = [
+  {
+    title: 'IELTS',
+    tone: 'blue',
+    scoreHeader: 'Band',
+    rows: [
+      ['≥ 8.0', '10.0'],
+      ['7.5', '9.5'],
+      ['7.0', '9.0'],
+      ['6.5', '8.5'],
+      ['6.0', '8.0'],
+    ],
+  },
+  {
+    title: 'TOEFL iBT',
+    tone: 'emerald',
+    scoreHeader: 'Điểm',
+    rows: [
+      ['≥ 110', '10.0'],
+      ['102 - 109', '9.5'],
+      ['94 - 101', '9.0'],
+      ['79 - 93', '8.5'],
+      ['60 - 78', '8.0'],
+    ],
+  },
+  {
+    title: 'PTE Academic',
+    tone: 'indigo',
+    scoreHeader: 'Điểm',
+    rows: [
+      ['≥ 79', '10.0'],
+      ['71 - 78', '9.5'],
+      ['63 - 70', '9.0'],
+      ['55 - 62', '8.5'],
+      ['47 - 54', '8.0'],
+    ],
+  },
+  {
+    title: 'TOEIC',
+    tone: 'amber',
+    scoreHeader: 'L&R + S&W',
+    rows: [
+      ['≥ 905 + 390', '10.0'],
+      ['835 + 380', '9.5'],
+      ['785 + 360', '9.0'],
+      ['685 + 330', '8.5'],
+      ['570 + 310', '8.0'],
+    ],
+  },
 ];
 
 export const HCMUT_CCQT_TABLE = [

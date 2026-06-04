@@ -12,51 +12,55 @@ export const HCMUT_ENGLISH_TYPES = pickCertificates(['IELTS', 'TOEFL', 'PTE', 'T
 
 export const HCMUT_ENGLISH_TABLES = [
   {
+    type: 'IELTS',
     title: 'IELTS',
     tone: 'blue',
     scoreHeader: 'Band',
     rows: [
-      ['≥ 8.0', '10.0'],
-      ['7.5', '9.5'],
-      ['7.0', '9.0'],
-      ['6.5', '8.5'],
-      ['6.0', '8.0'],
+      { score: '≥ 8.0', point: '10.0', min: 8.0 },
+      { score: '7.5', point: '9.5', min: 7.5 },
+      { score: '7.0', point: '9.0', min: 7.0 },
+      { score: '6.5', point: '8.5', min: 6.5 },
+      { score: '6.0', point: '8.0', min: 6.0 },
     ],
   },
   {
+    type: 'TOEFL',
     title: 'TOEFL iBT',
     tone: 'emerald',
     scoreHeader: 'Điểm',
     rows: [
-      ['≥ 110', '10.0'],
-      ['102 - 109', '9.5'],
-      ['94 - 101', '9.0'],
-      ['79 - 93', '8.5'],
-      ['60 - 78', '8.0'],
+      { score: '≥ 110', point: '10.0', min: 110 },
+      { score: '102 - 109', point: '9.5', min: 102 },
+      { score: '94 - 101', point: '9.0', min: 94 },
+      { score: '79 - 93', point: '8.5', min: 79 },
+      { score: '60 - 78', point: '8.0', min: 60 },
     ],
   },
   {
+    type: 'PTE',
     title: 'PTE Academic',
     tone: 'indigo',
     scoreHeader: 'Điểm',
     rows: [
-      ['≥ 79', '10.0'],
-      ['71 - 78', '9.5'],
-      ['63 - 70', '9.0'],
-      ['55 - 62', '8.5'],
-      ['47 - 54', '8.0'],
+      { score: '≥ 79', point: '10.0', min: 79 },
+      { score: '71 - 78', point: '9.5', min: 71 },
+      { score: '63 - 70', point: '9.0', min: 63 },
+      { score: '55 - 62', point: '8.5', min: 55 },
+      { score: '47 - 54', point: '8.0', min: 47 },
     ],
   },
   {
+    type: 'TOEIC',
     title: 'TOEIC',
     tone: 'amber',
     scoreHeader: 'L&R + S&W',
     rows: [
-      ['≥ 905 + 390', '10.0'],
-      ['835 + 380', '9.5'],
-      ['785 + 360', '9.0'],
-      ['685 + 330', '8.5'],
-      ['570 + 310', '8.0'],
+      { score: '≥ 905 + 390', point: '10.0', minLr: 905, minSw: 390 },
+      { score: '835 + 380', point: '9.5', minLr: 835, minSw: 380 },
+      { score: '785 + 360', point: '9.0', minLr: 785, minSw: 360 },
+      { score: '685 + 330', point: '8.5', minLr: 685, minSw: 330 },
+      { score: '570 + 310', point: '8.0', minLr: 570, minSw: 310 },
     ],
   },
 ];
@@ -101,35 +105,16 @@ export const HCMUT_INTL_CERT_CONVERSION_TABLE = [
 ];
 
 export const convertHcmutEnglish = (type, score, toeicLr = 0, toeicSw = 0) => {
-  if (type === 'IELTS') {
-    if (score >= 8.0) return 10;
-    if (score >= 7.5) return 9.5;
-    if (score >= 7.0) return 9.0;
-    if (score >= 6.5) return 8.5;
-    if (score >= 6.0) return 8.0;
-  }
-  if (type === 'PTE') {
-    if (score >= 79) return 10;
-    if (score >= 71) return 9.5;
-    if (score >= 63) return 9.0;
-    if (score >= 55) return 8.5;
-    if (score >= 47) return 8.0;
-  }
-  if (type === 'TOEFL') {
-    if (score >= 110) return 10;
-    if (score >= 102) return 9.5;
-    if (score >= 94) return 9.0;
-    if (score >= 79) return 8.5;
-    if (score >= 60) return 8.0;
-  }
-  if (type === 'TOEIC') {
-    if (toeicLr >= 905 && toeicSw >= 390) return 10;
-    if (toeicLr >= 835 && toeicSw >= 380) return 9.5;
-    if (toeicLr >= 785 && toeicSw >= 360) return 9.0;
-    if (toeicLr >= 685 && toeicSw >= 330) return 8.5;
-    if (toeicLr >= 570 && toeicSw >= 310) return 8.0;
-  }
-  return 0;
+  const table = HCMUT_ENGLISH_TABLES.find((item) => item.type === type);
+  if (!table) return 0;
+
+  const row = table.rows.find((item) => (
+    type === 'TOEIC'
+      ? toeicLr >= item.minLr && toeicSw >= item.minSw
+      : score >= item.min
+  ));
+
+  return row ? parseFloat(row.point) : 0;
 };
 
 export const convertIntlCert = (type, score) => {

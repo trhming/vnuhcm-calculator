@@ -21,7 +21,7 @@ import { MobileScoreButton } from '../components/score/MobileScoreButton';
 import { ResponsiveScorePanel } from '../components/score/ResponsiveScorePanel';
 import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
-import { IU_ENGLISH_TYPES, IU_GROUPS } from '../constants/iu';
+import { IU_ENGLISH_TABLES, IU_ENGLISH_TYPES, IU_GROUPS } from '../constants/iu';
 import { useIuCalculator } from '../hooks/useIuCalculator';
 import { clampNumber, clampScore } from '../utils/input';
 import { findById } from '../utils/collection';
@@ -443,52 +443,7 @@ export const IuCalculator = () => {
         maxWidthClassName="max-w-5xl"
       >
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1.45fr_1fr]">
-                {[
-                  {
-                    title: 'IELTS',
-                    tone: 'blue',
-                    rows: [
-                      ['>= 7.0', '10.0'],
-                      ['6.5', '9.5'],
-                      ['6.0', '9.0'],
-                      ['5.5', '8.5'],
-                      ['5.0', '8.0'],
-                    ],
-                  },
-                  {
-                    title: 'TOEFL iBT',
-                    tone: 'emerald',
-                    rows: [
-                      ['>= 94', '10.0'],
-                      ['79 - 93', '9.5'],
-                      ['60 - 78', '9.0'],
-                      ['46 - 59', '8.5'],
-                      ['35 - 45', '8.0'],
-                    ],
-                  },
-                  {
-                    title: 'TOEIC',
-                    tone: 'amber',
-                    rows: [
-                      ['>= 850 + 310', '10.0'],
-                      ['785 - 845 + 280 - 300', '9.5'],
-                      ['650 - 780 + 250 - 270', '9.0'],
-                      ['550 - 645 + 200 - 240', '8.5'],
-                      ['450 - 545 + 160 - 190', '8.0'],
-                    ],
-                  },
-                  {
-                    title: 'Cambridge',
-                    tone: 'indigo',
-                    rows: [
-                      ['>= 185', '10.0'],
-                      ['176 - 184', '9.5'],
-                      ['169 - 175', '9.0'],
-                      ['160 - 168', '8.5'],
-                      ['154 - 159', '8.0'],
-                    ],
-                  },
-                ].map((table) => (
+                {IU_ENGLISH_TABLES.map((table) => (
                   <ConversionTable
                     key={table.title}
                     title={table.title}
@@ -497,7 +452,7 @@ export const IuCalculator = () => {
                       { key: 'score', header: table.title === 'TOEIC' ? 'Điểm (L&R + S&W)' : 'Điểm' },
                       { key: 'point', header: 'Quy đổi', value: true },
                     ]}
-                    rows={table.rows.map(([score, point]) => ({ score, point }))}
+                    rows={table.rows}
                   />
                 ))}
               </div>

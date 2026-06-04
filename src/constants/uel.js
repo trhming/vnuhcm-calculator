@@ -1,102 +1,119 @@
 import { pickCertificates } from './common';
 
 export const UEL_ENGLISH_BONUS = [
-  { 
+  {
     id: 'b5.0', point: 5.0, name: 'Cộng 5.0đ',
-    desc: 'IELTS ≥ 6.0 | Linguaskill/B2 ≥ 169 | TOEIC NĐ ≥ 785 | TOEIC NV ≥ 310 | TOEFL iBT ≥ 78' 
+    desc: 'IELTS ≥ 6.0 | Linguaskill/B2 ≥ 169 | TOEIC NĐ ≥ 785 | TOEIC NV ≥ 310 | TOEFL iBT ≥ 78',
+    rules: {
+      IELTS: { min: 6.0, max: 9.0 },
+      Linguaskill_B2: { min: 169, max: 180 },
+      TOEIC: { minND: 785, minNV: 310 },
+      TOEFL_iBT: { min: 78, max: 120 },
+    },
   },
-  { 
+  {
     id: 'b4.7', point: 4.7, name: 'Cộng 4.7đ',
-    desc: 'Linguaskill/B2: 168 | TOEIC NĐ: 760-780 | TOEIC NV: 300 | TOEFL iBT: 74-77' 
+    desc: 'Linguaskill/B2: 168 | TOEIC NĐ: 760-780 | TOEIC NV: 300 | TOEFL iBT: 74-77',
+    rules: {
+      Linguaskill_B2: { min: 168, max: 168 },
+      TOEIC: { minND: 760, minNV: 300 },
+      TOEFL_iBT: { min: 74, max: 77 },
+    },
   },
-  { 
+  {
     id: 'b4.4', point: 4.4, name: 'Cộng 4.4đ',
-    desc: 'Linguaskill/B2: 166-167 | TOEIC NĐ: 735-755 | TOEIC NV: 290 | TOEFL iBT: 70-73' 
+    desc: 'Linguaskill/B2: 166-167 | TOEIC NĐ: 735-755 | TOEIC NV: 290 | TOEFL iBT: 70-73',
+    rules: {
+      Linguaskill_B2: { min: 166, max: 167 },
+      TOEIC: { minND: 735, minNV: 290 },
+      TOEFL_iBT: { min: 70, max: 73 },
+    },
   },
-  { 
+  {
     id: 'b4.1', point: 4.1, name: 'Cộng 4.1đ',
-    desc: 'Linguaskill/B2: 164-165 | TOEIC NĐ: 710-730 | TOEFL iBT: 66-69' 
+    desc: 'Linguaskill/B2: 164-165 | TOEIC NĐ: 710-730 | TOEFL iBT: 66-69',
+    rules: {
+      Linguaskill_B2: { min: 164, max: 165 },
+      TOEIC: { minND: 710, minNV: 280 },
+      TOEFL_iBT: { min: 66, max: 69 },
+    },
   },
-  { 
+  {
     id: 'b3.8', point: 3.8, name: 'Cộng 3.8đ',
-    desc: 'Linguaskill/B2: 162-163 | TOEIC NĐ: 685-705 | TOEIC NV: 280 | TOEFL iBT: 62-65' 
+    desc: 'Linguaskill/B2: 162-163 | TOEIC NĐ: 685-705 | TOEIC NV: 280 | TOEFL iBT: 62-65',
+    rules: {
+      Linguaskill_B2: { min: 162, max: 163 },
+      TOEIC: { minND: 685, minNV: 280 },
+      TOEFL_iBT: { min: 62, max: 65 },
+    },
   },
-  { 
+  {
     id: 'b3.5', point: 3.5, name: 'Cộng 3.5đ',
-    desc: 'IELTS 5.5 | Linguaskill/B2: 160-161 | TOEIC NĐ: 670-680 | TOEIC NV: 270 | TOEFL iBT: 59-61' 
+    desc: 'IELTS 5.5 | Linguaskill/B2: 160-161 | TOEIC NĐ: 670-680 | TOEIC NV: 270 | TOEFL iBT: 59-61',
+    rules: {
+      IELTS: { min: 5.5, max: 5.9 },
+      Linguaskill_B2: { min: 160, max: 161 },
+      TOEIC: { minND: 670, minNV: 270 },
+      TOEFL_iBT: { min: 59, max: 61 },
+    },
   },
-  { 
+  {
     id: 'b3.2', point: 3.2, name: 'Cộng 3.2đ',
-    desc: 'Linguaskill/B1: 156-159 | TOEIC NĐ: 645-665 | TOEFL iBT: 57-58' 
+    desc: 'Linguaskill/B1: 156-159 | TOEIC NĐ: 645-665 | TOEFL iBT: 57-58',
+    rules: {
+      Linguaskill_B1: { min: 156, max: 159 },
+      TOEIC: { minND: 645, minNV: 260 },
+      TOEFL_iBT: { min: 57, max: 58 },
+    },
   },
-  { 
+  {
     id: 'b2.9', point: 2.9, name: 'Cộng 2.9đ',
-    desc: 'Linguaskill/B1: 152-155 | TOEIC NĐ: 620-640 | TOEIC NV: 260 | TOEFL iBT: 54-56' 
+    desc: 'Linguaskill/B1: 152-155 | TOEIC NĐ: 620-640 | TOEIC NV: 260 | TOEFL iBT: 54-56',
+    rules: {
+      Linguaskill_B1: { min: 152, max: 155 },
+      TOEIC: { minND: 620, minNV: 260 },
+      TOEFL_iBT: { min: 54, max: 56 },
+    },
   },
-  { 
+  {
     id: 'b2.6', point: 2.6, name: 'Cộng 2.6đ',
-    desc: 'Linguaskill/B1: 148-151 | TOEIC NĐ: 595-615 | TOEFL iBT: 51-53' 
+    desc: 'Linguaskill/B1: 148-151 | TOEIC NĐ: 595-615 | TOEFL iBT: 51-53',
+    rules: {
+      Linguaskill_B1: { min: 148, max: 151 },
+      TOEIC: { minND: 595, minNV: 250 },
+      TOEFL_iBT: { min: 51, max: 53 },
+    },
   },
-  { 
+  {
     id: 'b2.3', point: 2.3, name: 'Cộng 2.3đ',
-    desc: 'Linguaskill/B1: 144-147 | TOEIC NĐ: 570-590 | TOEIC NV: 250 | TOEFL iBT: 48-50' 
+    desc: 'Linguaskill/B1: 144-147 | TOEIC NĐ: 570-590 | TOEIC NV: 250 | TOEFL iBT: 48-50',
+    rules: {
+      Linguaskill_B1: { min: 144, max: 147 },
+      TOEIC: { minND: 570, minNV: 250 },
+      TOEFL_iBT: { min: 48, max: 50 },
+    },
   },
-  { 
+  {
     id: 'b2.0', point: 2.0, name: 'Cộng 2.0đ',
-    desc: 'IELTS 5.0 | Linguaskill/B1: 140-143 | TOEIC NĐ: 550-565 | TOEIC NV: 240 | TOEFL iBT: 45-47' 
-  }
+    desc: 'IELTS 5.0 | Linguaskill/B1: 140-143 | TOEIC NĐ: 550-565 | TOEIC NV: 240 | TOEFL iBT: 45-47',
+    rules: {
+      IELTS: { min: 5.0, max: 5.4 },
+      Linguaskill_B1: { min: 140, max: 143 },
+      TOEIC: { minND: 550, minNV: 240 },
+      TOEFL_iBT: { min: 45, max: 47 },
+    },
+  },
 ];
 
 export const UEL_ENGLISH_CERT_TYPES = pickCertificates(['IELTS', 'Linguaskill_B1', 'Linguaskill_B2', 'TOEIC', 'TOEFL_iBT']);
 
-export const UEL_ENGLISH_CONVERSION = {
-  IELTS: [
-    { min: 6.0, max: 9.0, point: 5.0 },
-    { min: 5.5, max: 5.9, point: 3.5 },
-    { min: 5.0, max: 5.4, point: 2.0 },
-  ],
-  Linguaskill_B2: [
-    { min: 169, max: 180, point: 5.0 },
-    { min: 168, max: 168, point: 4.7 },
-    { min: 166, max: 167, point: 4.4 },
-    { min: 164, max: 165, point: 4.1 },
-    { min: 162, max: 163, point: 3.8 },
-    { min: 160, max: 161, point: 3.5 },
-  ],
-  Linguaskill_B1: [
-    { min: 156, max: 159, point: 3.2 },
-    { min: 152, max: 155, point: 2.9 },
-    { min: 148, max: 151, point: 2.6 },
-    { min: 144, max: 147, point: 2.3 },
-    { min: 140, max: 143, point: 2.0 },
-  ],
-  TOEIC: [
-    { minND: 785, minNV: 310, point: 5.0 },
-    { minND: 760, minNV: 300, point: 4.7 },
-    { minND: 735, minNV: 290, point: 4.4 },
-    { minND: 710, minNV: 280, point: 4.1 },
-    { minND: 685, minNV: 280, point: 3.8 },
-    { minND: 670, minNV: 270, point: 3.5 },
-    { minND: 645, minNV: 260, point: 3.2 },
-    { minND: 620, minNV: 260, point: 2.9 },
-    { minND: 595, minNV: 250, point: 2.6 },
-    { minND: 570, minNV: 250, point: 2.3 },
-    { minND: 550, minNV: 240, point: 2.0 },
-  ],
-  TOEFL_iBT: [
-    { min: 78, max: 120, point: 5.0 },
-    { min: 74, max: 77, point: 4.7 },
-    { min: 70, max: 73, point: 4.4 },
-    { min: 66, max: 69, point: 4.1 },
-    { min: 62, max: 65, point: 3.8 },
-    { min: 59, max: 61, point: 3.5 },
-    { min: 57, max: 58, point: 3.2 },
-    { min: 54, max: 56, point: 2.9 },
-    { min: 51, max: 53, point: 2.6 },
-    { min: 48, max: 50, point: 2.3 },
-    { min: 45, max: 47, point: 2.0 },
-  ]
-};
+export const UEL_ENGLISH_CONVERSION = UEL_ENGLISH_BONUS.reduce((tables, row) => {
+  Object.entries(row.rules).forEach(([type, rule]) => {
+    tables[type] = tables[type] || [];
+    tables[type].push({ ...rule, point: row.point });
+  });
+  return tables;
+}, {});
 
 export const UEL_INTL_CERT_TYPES = pickCertificates(['SAT', 'ACT', 'IB', 'A_LEVEL']);
 

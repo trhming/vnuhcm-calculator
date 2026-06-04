@@ -17,44 +17,71 @@ export const IU_GROUPS = [
 
 export const IU_ENGLISH_TYPES = pickCertificates(['IELTS', 'TOEFL', 'TOEIC', 'CAMBRIDGE']);
 
+export const IU_ENGLISH_TABLES = [
+  {
+    type: 'IELTS',
+    title: 'IELTS',
+    tone: 'blue',
+    rows: [
+      { score: '>= 7.0', point: '10.0', min: 7.0 },
+      { score: '6.5', point: '9.5', min: 6.5 },
+      { score: '6.0', point: '9.0', min: 6.0 },
+      { score: '5.5', point: '8.5', min: 5.5 },
+      { score: '5.0', point: '8.0', min: 5.0 },
+    ],
+  },
+  {
+    type: 'TOEFL',
+    title: 'TOEFL iBT',
+    tone: 'emerald',
+    rows: [
+      { score: '>= 94', point: '10.0', min: 94 },
+      { score: '79 - 93', point: '9.5', min: 79 },
+      { score: '60 - 78', point: '9.0', min: 60 },
+      { score: '46 - 59', point: '8.5', min: 46 },
+      { score: '35 - 45', point: '8.0', min: 35 },
+    ],
+  },
+  {
+    type: 'TOEIC',
+    title: 'TOEIC',
+    tone: 'amber',
+    rows: [
+      { score: '>= 850 + 310', point: '10.0', minLr: 850, minSw: 310 },
+      { score: '785 - 845 + 280 - 300', point: '9.5', minLr: 785, minSw: 280 },
+      { score: '650 - 780 + 250 - 270', point: '9.0', minLr: 650, minSw: 250 },
+      { score: '550 - 645 + 200 - 240', point: '8.5', minLr: 550, minSw: 200 },
+      { score: '450 - 545 + 160 - 190', point: '8.0', minLr: 450, minSw: 160 },
+    ],
+  },
+  {
+    type: 'CAMBRIDGE',
+    title: 'Cambridge',
+    tone: 'indigo',
+    rows: [
+      { score: '>= 185', point: '10.0', min: 185 },
+      { score: '176 - 184', point: '9.5', min: 176 },
+      { score: '169 - 175', point: '9.0', min: 169 },
+      { score: '160 - 168', point: '8.5', min: 160 },
+      { score: '154 - 159', point: '8.0', min: 154 },
+    ],
+  },
+];
+
 export const convertIuEnglishScore = (type, score, score2 = '') => {
   const value = parseFloat(score);
   const value2 = parseFloat(score2);
 
   if (Number.isNaN(value)) return 0;
 
-  if (type === 'IELTS') {
-    if (value >= 7.0) return 10;
-    if (value >= 6.5) return 9.5;
-    if (value >= 6.0) return 9;
-    if (value >= 5.5) return 8.5;
-    if (value >= 5.0) return 8;
-  }
+  const table = IU_ENGLISH_TABLES.find((item) => item.type === type);
+  if (!table) return 0;
 
-  if (type === 'TOEFL') {
-    if (value >= 94) return 10;
-    if (value >= 79) return 9.5;
-    if (value >= 60) return 9;
-    if (value >= 46) return 8.5;
-    if (value >= 35) return 8;
-  }
+  const row = table.rows.find((item) => (
+    type === 'TOEIC'
+      ? !Number.isNaN(value2) && value >= item.minLr && value2 >= item.minSw
+      : value >= item.min
+  ));
 
-  if (type === 'TOEIC') {
-    if (Number.isNaN(value2)) return 0;
-    if (value >= 850 && value2 >= 310) return 10;
-    if (value >= 785 && value2 >= 280) return 9.5;
-    if (value >= 650 && value2 >= 250) return 9;
-    if (value >= 550 && value2 >= 200) return 8.5;
-    if (value >= 450 && value2 >= 160) return 8;
-  }
-
-  if (type === 'CAMBRIDGE') {
-    if (value >= 185) return 10;
-    if (value >= 176) return 9.5;
-    if (value >= 169) return 9;
-    if (value >= 160) return 8.5;
-    if (value >= 154) return 8;
-  }
-
-  return 0;
+  return row ? parseFloat(row.point) : 0;
 };

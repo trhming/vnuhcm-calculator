@@ -434,7 +434,7 @@ export const HcmutCalculator = () => {
                 { key: 'score', header: table.scoreHeader },
                 { key: 'point', header: 'Quy đổi', value: true },
               ]}
-              rows={table.rows.map(([score, point]) => ({ score, point }))}
+              rows={table.rows}
             />
           ))}
         </ConversionTableGrid>

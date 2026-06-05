@@ -23,7 +23,7 @@ export const IU_ENGLISH_TABLES = [
     title: 'IELTS',
     tone: 'blue',
     rows: [
-      { score: '>= 7.0', point: '10.0', min: 7.0 },
+      { score: '≥ 7.0', point: '10.0', min: 7.0 },
       { score: '6.5', point: '9.5', min: 6.5 },
       { score: '6.0', point: '9.0', min: 6.0 },
       { score: '5.5', point: '8.5', min: 5.5 },
@@ -35,7 +35,7 @@ export const IU_ENGLISH_TABLES = [
     title: 'TOEFL iBT',
     tone: 'emerald',
     rows: [
-      { score: '>= 94', point: '10.0', min: 94 },
+      { score: '≥ 94', point: '10.0', min: 94 },
       { score: '79 - 93', point: '9.5', min: 79 },
       { score: '60 - 78', point: '9.0', min: 60 },
       { score: '46 - 59', point: '8.5', min: 46 },
@@ -47,11 +47,11 @@ export const IU_ENGLISH_TABLES = [
     title: 'TOEIC',
     tone: 'amber',
     rows: [
-      { score: '>= 850 + 310', point: '10.0', minLr: 850, minSw: 310 },
-      { score: '785 - 845 + 280 - 300', point: '9.5', minLr: 785, minSw: 280 },
-      { score: '650 - 780 + 250 - 270', point: '9.0', minLr: 650, minSw: 250 },
-      { score: '550 - 645 + 200 - 240', point: '8.5', minLr: 550, minSw: 200 },
-      { score: '450 - 545 + 160 - 190', point: '8.0', minLr: 450, minSw: 160 },
+      { score: '≥ 850 + 310', point: '10.0', minLr: 850, minSw: 310 },
+      { score: '785 + 280', point: '9.5', minLr: 785, minSw: 280 },
+      { score: '650 + 250', point: '9.0', minLr: 650, minSw: 250 },
+      { score: '550 + 200', point: '8.5', minLr: 550, minSw: 200 },
+      { score: '450 + 160', point: '8.0', minLr: 450, minSw: 160 },
     ],
   },
   {
@@ -59,7 +59,7 @@ export const IU_ENGLISH_TABLES = [
     title: 'Cambridge',
     tone: 'indigo',
     rows: [
-      { score: '>= 185', point: '10.0', min: 185 },
+      { score: '≥ 185', point: '10.0', min: 185 },
       { score: '176 - 184', point: '9.5', min: 176 },
       { score: '169 - 175', point: '9.0', min: 169 },
       { score: '160 - 168', point: '8.5', min: 160 },

@@ -422,7 +422,7 @@ export const HcmutCalculator = () => {
 
       <ConversionModal
         isOpen={showConversionTable}
-        title="Bảng Quy Đổi Ngoại Ngữ HCMUT"
+        title="Bảng quy đổi Chứng chỉ ngoại ngữ"
         onClose={() => setShowConversionTable(false)}
       >
         <ConversionTableGrid>
@@ -443,7 +443,7 @@ export const HcmutCalculator = () => {
 
       <ConversionModal
         isOpen={showIntlCertTable}
-        title="Bảng Quy Đổi Chứng Chỉ Quốc Tế HCMUT"
+        title="Bảng quy đổi Chứng chỉ quốc tế"
         onClose={() => setShowIntlCertTable(false)}
       >
         <div className="overflow-x-auto">

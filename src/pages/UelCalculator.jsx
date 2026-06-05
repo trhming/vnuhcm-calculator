@@ -457,7 +457,7 @@ export const UelCalculator = () => {
 
       <ConversionModal
         isOpen={showConversionTable}
-        title="Bảng quy đổi Chứng chỉ Ngoại ngữ (UEL)"
+        title="Bảng quy đổi Chứng chỉ ngoại ngữ"
         onClose={() => setShowConversionTable(false)}
       >
         <div className="overflow-x-auto">
@@ -497,7 +497,7 @@ export const UelCalculator = () => {
 
       <ConversionModal
         isOpen={showCcqtConversionTable}
-        title="Bảng quy đổi Chứng chỉ Quốc tế ra Thang điểm 100"
+        title="Bảng quy đổi Chứng chỉ quốc tế"
         onClose={() => setShowCcqtConversionTable(false)}
       >
         <div className="overflow-x-auto">

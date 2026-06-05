@@ -466,7 +466,7 @@ export const HcmusCalculator = () => {
 
       <ConversionModal
         isOpen={showConversionTable}
-        title="Bảng Quy Đổi Ngoại Ngữ"
+        title="Bảng quy đổi Chứng chỉ ngoại ngữ"
         onClose={() => setShowConversionTable(false)}
         maxWidthClassName="max-w-lg"
       >
@@ -479,7 +479,7 @@ export const HcmusCalculator = () => {
               { key: 'point', header: 'Quy đổi', value: true },
             ]}
             rows={NGOAI_NGU_CONVERSION.IELTS.map((row) => ({
-              band: `${row.min}${row.max !== 9.0 ? ` - ${row.max}` : ' - 9.0'}`,
+              band: row.max === 9.0 ? `≥ ${row.min}` : row.min.toFixed(1),
               point: row.point,
             }))}
           />

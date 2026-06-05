@@ -438,7 +438,7 @@ export const IuCalculator = () => {
 
       <ConversionModal
         isOpen={showEnglishConversionTable}
-        title="Bảng quy đổi chứng chỉ ngoại ngữ IU"
+        title="Bảng quy đổi Chứng chỉ ngoại ngữ"
         onClose={() => setShowEnglishConversionTable(false)}
         maxWidthClassName="max-w-5xl"
       >

@@ -1,7 +1,4 @@
 import { Link } from 'react-router-dom';
-import { MessageSquareText } from 'lucide-react';
-
-const FEEDBACK_URL = 'https://www.threads.com/@trhming_/post/DZMgUggkrog';
 
 export const Navbar = () => {
   const scrollHomeToTop = () => {
@@ -26,13 +23,6 @@ export const Navbar = () => {
             <Link to="/" onClick={scrollHomeToTop} className="text-slate-600 hover:text-slate-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">
               Trang chủ
             </Link>
-            <a
-              href={FEEDBACK_URL}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-900 px-2.5 py-2 text-xs font-semibold text-white transition-colors hover:bg-slate-800 sm:gap-2 sm:px-3 sm:text-sm"
-            >
-              <MessageSquareText className="h-4 w-4" />
-              <span>Feedback</span>
-            </a>
           </div>
         </div>
       </div>

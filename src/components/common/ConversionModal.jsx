@@ -1,4 +1,5 @@
 import { X } from 'lucide-react';
+import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
 
 export const ConversionModal = ({
   isOpen,
@@ -7,6 +8,8 @@ export const ConversionModal = ({
   children,
   maxWidthClassName = 'max-w-4xl',
 }) => {
+  useBodyScrollLock(isOpen);
+
   if (!isOpen) return null;
 
   return (

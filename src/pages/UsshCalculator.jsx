@@ -126,6 +126,7 @@ export const UsshCalculator = () => {
                   max={1200}
                   value={state.dgnl}
                   onValueChange={state.setDgnl}
+                  integer
                   tone="emerald"
                   inputClassName="font-medium text-lg"
                   placeholder="850"

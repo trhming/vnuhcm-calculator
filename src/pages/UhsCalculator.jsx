@@ -220,6 +220,7 @@ export const UhsCalculator = () => {
                   max={1200}
                   value={state.dgnl}
                   onValueChange={state.setDgnl}
+                  integer
                   tone="teal"
                   inputClassName="text-lg font-medium"
                   placeholder="850"
@@ -299,6 +300,7 @@ export const UhsCalculator = () => {
                   max={1600}
                   value={state.satScore}
                   onValueChange={state.setSatScore}
+                  integer
                   tone="teal"
                   placeholder="Điểm SAT"
                 />

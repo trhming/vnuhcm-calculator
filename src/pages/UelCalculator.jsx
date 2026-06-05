@@ -208,6 +208,7 @@ export const UelCalculator = () => {
                       max={1200}
                       value={state.dgnl}
                       onValueChange={state.setDgnl}
+                      integer
                       tone="indigo"
                       inputClassName="font-medium text-lg"
                       placeholder="850"
@@ -256,6 +257,7 @@ export const UelCalculator = () => {
                            max={selectedCcqtType?.max}
                            value={state.diemCCQT}
                            onValueChange={state.setDiemCCQT}
+                           integer
                            tone="indigo"
                            placeholder="VD: 1450"
                          />

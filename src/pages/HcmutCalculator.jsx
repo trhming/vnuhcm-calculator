@@ -105,19 +105,19 @@ export const HcmutCalculator = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-medium text-blue-800 mb-1">Tiếng Việt</label>
-                      <ScoreInput max={300} value={state.dgnlTv} onValueChange={state.setDgnlTv} disabled={hasDgnlQuickTotal} tone="hcmut" inputClassName="border-blue-200" placeholder="VD: 300" />
+                      <ScoreInput max={300} value={state.dgnlTv} onValueChange={state.setDgnlTv} disabled={hasDgnlQuickTotal} integer tone="hcmut" inputClassName="border-blue-200" placeholder="VD: 300" />
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-blue-800 mb-1">Tiếng Anh</label>
-                      <ScoreInput max={300} value={state.dgnlTa} onValueChange={state.setDgnlTa} disabled={hasDgnlQuickTotal} tone="hcmut" inputClassName="border-blue-200" placeholder="VD: 300" />
+                      <ScoreInput max={300} value={state.dgnlTa} onValueChange={state.setDgnlTa} disabled={hasDgnlQuickTotal} integer tone="hcmut" inputClassName="border-blue-200" placeholder="VD: 300" />
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-blue-800 mb-1">Toán <span className="font-bold">(x2)</span></label>
-                      <ScoreInput max={300} value={state.dgnlToan} onValueChange={state.setDgnlToan} disabled={hasDgnlQuickTotal} tone="hcmut" inputClassName="border-blue-200" placeholder="VD: 300" />
+                      <ScoreInput max={300} value={state.dgnlToan} onValueChange={state.setDgnlToan} disabled={hasDgnlQuickTotal} integer tone="hcmut" inputClassName="border-blue-200" placeholder="VD: 300" />
                     </div>
                     <div>
                       <label className="block text-xs font-medium text-blue-800 mb-1">Tư duy khoa học</label>
-                      <ScoreInput max={300} value={state.dgnlKh} onValueChange={state.setDgnlKh} disabled={hasDgnlQuickTotal} tone="hcmut" inputClassName="border-blue-200" placeholder="VD: 300" />
+                      <ScoreInput max={300} value={state.dgnlKh} onValueChange={state.setDgnlKh} disabled={hasDgnlQuickTotal} integer tone="hcmut" inputClassName="border-blue-200" placeholder="VD: 300" />
                     </div>
                   </div>
                   <QuickScoreInput
@@ -127,9 +127,9 @@ export const HcmutCalculator = () => {
                     onChange={(e) => handleDgnlQuickTotalChange(e.target.value)}
                     disabled={hasDgnlDetail}
                     max={1500}
-                    step="1"
                     placeholder="0"
                     tone="hcmut"
+                    integer
                     className="mt-4"
                   />
                 </div>
@@ -165,6 +165,7 @@ export const HcmutCalculator = () => {
                         max={selectedIntlCert?.max}
                         value={state.intlCertScore}
                         onValueChange={state.setIntlCertScore}
+                        integer
                         tone="hcmut"
                         inputClassName="flex-1 border-slate-300 font-bold text-lg"
                         placeholder="Nhập điểm CC..."

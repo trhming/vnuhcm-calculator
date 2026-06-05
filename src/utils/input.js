@@ -1,4 +1,4 @@
-export const clampScore = (value, max, min = 0) => {
+export const clampScore = (value, max, min = 0, options = {}) => {
   if (value === '') return '';
 
   const normalized = value
@@ -7,6 +7,18 @@ export const clampScore = (value, max, min = 0) => {
     .replace(/[^\d.-]/g, '');
 
   if (normalized.trim().startsWith('-')) return min.toString();
+  if (options.integer) {
+    const wholePart = normalized.split('.')[0];
+    const digitsOnly = wholePart.replace(/\D/g, '');
+    if (digitsOnly === '') return '';
+
+    const number = parseInt(digitsOnly, 10);
+    if (Number.isNaN(number)) return '';
+    if (number > max) return max.toString();
+    if (number < min) return min.toString();
+
+    return number.toString();
+  }
 
   const firstDotIndex = normalized.indexOf('.');
   const decimalValue = firstDotIndex === -1

@@ -332,6 +332,7 @@ export const IuCalculator = () => {
                       max={1200}
                       value={state.dgnl}
                       onValueChange={state.setDgnl}
+                      integer
                       tone="red"
                       inputClassName="text-lg font-medium"
                       placeholder="850"

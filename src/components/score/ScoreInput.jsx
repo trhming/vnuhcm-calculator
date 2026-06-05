@@ -22,11 +22,12 @@ export const ScoreInput = ({
   className = '',
   inputClassName = '',
   clamp = true,
+  integer = false,
   ...props
 }) => {
   const handleChange = (event) => {
     if (clamp && max !== undefined) {
-      event.target.value = clampScore(event.target.value, max, min);
+      event.target.value = clampScore(event.target.value, max, min, { integer });
     }
 
     onValueChange?.(event.target.value, event);
@@ -36,8 +37,8 @@ export const ScoreInput = ({
   return (
     <input
       type="text"
-      inputMode="decimal"
-      pattern="[0-9]*[.,]?[0-9]*"
+      inputMode={integer ? 'numeric' : 'decimal'}
+      pattern={integer ? '[0-9]*' : '[0-9]*[.,]?[0-9]*'}
       value={value}
       onChange={handleChange}
       disabled={disabled}

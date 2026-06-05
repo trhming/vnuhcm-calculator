@@ -328,6 +328,7 @@ export const HcmusCalculator = () => {
                       max={parseFloat(state.maxDgnl) || 1200}
                       value={state.dgnl}
                       onValueChange={state.setDgnl}
+                      integer
                       tone="blue"
                       inputClassName="font-medium text-lg"
                       placeholder="850"
@@ -340,6 +341,7 @@ export const HcmusCalculator = () => {
                       value={state.maxDgnl}
                       onValueChange={state.setMaxDgnl}
                       disabled
+                      integer
                       tone="blue"
                     />
                   </div>

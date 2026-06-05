@@ -37,11 +37,12 @@ export const QuickScoreInput = ({
   placeholder = '0.00',
   tone = 'blue',
   className = '',
+  integer = false,
 }) => {
   const toneStyle = toneClass[tone] || toneClass.blue;
   const handleChange = (event) => {
     const { value } = event.target;
-    event.target.value = clampScore(value, max);
+    event.target.value = clampScore(value, max, 0, { integer });
     onChange(event);
   };
 
@@ -54,8 +55,8 @@ export const QuickScoreInput = ({
         </div>
         <input
           type="text"
-          inputMode="decimal"
-          pattern="[0-9]*[.,]?[0-9]*"
+          inputMode={integer ? 'numeric' : 'decimal'}
+          pattern={integer ? '[0-9]*' : '[0-9]*[.,]?[0-9]*'}
           value={value}
           onChange={handleChange}
           disabled={disabled}

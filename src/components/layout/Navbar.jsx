@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { MessageSquareText } from 'lucide-react';
 
-const FEEDBACK_URL = '#';
+const FEEDBACK_URL = 'https://www.threads.com/@trhming_/post/DZMgUggkrog';
 
 export const Navbar = () => {
   const scrollHomeToTop = () => {

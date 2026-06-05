@@ -34,7 +34,6 @@ export const QuickScoreInput = ({
   onChange,
   disabled,
   max = 30,
-  step = '0.01',
   placeholder = '0.00',
   tone = 'blue',
   className = '',
@@ -54,10 +53,9 @@ export const QuickScoreInput = ({
           <p className="text-xs text-slate-500">{description}</p>
         </div>
         <input
-          type="number"
-          min="0"
-          max={max}
-          step={step}
+          type="text"
+          inputMode="decimal"
+          pattern="[0-9]*[.,]?[0-9]*"
           value={value}
           onChange={handleChange}
           disabled={disabled}

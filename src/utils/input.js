@@ -1,9 +1,27 @@
 export const clampScore = (value, max, min = 0) => {
   if (value === '') return '';
-  if (value.toString().trim().startsWith('-')) return min.toString();
-  const number = parseFloat(value);
-  if (Number.isNaN(number)) return value;
-  return Math.min(Math.max(number, min), max).toString();
+
+  const normalized = value
+    .toString()
+    .replace(/,/g, '.')
+    .replace(/[^\d.-]/g, '');
+
+  if (normalized.trim().startsWith('-')) return min.toString();
+
+  const firstDotIndex = normalized.indexOf('.');
+  const decimalValue = firstDotIndex === -1
+    ? normalized
+    : `${normalized.slice(0, firstDotIndex + 1)}${normalized.slice(firstDotIndex + 1).replace(/\./g, '')}`;
+
+  if (decimalValue === '') return '';
+  if (decimalValue === '.') return `${min}.`;
+
+  const number = parseFloat(decimalValue);
+  if (Number.isNaN(number)) return decimalValue;
+  if (number > max) return max.toString();
+  if (number < min) return min.toString();
+
+  return decimalValue;
 };
 
 export const clampNumber = (value, min, max) => {

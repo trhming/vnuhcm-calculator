@@ -15,7 +15,6 @@ export const ScoreInput = ({
   onValueChange,
   min = 0,
   max,
-  step = '0.1',
   disabled = false,
   placeholder = '0.00',
   tone = 'blue',
@@ -36,10 +35,9 @@ export const ScoreInput = ({
 
   return (
     <input
-      type="number"
-      min={min}
-      max={max}
-      step={step}
+      type="text"
+      inputMode="decimal"
+      pattern="[0-9]*[.,]?[0-9]*"
       value={value}
       onChange={handleChange}
       disabled={disabled}

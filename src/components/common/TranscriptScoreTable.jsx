@@ -63,10 +63,9 @@ export const TranscriptScoreTable = ({
                   return (
                     <td key={cellIndex} className="px-2 py-2">
                       <input
-                        type="number"
-                        min="0"
-                        max="10"
-                        step="0.1"
+                        type="text"
+                        inputMode="decimal"
+                        pattern="[0-9]*[.,]?[0-9]*"
                         value={displayValue}
                         onChange={(event) => onChange(cellIndex, event.target.value)}
                         disabled={disabled || meta.disabled}

@@ -47,3 +47,9 @@ export const clampDecimal = (value, min, max, fallback = min) => {
   if (Number.isNaN(number)) return fallback;
   return Math.min(Math.max(number, min), max);
 };
+
+export const updateScoreArray = (values, setter, index, value, max, options) => {
+  const nextValues = [...values];
+  nextValues[index] = clampScore(value, max, 0, options);
+  setter(nextValues);
+};

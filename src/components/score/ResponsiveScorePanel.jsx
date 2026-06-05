@@ -14,7 +14,7 @@ export const ResponsiveScorePanel = ({
   if (variant === 'card') {
     return (
       <>
-        <div className="hidden lg:sticky lg:top-24 lg:block lg:max-h-[calc(100vh-7rem)] lg:w-96 lg:self-start lg:overflow-y-auto lg:rounded-2xl lg:border lg:border-slate-200 lg:bg-white lg:shadow-2xl [&>div]:static [&>div]:rounded-none [&>div]:border-0 [&>div]:shadow-none">
+        <div className="hidden lg:sticky lg:top-24 lg:block lg:max-h-[calc(100vh-7rem)] lg:w-96 lg:self-start lg:overflow-y-auto lg:rounded-2xl lg:border lg:border-slate-200 lg:bg-white lg:shadow-2xl [&>div]:rounded-none [&>div]:border-0 [&>div]:shadow-none">
           {children}
         </div>
         {isOpen && (
@@ -23,7 +23,7 @@ export const ResponsiveScorePanel = ({
             onClick={onClose}
           >
             <div
-              className="relative max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-white sm:max-w-md sm:rounded-2xl [&>div]:static [&>div]:rounded-none [&>div]:border-0 [&>div]:shadow-none"
+              className="relative max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-white sm:max-w-md sm:rounded-2xl [&>div]:rounded-none [&>div]:border-0 [&>div]:shadow-none"
               onClick={(event) => event.stopPropagation()}
             >
               <CloseButton onClose={onClose} />

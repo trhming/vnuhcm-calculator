@@ -1,11 +1,4 @@
-const toneClass = {
-  blue: 'focus:ring-blue-500',
-  hcmut: 'focus:ring-blue-800',
-  emerald: 'focus:ring-emerald-600',
-  teal: 'focus:ring-teal-600',
-  indigo: 'focus:ring-indigo-600',
-  red: 'focus:ring-red-500',
-};
+import { ScoreInput } from '../score/ScoreInput';
 
 export const TranscriptScoreTable = ({
   values,
@@ -22,8 +15,6 @@ export const TranscriptScoreTable = ({
   getCellMeta,
   renderSubjectNote,
 }) => {
-  const focusClass = toneClass[tone] || toneClass.blue;
-
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse text-left text-sm">
@@ -62,18 +53,14 @@ export const TranscriptScoreTable = ({
 
                   return (
                     <td key={cellIndex} className="px-2 py-2">
-                      <input
-                        type="text"
-                        inputMode="decimal"
-                        pattern="[0-9]*[.,]?[0-9]*"
+                      <ScoreInput
+                        max={10}
                         value={displayValue}
-                        onChange={(event) => onChange(cellIndex, event.target.value)}
+                        onValueChange={(value) => onChange(cellIndex, value)}
                         disabled={disabled || meta.disabled}
-                        className={`w-full rounded-md border px-2 py-2 text-center transition-colors focus:outline-none focus:ring-2 sm:px-3 ${focusClass} ${
-                          disabled || meta.disabled
-                            ? 'cursor-not-allowed border-slate-200 bg-slate-100 text-slate-400'
-                            : meta.className || 'border-slate-200 text-slate-900'
-                        }`}
+                        tone={tone}
+                        className="px-2 text-center transition-colors sm:px-3"
+                        inputClassName={meta.className || 'text-slate-900'}
                         placeholder={meta.placeholder || '0.0'}
                         title={meta.title || ''}
                       />

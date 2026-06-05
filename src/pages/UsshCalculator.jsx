@@ -9,7 +9,7 @@ import { ResponsiveScorePanel } from '../components/score/ResponsiveScorePanel';
 import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
 import { Settings, BookOpen, PenTool, Award, Globe, ExternalLink } from 'lucide-react';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
-import { clampScore } from '../utils/input';
+import { clampScore, updateScoreArray } from '../utils/input';
 
 export const UsshCalculator = () => {
   const { state, results } = useUsshCalculator();
@@ -23,15 +23,11 @@ export const UsshCalculator = () => {
   };
   
   const handleHocBaChange = (index, val) => {
-    const newHocBa = [...state.hocBa];
-    newHocBa[index] = clampScore(val, 10);
-    state.setHocBa(newHocBa);
+    updateScoreArray(state.hocBa, state.setHocBa, index, val, 10);
   };
 
   const handleThptChange = (index, val) => {
-    const newThpt = [...state.thpt];
-    newThpt[index] = clampScore(val, 10);
-    state.setThpt(newThpt);
+    updateScoreArray(state.thpt, state.setThpt, index, val, 10);
   };
 
   return (

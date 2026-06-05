@@ -17,7 +17,7 @@ import {
   HCMUT_INTL_CERT_CONVERSION_TABLE,
   HCMUT_INTL_CERT_TYPES,
 } from '../constants/hcmut';
-import { clampScore } from '../utils/input';
+import { clampScore, updateScoreArray } from '../utils/input';
 import { findById } from '../utils/collection';
 import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
 
@@ -28,9 +28,7 @@ export const HcmutCalculator = () => {
   const [showIntlCertTable, setShowIntlCertTable] = useState(false);
   
   const handleHocBaChange = (index, val) => {
-    const newHocBa = [...state.hocBa];
-    newHocBa[index] = clampScore(val, 10);
-    state.setHocBa(newHocBa);
+    updateScoreArray(state.hocBa, state.setHocBa, index, val, 10);
   };
 
   const handleHocBaQuickAverageChange = (val) => {
@@ -38,9 +36,7 @@ export const HcmutCalculator = () => {
   };
 
   const handleThptChange = (index, val) => {
-    const newThpt = [...state.thpt];
-    newThpt[index] = clampScore(val, 10);
-    state.setThpt(newThpt);
+    updateScoreArray(state.thpt, state.setThpt, index, val, 10);
   };
 
   const handleThptQuickTotalChange = (val) => {

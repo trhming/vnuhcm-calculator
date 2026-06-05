@@ -16,7 +16,7 @@ import {
   UEL_INTL_CERT_CONVERSION_TABLE,
   UEL_INTL_CERT_TYPES,
 } from '../constants/uel';
-import { clampScore } from '../utils/input';
+import { clampScore, updateScoreArray } from '../utils/input';
 import { findById } from '../utils/collection';
 import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
 
@@ -27,15 +27,11 @@ export const UelCalculator = () => {
   const [showCcqtConversionTable, setShowCcqtConversionTable] = useState(false);
 
   const handleHocBaChange = (index, val) => {
-    const newHocBa = [...state.hocBa];
-    newHocBa[index] = clampScore(val, 10);
-    state.setHocBa(newHocBa);
+    updateScoreArray(state.hocBa, state.setHocBa, index, val, 10);
   };
 
   const handleThptChange = (index, val) => {
-    const newThpt = [...state.thpt];
-    newThpt[index] = clampScore(val, 10);
-    state.setThpt(newThpt);
+    updateScoreArray(state.thpt, state.setThpt, index, val, 10);
   };
 
   // Visibility logic

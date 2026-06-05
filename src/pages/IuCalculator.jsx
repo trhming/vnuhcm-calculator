@@ -23,7 +23,7 @@ import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { IU_ENGLISH_TABLES, IU_ENGLISH_TYPES, IU_GROUPS } from '../constants/iu';
 import { useIuCalculator } from '../hooks/useIuCalculator';
-import { clampNumber, clampScore } from '../utils/input';
+import { clampNumber, clampScore, updateScoreArray } from '../utils/input';
 import { findById } from '../utils/collection';
 
 export const IuCalculator = () => {
@@ -50,10 +50,8 @@ export const IuCalculator = () => {
     state.setK2(clampNumber(value, 40, 50));
   };
 
-  const updateArrayValue = (values, setter, index, value, max) => {
-    const nextValues = [...values];
-    nextValues[index] = clampScore(value, max);
-    setter(nextValues);
+  const handleHocBaChange = (index, value) => {
+    updateScoreArray(state.hocBa, state.setHocBa, index, value, 10);
   };
 
   const resultCard = (
@@ -187,12 +185,11 @@ export const IuCalculator = () => {
           </CardSection>
 
           {needsHocBa && (
-            <CardSection title="3. Điểm học bạ" icon={PenTool}>
+            <CardSection title="3. Điểm học bạ" icon={BookOpen}>
                   <div className="space-y-4">
-                    <h4 className="font-semibold text-slate-800">Học bạ - Trung bình lớp 10, 11, 12</h4>
                     <TranscriptScoreTable
                       values={state.hocBa}
-                      onChange={(cellIndex, value) => updateArrayValue(state.hocBa, state.setHocBa, cellIndex, value, 10)}
+                      onChange={handleHocBaChange}
                       disabled={hasHocBaQuickTotal}
                       tone="red"
                     />
@@ -224,7 +221,7 @@ export const IuCalculator = () => {
                           <ScoreInput
                             max={10}
                             value={state.thpt[index]}
-                            onValueChange={(value) => updateArrayValue(state.thpt, state.setThpt, index, value, 10)}
+                            onValueChange={(value) => updateScoreArray(state.thpt, state.setThpt, index, value, 10)}
                             disabled={hasThptQuickTotal}
                             tone="red"
                             placeholder="0.00"
@@ -237,7 +234,7 @@ export const IuCalculator = () => {
                           <ScoreInput
                             max={10}
                             value={state.useEnglishCertificate ? results.englishConvertedScore : state.thpt[2]}
-                            onValueChange={(value) => updateArrayValue(state.thpt, state.setThpt, 2, value, 10)}
+                            onValueChange={(value) => updateScoreArray(state.thpt, state.setThpt, 2, value, 10)}
                             disabled={state.useEnglishCertificate || hasThptQuickTotal}
                             tone="red"
                             inputClassName="bg-white disabled:bg-slate-100 disabled:text-slate-500"

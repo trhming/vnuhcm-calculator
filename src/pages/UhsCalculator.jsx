@@ -20,7 +20,7 @@ import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { UHS_LANG_TYPES } from '../constants/uhs';
 import { useUhsCalculator } from '../hooks/useUhsCalculator';
-import { clampNumber, clampScore } from '../utils/input';
+import { clampNumber, clampScore, updateScoreArray } from '../utils/input';
 import { findById } from '../utils/collection';
 
 export const UhsCalculator = () => {
@@ -32,10 +32,8 @@ export const UhsCalculator = () => {
   const isWeightValid = computedC >= 0 && computedC <= 25 && state.a >= 40 && state.b <= 35;
   const selectedLanguageType = findById(UHS_LANG_TYPES, state.languageType);
 
-  const updateArrayValue = (values, setter, index, value, max) => {
-    const nextValues = [...values];
-    nextValues[index] = clampScore(value, max);
-    setter(nextValues);
+  const handleHocBaChange = (index, value) => {
+    updateScoreArray(state.hocBa, state.setHocBa, index, value, 10);
   };
 
   const hasThptDetail = state.thpt.some((value) => value !== '');
@@ -157,12 +155,11 @@ export const UhsCalculator = () => {
             </div>
           </CardSection>
 
-          <CardSection title="2. Điểm học bạ" icon={PenTool}>
+          <CardSection title="2. Điểm học bạ" icon={BookOpen}>
             <div className="space-y-4">
-              <h4 className="mb-3 font-semibold text-slate-800">Học bạ 3 môn</h4>
               <TranscriptScoreTable
                 values={state.hocBa}
-                onChange={(cellIndex, value) => updateArrayValue(state.hocBa, state.setHocBa, cellIndex, value, 10)}
+                onChange={handleHocBaChange}
                 disabled={hasHocBaQuickTotal}
                 tone="teal"
                 subjectLabels={subjects}
@@ -192,7 +189,7 @@ export const UhsCalculator = () => {
                       <ScoreInput
                         max={10}
                         value={state.thpt[index]}
-                        onValueChange={(value) => updateArrayValue(state.thpt, state.setThpt, index, value, 10)}
+                        onValueChange={(value) => updateScoreArray(state.thpt, state.setThpt, index, value, 10)}
                         disabled={hasThptQuickTotal}
                         tone="teal"
                         placeholder="0.00"

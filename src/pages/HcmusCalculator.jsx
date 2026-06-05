@@ -12,7 +12,7 @@ import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
 import { Settings, BookOpen, PenTool, Award, Info, AlertTriangle, CheckCircle2, GraduationCap, ExternalLink } from 'lucide-react';
 import { HCMUS_ENGLISH_TYPES, NGOAI_NGU_CONVERSION } from '../constants/hcmus';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
-import { clampDecimal, clampScore } from '../utils/input';
+import { clampDecimal, clampScore, updateScoreArray } from '../utils/input';
 import { findById } from '../utils/collection';
 
 export const HcmusCalculator = () => {
@@ -21,9 +21,7 @@ export const HcmusCalculator = () => {
   const [showMobileResultModal, setShowMobileResultModal] = useState(false);
   
   const handleHocBaChange = (index, val) => {
-    const newHocBa = [...state.hocBa];
-    newHocBa[index] = clampScore(val, 10);
-    state.setHocBa(newHocBa);
+    updateScoreArray(state.hocBa, state.setHocBa, index, val, 10);
   };
 
   const handleHocBaQuickTotalChange = (val) => {
@@ -31,9 +29,7 @@ export const HcmusCalculator = () => {
   };
 
   const handleThptChange = (index, val) => {
-    const newThpt = [...state.thpt];
-    newThpt[index] = clampScore(val, 10);
-    state.setThpt(newThpt);
+    updateScoreArray(state.thpt, state.setThpt, index, val, 10);
   };
 
   const handleThptQuickTotalChange = (val) => {

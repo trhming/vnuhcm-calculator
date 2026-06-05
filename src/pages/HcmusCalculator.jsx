@@ -334,11 +334,12 @@ export const HcmusCalculator = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm text-slate-600 mb-1">Max ĐGNL dự kiến</label>
+                    <label className="block text-sm text-slate-600 mb-1">Max ĐGNL</label>
                     <ScoreInput
                       max={1200}
                       value={state.maxDgnl}
                       onValueChange={state.setMaxDgnl}
+                      disabled
                       tone="blue"
                     />
                   </div>

@@ -23,7 +23,7 @@ export const useHcmusCalculator = () => {
 
   // ĐGNL
   const [dgnl, setDgnl] = useState('');
-  const [maxDgnl, setMaxDgnl] = useState('1200');
+  const [maxDgnl, setMaxDgnl] = useState('1139');
   
   // Ưu tiên
   const [kv, setKv] = useState(KHU_VUC[0].id);

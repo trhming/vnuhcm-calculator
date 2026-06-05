@@ -14,7 +14,9 @@ export const ResponsiveScorePanel = ({
   if (variant === 'card') {
     return (
       <>
-        <div className="hidden lg:block lg:w-96">{children}</div>
+        <div className="hidden lg:sticky lg:top-24 lg:block lg:max-h-[calc(100vh-7rem)] lg:w-96 lg:self-start lg:overflow-y-auto lg:rounded-2xl lg:border lg:border-slate-200 lg:bg-white lg:shadow-2xl [&>div]:static [&>div]:rounded-none [&>div]:border-0 [&>div]:shadow-none">
+          {children}
+        </div>
         {isOpen && (
           <div
             className={`fixed inset-0 z-[60] flex items-end justify-center p-0 backdrop-blur-sm animate-in fade-in sm:items-center sm:p-4 lg:hidden ${backdropClassName}`}

@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 const toneClass = {
   blue: {
     title: 'bg-blue-50 text-blue-800',
@@ -21,6 +23,29 @@ const toneClass = {
   },
 };
 
+type ConversionTone = keyof typeof toneClass;
+type ConversionRow = Record<string, ReactNode> & {
+  key?: string | number;
+};
+
+type ConversionColumn = {
+  key: string;
+  header: ReactNode;
+  headerClassName?: string;
+  cellClassName?: string;
+  value?: boolean;
+  render?: (row: ConversionRow, rowIndex: number) => ReactNode;
+};
+
+type ConversionTableProps = {
+  title?: ReactNode;
+  columns: ConversionColumn[];
+  rows: ConversionRow[];
+  tone?: ConversionTone;
+  align?: 'left' | 'center';
+  className?: string;
+};
+
 export const ConversionTable = ({
   title,
   columns,
@@ -28,7 +53,7 @@ export const ConversionTable = ({
   tone = 'blue',
   align = 'center',
   className = '',
-}) => {
+}: ConversionTableProps) => {
   const colors = toneClass[tone] || toneClass.blue;
   const alignClass = align === 'left' ? 'text-left' : 'text-center';
 
@@ -71,6 +96,12 @@ export const ConversionTable = ({
   );
 };
 
-export const ConversionTableGrid = ({ children, className = 'grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4' }) => (
+export const ConversionTableGrid = ({
+  children,
+  className = 'grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4',
+}: {
+  children: ReactNode;
+  className?: string;
+}) => (
   <div className={className}>{children}</div>
 );

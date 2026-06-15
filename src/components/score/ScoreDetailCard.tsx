@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Calculator } from 'lucide-react';
 
 const themeClass = {
@@ -39,6 +40,41 @@ const themeClass = {
   },
 };
 
+type ScoreTheme = keyof typeof themeClass;
+type ScoreRowVariant = 'plain' | 'bonusEffective' | 'priorityEffective';
+
+type ScoreRowData = {
+  label: string;
+  value: ReactNode;
+  secondaryValue?: ReactNode;
+  variant?: ScoreRowVariant;
+  valueClassName?: string;
+  labelClassName?: string;
+  separatorBefore?: boolean;
+  emphasis?: boolean;
+};
+
+type ScoreDetailCardProps = {
+  theme?: ScoreTheme;
+  total: number | string;
+  totalPrecision?: number;
+  headerNote?: ReactNode;
+  formula?: ReactNode;
+  formulaDetail?: ReactNode;
+  dhl?: number | string;
+  dhlPrecision?: number;
+  beforeLearning?: ReactNode;
+  dgnlScore?: ReactNode;
+  thptScore?: ReactNode;
+  hocBaScore?: ReactNode;
+  learningRows?: ScoreRowData[];
+  extraLearningRows?: ScoreRowData[];
+  bonusRows?: ScoreRowData[];
+  priorityRows?: ScoreRowData[];
+  headerClassName?: string;
+  className?: string;
+};
+
 export const ScoreDetailCard = ({
   theme = 'blue',
   total,
@@ -58,7 +94,7 @@ export const ScoreDetailCard = ({
   priorityRows = [],
   headerClassName,
   className = '',
-}) => {
+}: ScoreDetailCardProps) => {
   const colors = themeClass[theme] || themeClass.blue;
   const resolvedLearningRows = learningRows.length > 0
     ? learningRows
@@ -135,9 +171,9 @@ export const ScoreDetailCard = ({
   );
 };
 
-export const Divider = () => <div className="h-px w-full bg-slate-200" />;
+const Divider = () => <div className="h-px w-full bg-slate-200" />;
 
-const ScoreSection = ({ title, children }) => (
+const ScoreSection = ({ title, children }: { title: string; children: ReactNode }) => (
   <div>
     <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-400">{title}</h3>
     <div className="space-y-2 text-sm">{children}</div>
@@ -153,7 +189,7 @@ const ScoreRow = ({
   labelClassName = '',
   separatorBefore = false,
   emphasis = false,
-}) => {
+}: ScoreRowData) => {
   const isDefaultEmphasis = label === 'Điểm cộng (Gốc)'
     || label === 'Tổng điểm cộng (Gốc)'
     || label === 'Ưu tiên KV/ĐT (Gốc)';
@@ -183,6 +219,6 @@ const ScoreRow = ({
   );
 };
 
-const formatValue = (value, precision) => (
+const formatValue = (value: number | string, precision: number) => (
   typeof value === 'number' ? value.toFixed(precision) : value
 );

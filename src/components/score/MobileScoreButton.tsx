@@ -9,12 +9,21 @@ const toneClass = {
   red: 'bg-red-700 hover:bg-red-800 focus:ring-red-500',
 };
 
+type MobileScoreTone = keyof typeof toneClass;
+
+type MobileScoreButtonProps = {
+  score: number;
+  precision?: number;
+  tone?: MobileScoreTone;
+  onClick: () => void;
+};
+
 export const MobileScoreButton = ({
   score,
   precision = 2,
   tone = 'blue',
   onClick,
-}) => {
+}: MobileScoreButtonProps) => {
   const colorClass = toneClass[tone] || toneClass.blue;
   const [keyboardInset, setKeyboardInset] = useState(0);
 

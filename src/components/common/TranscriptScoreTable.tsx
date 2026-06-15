@@ -1,4 +1,34 @@
+import type { ReactNode } from 'react';
 import { ScoreInput } from '../score/ScoreInput';
+
+type TranscriptCellContext = {
+  cellIndex: number;
+  subjectIndex: number;
+  yearIndex: number;
+};
+
+type TranscriptCellMeta = {
+  disabled?: boolean;
+  className?: string;
+  placeholder?: string;
+  title?: string;
+};
+
+type TranscriptScoreTableProps = {
+  values: string[];
+  onChange: (index: number, value: string) => void;
+  disabled?: boolean;
+  tone?: 'blue' | 'hcmut' | 'emerald' | 'teal' | 'indigo' | 'red';
+  subjectLabels?: string[];
+  yearLabels?: string[];
+  subjectWeights?: number[];
+  highlightedSubjects?: number[];
+  noteHeader?: ReactNode;
+  showNoteColumn?: boolean;
+  getDisplayValue?: (context: TranscriptCellContext) => string;
+  getCellMeta?: (context: TranscriptCellContext) => TranscriptCellMeta;
+  renderSubjectNote?: (context: { subjectIndex: number }) => ReactNode;
+};
 
 export const TranscriptScoreTable = ({
   values,
@@ -14,7 +44,7 @@ export const TranscriptScoreTable = ({
   getDisplayValue,
   getCellMeta,
   renderSubjectNote,
-}) => {
+}: TranscriptScoreTableProps) => {
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse text-left text-sm">

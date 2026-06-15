@@ -1,4 +1,12 @@
-export const CardSection = ({ title, icon: Icon, children }) => {
+import type { ComponentType, ReactNode, SVGProps } from 'react';
+
+type CardSectionProps = {
+  title: ReactNode;
+  icon?: ComponentType<SVGProps<SVGSVGElement>>;
+  children: ReactNode;
+};
+
+export const CardSection = ({ title, icon: Icon, children }: CardSectionProps) => {
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-6">
       <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center gap-3">

@@ -1,5 +1,14 @@
+import type { ReactNode } from 'react';
 import { X } from 'lucide-react';
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
+
+type ConversionModalProps = {
+  isOpen: boolean;
+  title: ReactNode;
+  onClose: () => void;
+  children: ReactNode;
+  maxWidthClassName?: string;
+};
 
 export const ConversionModal = ({
   isOpen,
@@ -7,7 +16,7 @@ export const ConversionModal = ({
   onClose,
   children,
   maxWidthClassName = 'max-w-4xl',
-}) => {
+}: ConversionModalProps) => {
   useBodyScrollLock(isOpen);
 
   if (!isOpen) return null;

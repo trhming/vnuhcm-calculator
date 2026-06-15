@@ -108,11 +108,13 @@ export const convertHcmutEnglish = (type, score, toeicLr = 0, toeicSw = 0) => {
   const table = HCMUT_ENGLISH_TABLES.find((item) => item.type === type);
   if (!table) return 0;
 
-  const row = table.rows.find((item) => (
-    type === 'TOEIC'
-      ? toeicLr >= item.minLr && toeicSw >= item.minSw
-      : score >= item.min
-  ));
+  const row = table.rows.find((item) => {
+    if (type === 'TOEIC') {
+      return 'minLr' in item && toeicLr >= item.minLr && toeicSw >= item.minSw;
+    }
+
+    return 'min' in item && score >= item.min;
+  });
 
   return row ? parseFloat(row.point) : 0;
 };

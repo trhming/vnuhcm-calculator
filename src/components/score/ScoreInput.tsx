@@ -1,3 +1,4 @@
+import type { ChangeEvent, InputHTMLAttributes } from 'react';
 import { clampScore } from '../../utils/input';
 
 const toneClass = {
@@ -7,6 +8,21 @@ const toneClass = {
   teal: 'focus:ring-teal-700',
   indigo: 'focus:ring-indigo-600',
   red: 'focus:ring-red-500',
+};
+
+type ScoreTone = keyof typeof toneClass;
+
+type ScoreInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> & {
+  value: string | number;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  onValueChange?: (value: string, event: ChangeEvent<HTMLInputElement>) => void;
+  min?: number;
+  max?: number;
+  tone?: ScoreTone;
+  widthClass?: string;
+  inputClassName?: string;
+  clamp?: boolean;
+  integer?: boolean;
 };
 
 export const ScoreInput = ({
@@ -24,8 +40,8 @@ export const ScoreInput = ({
   clamp = true,
   integer = false,
   ...props
-}) => {
-  const handleChange = (event) => {
+}: ScoreInputProps) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (clamp && max !== undefined) {
       event.target.value = clampScore(event.target.value, max, min, { integer });
     }

@@ -1,4 +1,13 @@
-export const clampScore = (value, max, min = 0, options = {}) => {
+type ClampScoreOptions = {
+  integer?: boolean;
+};
+
+export const clampScore = (
+  value: string | number,
+  max: number,
+  min = 0,
+  options: ClampScoreOptions = {},
+) => {
   if (value === '') return '';
 
   const normalized = value
@@ -36,19 +45,26 @@ export const clampScore = (value, max, min = 0, options = {}) => {
   return decimalValue;
 };
 
-export const clampNumber = (value, min, max) => {
-  const number = parseInt(value, 10);
+export const clampNumber = (value: string | number, min: number, max: number) => {
+  const number = parseInt(value.toString(), 10);
   if (Number.isNaN(number)) return min;
   return Math.min(Math.max(number, min), max);
 };
 
-export const clampDecimal = (value, min, max, fallback = min) => {
-  const number = parseFloat(value);
+export const clampDecimal = (value: string | number, min: number, max: number, fallback = min) => {
+  const number = parseFloat(value.toString());
   if (Number.isNaN(number)) return fallback;
   return Math.min(Math.max(number, min), max);
 };
 
-export const updateScoreArray = (values, setter, index, value, max, options) => {
+export const updateScoreArray = (
+  values: string[],
+  setter: (values: string[]) => void,
+  index: number,
+  value: string | number,
+  max: number,
+  options?: ClampScoreOptions,
+) => {
   const nextValues = [...values];
   nextValues[index] = clampScore(value, max, 0, options);
   setter(nextValues);

@@ -77,11 +77,13 @@ export const convertIuEnglishScore = (type, score, score2 = '') => {
   const table = IU_ENGLISH_TABLES.find((item) => item.type === type);
   if (!table) return 0;
 
-  const row = table.rows.find((item) => (
-    type === 'TOEIC'
-      ? !Number.isNaN(value2) && value >= item.minLr && value2 >= item.minSw
-      : value >= item.min
-  ));
+  const row = table.rows.find((item) => {
+    if (type === 'TOEIC') {
+      return 'minLr' in item && !Number.isNaN(value2) && value >= item.minLr && value2 >= item.minSw;
+    }
+
+    return 'min' in item && value >= item.min;
+  });
 
   return row ? parseFloat(row.point) : 0;
 };

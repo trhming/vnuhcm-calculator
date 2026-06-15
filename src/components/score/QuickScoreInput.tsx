@@ -1,3 +1,4 @@
+import type { ChangeEvent } from 'react';
 import { clampScore } from '../../utils/input';
 
 const toneClass = {
@@ -27,6 +28,21 @@ const toneClass = {
   },
 };
 
+type QuickScoreTone = keyof typeof toneClass;
+
+type QuickScoreInputProps = {
+  title: string;
+  description?: string;
+  value: string | number;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  disabled?: boolean;
+  max?: number;
+  placeholder?: string;
+  tone?: QuickScoreTone;
+  className?: string;
+  integer?: boolean;
+};
+
 export const QuickScoreInput = ({
   title,
   description = 'Tổng điểm 3 môn trên thang 30.',
@@ -38,9 +54,9 @@ export const QuickScoreInput = ({
   tone = 'blue',
   className = '',
   integer = false,
-}) => {
+}: QuickScoreInputProps) => {
   const toneStyle = toneClass[tone] || toneClass.blue;
-  const handleChange = (event) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
     event.target.value = clampScore(value, max, 0, { integer });
     onChange(event);

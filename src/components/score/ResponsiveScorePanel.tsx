@@ -1,5 +1,15 @@
+import type { ReactNode } from 'react';
 import { X } from 'lucide-react';
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
+
+type ResponsiveScorePanelProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  children: ReactNode;
+  variant?: 'panel' | 'card';
+  borderClassName?: string;
+  backdropClassName?: string;
+};
 
 export const ResponsiveScorePanel = ({
   isOpen,
@@ -8,7 +18,7 @@ export const ResponsiveScorePanel = ({
   variant = 'panel',
   borderClassName = 'border-slate-200',
   backdropClassName = 'bg-slate-900/80',
-}) => {
+}: ResponsiveScorePanelProps) => {
   useBodyScrollLock(isOpen);
 
   if (variant === 'card') {
@@ -59,7 +69,7 @@ export const ResponsiveScorePanel = ({
   );
 };
 
-const CloseButton = ({ onClose }) => (
+const CloseButton = ({ onClose }: { onClose: () => void }) => (
   <button
     type="button"
     onClick={onClose}

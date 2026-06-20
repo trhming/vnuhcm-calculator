@@ -1,6 +1,11 @@
 {
   "redirects": [
     {
+      "source": "/",
+      "destination": "https://tinhdiem.trhming.io.vn",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "destination": "https://tinhdiem.trhming.io.vn/:path*",
       "permanent": true

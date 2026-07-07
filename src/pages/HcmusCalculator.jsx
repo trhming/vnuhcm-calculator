@@ -10,14 +10,15 @@ import { MobileScoreButton } from '../components/score/MobileScoreButton';
 import { ResponsiveScorePanel } from '../components/score/ResponsiveScorePanel';
 import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
 import { Settings, BookOpen, PenTool, Award, Info, AlertTriangle, CheckCircle2, GraduationCap, ExternalLink } from 'lucide-react';
-import { HCMUS_ENGLISH_TYPES, NGOAI_NGU_CONVERSION } from '../constants/hcmus';
+import { HCMUS_ENGLISH_TYPES, NGOAI_NGU_CONVERSION, HCMUS_DGNL_CONVERSION } from '../constants/hcmus';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
-import { clampDecimal, clampScore, updateScoreArray } from '../utils/input';
+import { clampScore, updateScoreArray } from '../utils/input';
 import { findById } from '../utils/collection';
 
 export const HcmusCalculator = () => {
   const { state, results } = useHcmusCalculator();
   const [showConversionTable, setShowConversionTable] = useState(false);
+  const [showDgnlConversionTable, setShowDgnlConversionTable] = useState(false);
   const [showMobileResultModal, setShowMobileResultModal] = useState(false);
   
   const handleHocBaChange = (index, val) => {
@@ -82,79 +83,8 @@ export const HcmusCalculator = () => {
         {/* Left Column - Forms */}
         <div className="flex-1 space-y-6">
           
-          {/* Trọng số */}
-          <CardSection title="1. Trọng số (W)" icon={Settings}>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-4">
-                  Nhánh 1 (THPT + Học bạ)
-                </label>
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex justify-between mb-1">
-                      <span className="text-sm text-slate-500">w1 (THPT)</span>
-                      <div className="flex items-center gap-1">
-                        <input
-                          type="number"
-                          min="0.7"
-                          max="0.9"
-                          step="0.01"
-                          value={state.w1.toFixed(2)}
-                          onChange={(e) => state.setW1(clampDecimal(e.target.value, 0.7, 0.9, 0.7))}
-                          className="w-16 rounded-md border border-blue-200 px-2 py-1 text-right text-sm font-bold text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                    </div>
-                    <input 
-                      type="range" min="0.7" max="0.9" step="0.01" 
-                      value={state.w1} onChange={(e) => state.setW1(parseFloat(e.target.value))}
-                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-700"
-                    />
-                  </div>
-                  <div className="p-3 bg-blue-50 rounded-lg flex justify-between items-center">
-                    <span className="text-sm font-medium text-blue-900">w2 (Học bạ) = 1 - w1</span>
-                    <span className="font-bold text-blue-700">{(1 - state.w1).toFixed(2)}</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-4">
-                  Nhánh 2 (ĐGNL + Học bạ)
-                </label>
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex justify-between mb-1">
-                      <span className="text-sm text-slate-500">w3 (ĐGNL)</span>
-                      <div className="flex items-center gap-1">
-                        <input
-                          type="number"
-                          min="0.7"
-                          max="0.9"
-                          step="0.01"
-                          value={state.w3.toFixed(2)}
-                          onChange={(e) => state.setW3(clampDecimal(e.target.value, 0.7, 0.9, 0.7))}
-                          className="w-16 rounded-md border border-blue-200 px-2 py-1 text-right text-sm font-bold text-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                      </div>
-                    </div>
-                    <input 
-                      type="range" min="0.7" max="0.9" step="0.01" 
-                      value={state.w3} onChange={(e) => state.setW3(parseFloat(e.target.value))}
-                      className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-700"
-                    />
-                  </div>
-                  <div className="p-3 bg-blue-50 rounded-lg flex justify-between items-center">
-                    <span className="text-sm font-medium text-blue-900">w4 (Học bạ) = 1 - w3</span>
-                    <span className="font-bold text-blue-700">{(1 - state.w3).toFixed(2)}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </CardSection>
-
           {/* Học bạ */}
-          <CardSection title="2. Điểm học bạ" icon={BookOpen}>
+          <CardSection title="1. Điểm học bạ" icon={BookOpen}>
             <div className="flex flex-col gap-4">
               <QuickScoreInput
                 title="Nhập nhanh tổng học bạ"
@@ -211,7 +141,7 @@ export const HcmusCalculator = () => {
           </CardSection>
 
           {/* Điểm Thi */}
-          <CardSection title="3. Điểm thi" icon={PenTool}>
+          <CardSection title="2. Điểm thi" icon={PenTool}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* THPT */}
               <div className="flex flex-col gap-4">
@@ -314,14 +244,23 @@ export const HcmusCalculator = () => {
 
               {/* DGNL */}
               <div className="space-y-4">
-                <label className="block text-sm font-semibold text-blue-900 mb-3 flex items-center gap-2">
-                  <Settings className="w-4 h-4 text-blue-700" /> Kỳ thi ĐGNL 2026
-                </label>
+                <div className="flex justify-between items-center mb-3">
+                  <label className="text-sm font-semibold text-blue-900 flex items-center gap-2">
+                    <Settings className="w-4 h-4 text-blue-700" /> Kỳ thi ĐGNL 2026
+                  </label>
+                  <button 
+                    type="button" 
+                    onClick={() => setShowDgnlConversionTable(true)}
+                    className="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline"
+                  >
+                    Bảng quy đổi
+                  </button>
+                </div>
                 <div className="space-y-3">
                   <div>
                     <label className="block text-sm text-slate-600 mb-1">Điểm thi ĐGNL</label>
                     <ScoreInput
-                      max={parseFloat(state.maxDgnl) || 1200}
+                      max={parseFloat(state.maxDgnl) || 1139}
                       value={state.dgnl}
                       onValueChange={state.setDgnl}
                       integer
@@ -351,7 +290,7 @@ export const HcmusCalculator = () => {
           </CardSection>
 
           {/* Ưu tiên */}
-          <CardSection title="4. Ưu tiên & Điểm cộng" icon={Award}>
+          <CardSection title="3. Ưu tiên & Điểm cộng" icon={Award}>
             <div className="grid grid-cols-1 md:grid-cols-[63fr_74fr_63fr] gap-6">
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">Khu vực</label>
@@ -493,6 +432,43 @@ export const HcmusCalculator = () => {
               score: `${row.min} - ${row.max}`,
               point: row.point,
             }))}
+          />
+        </ConversionTableGrid>
+      </ConversionModal>
+
+      <ConversionModal
+        isOpen={showDgnlConversionTable}
+        title="Khung quy đổi tương đương điểm thi ĐGNL ĐHQG-HCM với điểm thi THPT năm 2026"
+        onClose={() => setShowDgnlConversionTable(false)}
+        maxWidthClassName="max-w-5xl"
+      >
+        <ConversionTableGrid className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <ConversionTable
+            columns={[
+              { key: 'percent', header: 'Phân vị (%)' },
+              { key: 'dgnl', header: 'Điểm thi ĐGNL' },
+              { key: 'thpt', header: 'Điểm thi THPT', value: true }
+            ]}
+            rows={HCMUS_DGNL_CONVERSION.slice(0, 33)}
+            tone="blue"
+          />
+          <ConversionTable
+            columns={[
+              { key: 'percent', header: 'Phân vị (%)' },
+              { key: 'dgnl', header: 'Điểm thi ĐGNL' },
+              { key: 'thpt', header: 'Điểm thi THPT', value: true }
+            ]}
+            rows={HCMUS_DGNL_CONVERSION.slice(33, 67)}
+            tone="blue"
+          />
+          <ConversionTable
+            columns={[
+              { key: 'percent', header: 'Phân vị (%)' },
+              { key: 'dgnl', header: 'Điểm thi ĐGNL' },
+              { key: 'thpt', header: 'Điểm thi THPT', value: true }
+            ]}
+            rows={HCMUS_DGNL_CONVERSION.slice(67)}
+            tone="blue"
           />
         </ConversionTableGrid>
       </ConversionModal>

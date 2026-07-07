@@ -29,7 +29,7 @@ export const HCMUS_DGNL_CONVERSION = [
   { percent: '<1%', dgnl: 1139, thpt: 30.0 },
   { percent: '1%', dgnl: 1108, thpt: 29.75 },
   { percent: '2%', dgnl: 995, thpt: 27.25 },
-  { percent: '3%', dgnl: 967, thpt: 26.75 },
+  { percent: '3%', dgnl: 967, thpt: 26.7 },
   { percent: '4%', dgnl: 948, thpt: 26.25 },
   { percent: '5%', dgnl: 932, thpt: 25.85 },
   { percent: '6%', dgnl: 918, thpt: 25.6 },

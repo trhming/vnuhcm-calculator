@@ -1,11 +1,48 @@
 import { useState, useMemo } from 'react';
-import { NGOAI_NGU_CONVERSION } from '../constants/hcmus';
+import { NGOAI_NGU_CONVERSION, HCMUS_DGNL_CONVERSION } from '../constants/hcmus';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
+
+export const convertDgnlToThptScale = (score) => {
+  const parsedScore = parseFloat(score);
+  if (isNaN(parsedScore) || parsedScore <= 0) return 0;
+  
+  const table = HCMUS_DGNL_CONVERSION;
+  
+  // 1. If score is >= the highest dgnl in the table
+  if (parsedScore >= table[0].dgnl) {
+    return table[0].thpt;
+  }
+  
+  // 2. If score is <= the lowest dgnl in the table (370)
+  const lowest = table[table.length - 1];
+  if (parsedScore <= lowest.dgnl) {
+    return (parsedScore / lowest.dgnl) * lowest.thpt;
+  }
+  
+  // 3. Find the bracket
+  for (let i = 0; i < table.length - 1; i++) {
+    const x1_entry = table[i];
+    const x2_entry = table[i + 1];
+    
+    if (parsedScore >= x2_entry.dgnl && parsedScore <= x1_entry.dgnl) {
+      const X1 = x1_entry.dgnl;
+      const X2 = x2_entry.dgnl;
+      const A1 = x1_entry.thpt;
+      const A2 = x2_entry.thpt;
+      
+      if (X1 === X2) return A1;
+      
+      return A2 + ((A1 - A2) * (parsedScore - X2)) / (X1 - X2);
+    }
+  }
+  
+  return 0;
+};
 
 export const useHcmusCalculator = () => {
   // Trọng số
-  const [w1, setW1] = useState(0.7);
-  const [w3, setW3] = useState(0.7);
+  const [w1, setW1] = useState(0.8);
+  const [w3, setW3] = useState(0.8);
   
   // Học bạ (3 môn, 3 lớp)
   // Khởi tạo mảng 9 phần tử rỗng
@@ -110,8 +147,7 @@ export const useHcmusCalculator = () => {
 
     // --- ĐGNL ---
     const diemDGNL = parseNumber(dgnl);
-    const maxD = parseNumber(maxDgnl) || 1200;
-    const dgnlChuanHoa = Math.min(30, (diemDGNL / maxD) * 30);
+    const dgnlChuanHoa = convertDgnlToThptScale(diemDGNL);
 
     // B. Tính Điểm Học lực
     const w2 = 1 - w1;
@@ -170,7 +206,7 @@ export const useHcmusCalculator = () => {
       base30,
       base100
     };
-  }, [w1, w3, hocBa, hocBaQuickTotal, thpt, thptQuickTotal, dgnl, maxDgnl, kv, dt, khuyenKhich, isNgoaiNgu, chungChiType, diemChungChi]);
+  }, [w1, w3, hocBa, hocBaQuickTotal, thpt, thptQuickTotal, dgnl, kv, dt, khuyenKhich, isNgoaiNgu, chungChiType, diemChungChi]);
 
   return {
     state: {

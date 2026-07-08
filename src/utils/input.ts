@@ -6,7 +6,7 @@ export const clampScore = (
   value: string | number,
   max: number,
   min = 0,
-  maxDecimal = 2,
+  maxDecimal = -1,
   options: ClampScoreOptions = {},
   isFocusing: boolean
 ) => {
@@ -45,6 +45,7 @@ export const clampScore = (
   if (number > max) {
     const stringtifiedNumber = number.toString();
     if (!isFocusing) {
+      if (maxDecimal < 1) return max.toString();
       if (stringtifiedNumber.length >= maxDecimal) {
         /**
          * Edge case: 100 --expected--> 10.0
@@ -80,9 +81,10 @@ export const updateScoreArray = (
   index: number,
   value: string | number,
   max: number,
+  maxDecimal: number = -1,
   options?: ClampScoreOptions,
 ) => {
   const nextValues = [...values];
-  nextValues[index] = clampScore(value, max, 2, 0, options, false);
+  nextValues[index] = clampScore(value, max, maxDecimal, 0, options, false);
   setter(nextValues);
 };

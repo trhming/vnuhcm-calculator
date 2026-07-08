@@ -32,7 +32,7 @@ export const ScoreInput = ({
   onValueChange,
   min = 0,
   max,
-  maxDecimal = 2,
+  maxDecimal = -1,
   disabled = false,
   placeholder = '0.00',
   tone = 'blue',

@@ -91,6 +91,7 @@ export const UsshCalculator = () => {
                       </label>
                       <ScoreInput
                         max={10}
+                        maxDecimal={2}
                         value={state.thpt[idx]}
                         onValueChange={(value) => handleThptChange(idx, value)}
                         disabled={hasThptQuickTotal}
@@ -160,6 +161,7 @@ export const UsshCalculator = () => {
                    <label className="block text-sm font-medium text-slate-700 mb-1">Điểm cộng thành tích (Max 10)</label>
                    <ScoreInput
                      max={10}
+                     maxDecimal={2}
                      value={state.thanhTich}
                      onValueChange={state.setThanhTich}
                      tone="emerald"

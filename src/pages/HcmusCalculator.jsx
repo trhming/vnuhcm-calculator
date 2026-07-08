@@ -20,7 +20,7 @@ export const HcmusCalculator = () => {
   const [showConversionTable, setShowConversionTable] = useState(false);
   const [showDgnlConversionTable, setShowDgnlConversionTable] = useState(false);
   const [showMobileResultModal, setShowMobileResultModal] = useState(false);
-  
+
   const handleHocBaChange = (index, val) => {
     updateScoreArray(state.hocBa, state.setHocBa, index, val, 10);
   };
@@ -82,7 +82,7 @@ export const HcmusCalculator = () => {
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Left Column - Forms */}
         <div className="flex-1 space-y-6">
-          
+
           {/* Học bạ */}
           <CardSection title="1. Điểm học bạ" icon={BookOpen}>
             <div className="flex flex-col gap-4">
@@ -161,6 +161,7 @@ export const HcmusCalculator = () => {
                       <label className="text-sm text-slate-600 w-16">Môn {idx + 1}</label>
                       <ScoreInput
                         max={10}
+                        maxDecimal={2}
                         value={state.thpt[idx]}
                         onValueChange={(value) => handleThptChange(idx, value)}
                         disabled={hasThptQuickTotal}
@@ -170,13 +171,14 @@ export const HcmusCalculator = () => {
                       />
                     </div>
                   ))}
-                  
+
                   {/* Môn 3 (Ngoại Ngữ) */}
                   <div className="p-3 border border-slate-200 rounded-xl bg-slate-50 space-y-3">
                     <div className="flex items-center gap-3">
                       <label className="text-sm font-medium text-slate-700 w-16">Môn 3</label>
                       <ScoreInput
                         max={10}
+                        maxDecimal={2}
                         value={state.thpt[2]}
                         onValueChange={(value) => handleThptChange(2, value)}
                         disabled={hasThptQuickTotal}
@@ -186,17 +188,17 @@ export const HcmusCalculator = () => {
                         placeholder="0.00"
                       />
                     </div>
-                    
+
                     <div className="flex items-center gap-2 pl-[4.5rem]">
-                      <input 
+                      <input
                         type="checkbox" id="isNgoaiNgu"
                         checked={state.isNgoaiNgu}
                         onChange={(e) => state.setIsNgoaiNgu(e.target.checked)}
                         className="rounded text-blue-600 focus:ring-blue-500 w-4 h-4 cursor-pointer"
                       />
                       <label htmlFor="isNgoaiNgu" className="text-sm text-slate-600 cursor-pointer select-none">Là môn Ngoại ngữ?</label>
-                      <button 
-                        type="button" 
+                      <button
+                        type="button"
                         onClick={() => setShowConversionTable(true)}
                         className="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline ml-auto"
                       >
@@ -248,8 +250,8 @@ export const HcmusCalculator = () => {
                   <label className="text-sm font-semibold text-blue-900 flex items-center gap-2">
                     <Settings className="w-4 h-4 text-blue-700" /> Kỳ thi ĐGNL 2026
                   </label>
-                  <button 
-                    type="button" 
+                  <button
+                    type="button"
                     onClick={() => setShowDgnlConversionTable(true)}
                     className="text-xs font-medium text-blue-600 hover:text-blue-800 hover:underline"
                   >
@@ -294,8 +296,8 @@ export const HcmusCalculator = () => {
             <div className="grid grid-cols-1 md:grid-cols-[63fr_74fr_63fr] gap-6">
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">Khu vực</label>
-                <select 
-                  value={state.kv} 
+                <select
+                  value={state.kv}
                   onChange={(e) => state.setKv(e.target.value)}
                   className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                 >
@@ -304,8 +306,8 @@ export const HcmusCalculator = () => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-2">Đối tượng</label>
-                <select 
-                  value={state.dt} 
+                <select
+                  value={state.dt}
                   onChange={(e) => state.setDt(e.target.value)}
                   className="w-full px-3 py-2 border border-slate-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
                 >
@@ -316,6 +318,7 @@ export const HcmusCalculator = () => {
                 <label className="block text-sm font-medium text-slate-700 mb-2">Điểm cộng (Max 1.5)</label>
                 <ScoreInput
                   max={1.5}
+                  maxDecimal={2}
                   value={state.khuyenKhich}
                   onValueChange={state.setKhuyenKhich}
                   tone="blue"

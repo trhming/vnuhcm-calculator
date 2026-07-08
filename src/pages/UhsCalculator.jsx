@@ -188,6 +188,7 @@ export const UhsCalculator = () => {
                       <label className="mb-1 block text-sm font-medium text-slate-700">{subject}</label>
                       <ScoreInput
                         max={10}
+                        maxDecimal={2}
                         value={state.thpt[index]}
                         onValueChange={(value) => updateScoreArray(state.thpt, state.setThpt, index, value, 10)}
                         disabled={hasThptQuickTotal}
@@ -215,6 +216,7 @@ export const UhsCalculator = () => {
                 </label>
                 <ScoreInput
                   max={1200}
+                  maxDecimal={2}
                   value={state.dgnl}
                   onValueChange={state.setDgnl}
                   integer
@@ -325,6 +327,7 @@ export const UhsCalculator = () => {
                 {(state.hasSpecialSchool || state.hasGoodAcademic) && (
                   <ScoreInput
                     max={10}
+                    maxDecimal={2}
                     value={state.hsgAverage}
                     onValueChange={state.setHsgAverage}
                     tone="teal"

@@ -233,6 +233,7 @@ export const IuCalculator = () => {
                           <label className="w-16 text-sm font-medium text-slate-700">Môn 3</label>
                           <ScoreInput
                             max={10}
+                            maxDecimal={2}
                             value={state.useEnglishCertificate ? results.englishConvertedScore : state.thpt[2]}
                             onValueChange={(value) => updateScoreArray(state.thpt, state.setThpt, 2, value, 10)}
                             disabled={state.useEnglishCertificate || hasThptQuickTotal}
@@ -375,6 +376,7 @@ export const IuCalculator = () => {
                   <label className="mb-2 block text-sm font-medium text-slate-700">Điểm thưởng (Max 10)</label>
                   <ScoreInput
                     max={10}
+                    maxDecimal={2}
                     value={state.achievementBonus}
                     onValueChange={state.setAchievementBonus}
                     tone="red"
@@ -395,6 +397,7 @@ export const IuCalculator = () => {
                   <label className="mb-2 block text-sm font-medium text-slate-700">Khuyến khích NN (Max 5)</label>
                   <ScoreInput
                     max={5}
+                    maxDecimal={2}
                     value={state.englishBonus}
                     onValueChange={state.setEnglishBonus}
                     disabled={state.useEnglishCertificate}

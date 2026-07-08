@@ -79,7 +79,7 @@ export const UsshCalculator = () => {
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               {/* Điểm Thi THPT */}
               <div>
-                <label className="block text-sm font-semibold text-emerald-900 mb-3 flex items-center gap-2">
+                <label className="text-sm font-semibold text-emerald-900 mb-3 flex items-center gap-2">
                   <BookOpen className="w-4 h-4 text-emerald-600" />
                   Kỳ thi tốt nghiệp THPT 2026
                 </label>
@@ -114,7 +114,7 @@ export const UsshCalculator = () => {
 
               {/* Điểm thi ĐGNL */}
               <div>
-                <label className="block text-sm font-semibold text-emerald-900 mb-2 flex items-center gap-2">
+                <label className="text-sm font-semibold text-emerald-900 mb-2 flex items-center gap-2">
                   <Settings className="w-4 h-4 text-emerald-600" />
                   Kỳ thi ĐGNL 2026
                 </label>

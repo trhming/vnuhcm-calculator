@@ -145,7 +145,7 @@ export const HcmusCalculator = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* THPT */}
               <div className="flex flex-col gap-4">
-                <label className="block text-sm font-semibold text-blue-900 mb-3 flex items-center gap-2">
+                <label className="text-sm font-semibold text-blue-900 mb-3 flex items-center gap-2">
                   <BookOpen className="w-4 h-4 text-blue-700" /> Kỳ thi tốt nghiệp THPT 2026
                 </label>
                 <QuickScoreInput

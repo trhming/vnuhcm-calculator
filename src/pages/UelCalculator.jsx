@@ -163,7 +163,7 @@ export const UelCalculator = () => {
                 {/* Điểm Thi THPT */}
                 {showThpt && (
                   <div>
-                    <label className="block text-sm font-semibold text-indigo-900 mb-3 flex items-center gap-2">
+                    <label className="text-sm font-semibold text-indigo-900 mb-3 flex items-center gap-2">
                       <BookHeart className="w-4 h-4 text-indigo-600" /> Kỳ thi tốt nghiệp THPT 2026
                     </label>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -197,7 +197,7 @@ export const UelCalculator = () => {
                 {/* Điểm thi ĐGNL */}
                 {showDgnl && (
                   <div>
-                    <label className="block text-sm font-semibold text-indigo-900 mb-2 flex items-center gap-2">
+                    <label className="text-sm font-semibold text-indigo-900 mb-2 flex items-center gap-2">
                       <Settings className="w-4 h-4 text-indigo-600" /> Kỳ thi ĐGNL 2026
                     </label>
                     <ScoreInput

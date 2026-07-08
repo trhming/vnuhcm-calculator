@@ -1,4 +1,4 @@
-import type { ChangeEvent, InputHTMLAttributes } from 'react';
+import { useRef, type ChangeEvent, type InputHTMLAttributes } from 'react';
 import { clampScore } from '../../utils/input';
 
 const toneClass = {
@@ -18,6 +18,7 @@ type ScoreInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> &
   onValueChange?: (value: string, event: ChangeEvent<HTMLInputElement>) => void;
   min?: number;
   max?: number;
+  maxDecimal?: number;
   tone?: ScoreTone;
   widthClass?: string;
   inputClassName?: string;
@@ -31,6 +32,7 @@ export const ScoreInput = ({
   onValueChange,
   min = 0,
   max,
+  maxDecimal = 2,
   disabled = false,
   placeholder = '0.00',
   tone = 'blue',
@@ -41,9 +43,10 @@ export const ScoreInput = ({
   integer = false,
   ...props
 }: ScoreInputProps) => {
+  const inputElement = useRef(null);
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (clamp && max !== undefined) {
-      event.target.value = clampScore(event.target.value, max, min, { integer });
+      event.target.value = clampScore(event.target.value, max, min, maxDecimal, { integer }, document.activeElement === inputElement.current);
     }
 
     onValueChange?.(event.target.value, event);
@@ -52,6 +55,7 @@ export const ScoreInput = ({
 
   return (
     <input
+      ref={inputElement}
       type="text"
       inputMode={integer ? 'numeric' : 'decimal'}
       pattern={integer ? '[0-9]*' : '[0-9]*[.,]?[0-9]*'}
@@ -59,9 +63,8 @@ export const ScoreInput = ({
       onChange={handleChange}
       disabled={disabled}
       placeholder={placeholder}
-      className={`${widthClass} rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 ${toneClass[tone] || toneClass.blue} ${
-        disabled ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''
-      } ${className} ${inputClassName}`}
+      className={`${widthClass} rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 ${toneClass[tone] || toneClass.blue} ${disabled ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''
+        } ${className} ${inputClassName}`}
       {...props}
     />
   );

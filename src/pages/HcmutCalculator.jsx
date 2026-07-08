@@ -242,6 +242,7 @@ export const HcmutCalculator = () => {
                 onChange={(e) => handleHocBaQuickAverageChange(e.target.value)}
                 disabled={hasHocBaDetail}
                 max={10}
+                maxWholeNummber={2}
                 tone="hcmut"
                 className="mt-4"
               />
@@ -374,6 +375,7 @@ export const HcmutCalculator = () => {
                 onChange={(e) => handleThptQuickTotalChange(e.target.value)}
                 disabled={hasThptDetail}
                 max={10}
+                maxWholeNummber={2}
                 tone="hcmut"
               />
             </div>

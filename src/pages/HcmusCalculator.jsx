@@ -88,6 +88,7 @@ export const HcmusCalculator = () => {
             <div className="flex flex-col gap-4">
               <QuickScoreInput
                 title="Nhập nhanh tổng học bạ"
+                maxWholeNummber={2}
                 value={hasHocBaDetail ? results.tongHocBa.toFixed(2) : state.hocBaQuickTotal}
                 onChange={(e) => handleHocBaQuickTotalChange(e.target.value)}
                 disabled={hasHocBaDetail}
@@ -154,6 +155,7 @@ export const HcmusCalculator = () => {
                   onChange={(e) => handleThptQuickTotalChange(e.target.value)}
                   disabled={hasThptDetail}
                   className="order-3"
+                  maxWholeNummber={2}
                 />
                 <div className="order-2 space-y-3">
                   {[0, 1].map((idx) => (

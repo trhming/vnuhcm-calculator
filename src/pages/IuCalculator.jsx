@@ -201,6 +201,7 @@ export const IuCalculator = () => {
                       step="0.01"
                       placeholder="0.00"
                       tone="red"
+                      maxWholeNummber={2}
                     />
                   </div>
             </CardSection>
@@ -317,6 +318,7 @@ export const IuCalculator = () => {
                       step="0.01"
                       placeholder="0.00"
                       tone="red"
+                      maxWholeNummber={2}
                     />
                   </div>
                 )}

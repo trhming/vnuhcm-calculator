@@ -70,6 +70,7 @@ export const UsshCalculator = () => {
                 step="0.01"
                 placeholder="0.00"
                 tone="emerald"
+                maxWholeNummber={2}
               />
             </div>
           </CardSection>
@@ -110,6 +111,7 @@ export const UsshCalculator = () => {
                   placeholder="0.00"
                   tone="emerald"
                   className="mt-4"
+                  maxWholeNummber={2}
                 />
               </div>
 

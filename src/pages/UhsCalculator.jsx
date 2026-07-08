@@ -172,6 +172,7 @@ export const UhsCalculator = () => {
                 step="0.01"
                 placeholder="0.00"
                 tone="teal"
+                maxWholeNummber={2}
               />
             </div>
           </CardSection>
@@ -207,6 +208,7 @@ export const UhsCalculator = () => {
                   step="0.01"
                   placeholder="0.00"
                   tone="teal"
+                  maxWholeNummber={2}
                 />
               </div>
 

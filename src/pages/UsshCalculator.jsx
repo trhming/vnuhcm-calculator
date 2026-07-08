@@ -70,7 +70,7 @@ export const UsshCalculator = () => {
                 step="0.01"
                 placeholder="0.00"
                 tone="emerald"
-                maxWholeNummber={2}
+                maxIntPartLength={2}
               />
             </div>
           </CardSection>
@@ -92,7 +92,7 @@ export const UsshCalculator = () => {
                       </label>
                       <ScoreInput
                         max={10}
-                        maxWholeNumber={1}
+                        maxIntPartLength={1}
                         value={state.thpt[idx]}
                         onValueChange={(value) => handleThptChange(idx, value)}
                         disabled={hasThptQuickTotal}
@@ -111,7 +111,7 @@ export const UsshCalculator = () => {
                   placeholder="0.00"
                   tone="emerald"
                   className="mt-4"
-                  maxWholeNummber={2}
+                  maxIntPartLength={2}
                 />
               </div>
 
@@ -163,7 +163,7 @@ export const UsshCalculator = () => {
                    <label className="block text-sm font-medium text-slate-700 mb-1">Điểm cộng thành tích (Max 10)</label>
                    <ScoreInput
                      max={10}
-                     maxWholeNumber={1}
+                     maxIntPartLength={1}
                      value={state.thanhTich}
                      onValueChange={state.setThanhTich}
                      tone="emerald"

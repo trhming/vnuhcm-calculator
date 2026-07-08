@@ -88,7 +88,7 @@ export const HcmusCalculator = () => {
             <div className="flex flex-col gap-4">
               <QuickScoreInput
                 title="Nhập nhanh tổng học bạ"
-                maxWholeNummber={2}
+                maxIntPartLength={2}
                 value={hasHocBaDetail ? results.tongHocBa.toFixed(2) : state.hocBaQuickTotal}
                 onChange={(e) => handleHocBaQuickTotalChange(e.target.value)}
                 disabled={hasHocBaDetail}
@@ -155,7 +155,7 @@ export const HcmusCalculator = () => {
                   onChange={(e) => handleThptQuickTotalChange(e.target.value)}
                   disabled={hasThptDetail}
                   className="order-3"
-                  maxWholeNummber={2}
+                  maxIntPartLength={2}
                 />
                 <div className="order-2 space-y-3">
                   {[0, 1].map((idx) => (
@@ -163,7 +163,7 @@ export const HcmusCalculator = () => {
                       <label className="text-sm text-slate-600 w-16">Môn {idx + 1}</label>
                       <ScoreInput
                         max={10}
-                        maxWholeNumber={1}
+                        maxIntPartLength={1}
                         value={state.thpt[idx]}
                         onValueChange={(value) => handleThptChange(idx, value)}
                         disabled={hasThptQuickTotal}
@@ -180,7 +180,7 @@ export const HcmusCalculator = () => {
                       <label className="text-sm font-medium text-slate-700 w-16">Môn 3</label>
                       <ScoreInput
                         max={10}
-                        maxWholeNumber={1}
+                        maxIntPartLength={1}
                         value={state.thpt[2]}
                         onValueChange={(value) => handleThptChange(2, value)}
                         disabled={hasThptQuickTotal}
@@ -320,7 +320,7 @@ export const HcmusCalculator = () => {
                 <label className="block text-sm font-medium text-slate-700 mb-2">Điểm cộng (Max 1.5)</label>
                 <ScoreInput
                   max={1.5}
-                  maxWholeNumber={1}
+                  maxIntPartLength={1}
                   value={state.khuyenKhich}
                   onValueChange={state.setKhuyenKhich}
                   tone="blue"

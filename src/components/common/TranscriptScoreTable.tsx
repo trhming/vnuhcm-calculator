@@ -85,7 +85,7 @@ export const TranscriptScoreTable = ({
                     <td key={cellIndex} className="px-2 py-2">
                       <ScoreInput
                         max={10}
-                        maxWholeNumber={1}
+                        maxIntPartLength={1}
                         value={displayValue}
                         onValueChange={(value) => onChange(cellIndex, value)}
                         disabled={disabled || meta.disabled}

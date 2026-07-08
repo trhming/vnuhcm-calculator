@@ -18,7 +18,7 @@ type ScoreInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange'> &
   onValueChange?: (value: string, event: ChangeEvent<HTMLInputElement>) => void;
   min?: number;
   max?: number;
-  maxWholeNumber?: number;
+  maxIntPartLength?: number;
   tone?: ScoreTone;
   widthClass?: string;
   inputClassName?: string;
@@ -32,7 +32,7 @@ export const ScoreInput = ({
   onValueChange,
   min = 0,
   max,
-  maxWholeNumber = -1,
+  maxIntPartLength = -1,
   disabled = false,
   placeholder = '0.00',
   tone = 'blue',
@@ -45,7 +45,7 @@ export const ScoreInput = ({
 }: ScoreInputProps) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (clamp && max !== undefined) {
-      event.target.value = clampScore(event.target.value, max, min, maxWholeNumber, { integer });
+      event.target.value = clampScore(event.target.value, max, min, maxIntPartLength, { integer });
     }
 
     onValueChange?.(event.target.value, event);

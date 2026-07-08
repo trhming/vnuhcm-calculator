@@ -152,7 +152,7 @@ export const UelCalculator = () => {
                 step="0.01"
                 placeholder="0.00"
                 tone="indigo"
-                maxWholeNummber={2}
+                maxIntPartLength={2}
               />
             </CardSection>
           )}
@@ -191,7 +191,7 @@ export const UelCalculator = () => {
                       placeholder="0.00"
                       tone="indigo"
                       className="mt-4"
-                      maxWholeNummber={2}
+                      maxIntPartLength={2}
                     />
                   </div>
                 )}

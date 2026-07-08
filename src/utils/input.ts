@@ -6,9 +6,8 @@ export const clampScore = (
   value: string | number,
   max: number,
   min = 0,
-  maxWholeNumber = -1,
-  options: ClampScoreOptions = {},
-  isFocusing: boolean
+  maxIntPartLength = -1,
+  options: ClampScoreOptions = {}
 ) => {
   if (value === '') return '';
 
@@ -44,19 +43,17 @@ export const clampScore = (
   if (number < min) return min.toString();
   if (number > max) {
     const stringtifiedNumber = number.toString();
-    if (!isFocusing) {
-      if (maxWholeNumber < 1) return max.toString();
-      if (stringtifiedNumber.length >= maxWholeNumber - 1) {
-        /**
-         * Edge case: 100 --expected--> 10.0
-         * But the `Math.pow(10, stringtifiedNumber.length - 1)` will return 100, which divide 100 will return 1, not 10
-         */
-        if (stringtifiedNumber.startsWith("10")) number = 10
-        else number /= Math.pow(10, stringtifiedNumber.length - 1)
-      }
-      if (number > max) return max.toString();
-      return number.toString()
+    if (maxIntPartLength < 1) return max.toString();
+    if (stringtifiedNumber.length > maxIntPartLength) {
+      /**
+       * Edge case: 100 --expected--> 10.0
+       * But the `Math.pow(10, stringtifiedNumber.length - 1)` will return 100, which divide 100 will return 1, not 10
+       */
+      if (stringtifiedNumber.startsWith("10")) number = 10
+      else number /= Math.pow(10, stringtifiedNumber.length - maxIntPartLength)
     }
+    if (number > max) return max.toString();
+    return number.toString()
   }
 
   if (decimalValue.split('.')[1]?.length > 2) return number.toFixed(2);
@@ -85,6 +82,6 @@ export const updateScoreArray = (
   options?: ClampScoreOptions,
 ) => {
   const nextValues = [...values];
-  nextValues[index] = clampScore(value, max, maxDecimal, 0, options, false);
+  nextValues[index] = clampScore(value, max, maxDecimal, 0, options);
   setter(nextValues);
 };

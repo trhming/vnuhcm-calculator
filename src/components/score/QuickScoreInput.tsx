@@ -1,4 +1,4 @@
-import { useRef, type ChangeEvent } from 'react';
+import { type ChangeEvent } from 'react';
 import { clampScore } from '../../utils/input';
 
 const toneClass = {
@@ -58,10 +58,9 @@ export const QuickScoreInput = ({
   integer = false,
 }: QuickScoreInputProps) => {
   const toneStyle = toneClass[tone] || toneClass.blue;
-  const inputRef = useRef(null);
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
-    event.target.value = clampScore(value, max, 0, maxWholeNummber, { integer }, document.activeElement === inputRef.current);
+    event.target.value = clampScore(value, max, 0, maxWholeNummber, { integer });
     onChange(event);
   };
 
@@ -73,7 +72,6 @@ export const QuickScoreInput = ({
           <p className="text-xs text-slate-500">{description}</p>
         </div>
         <input
-          ref={inputRef}
           type="text"
           inputMode={integer ? 'numeric' : 'decimal'}
           pattern={integer ? '[0-9]*' : '[0-9]*[.,]?[0-9]*'}

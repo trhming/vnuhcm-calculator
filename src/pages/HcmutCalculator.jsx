@@ -103,7 +103,7 @@ export const HcmutCalculator = () => {
                       <label className="block text-xs font-medium text-blue-800 mb-1">Tiếng Việt</label>
                       <ScoreInput
                         max={300}
-                        maxWholeNumber={2}
+                        maxWholeNumber={1}
                         value={state.dgnlTv}
                         onValueChange={state.setDgnlTv}
                         disabled={hasDgnlQuickTotal}
@@ -117,7 +117,7 @@ export const HcmutCalculator = () => {
                       <label className="block text-xs font-medium text-blue-800 mb-1">Tiếng Anh</label>
                       <ScoreInput
                         max={300}
-                        maxWholeNumber={2}
+                        maxWholeNumber={1}
                         value={state.dgnlTa}
                         onValueChange={state.setDgnlTa}
                         disabled={hasDgnlQuickTotal}
@@ -131,7 +131,7 @@ export const HcmutCalculator = () => {
                       <label className="block text-xs font-medium text-blue-800 mb-1">Toán <span className="font-bold">(x2)</span></label>
                       <ScoreInput
                         max={300}
-                        maxWholeNumber={2}
+                        maxWholeNumber={1}
                         value={state.dgnlToan}
                         onValueChange={state.setDgnlToan}
                         disabled={hasDgnlQuickTotal}
@@ -145,7 +145,7 @@ export const HcmutCalculator = () => {
                       <label className="block text-xs font-medium text-blue-800 mb-1">Tư duy khoa học</label>
                       <ScoreInput
                         max={300}
-                        maxWholeNumber={2}
+                        maxWholeNumber={1}
                         value={state.dgnlKh}
                         onValueChange={state.setDgnlKh}
                         disabled={hasDgnlQuickTotal}
@@ -198,7 +198,7 @@ export const HcmutCalculator = () => {
                       </select>
                     ) : (
                       <ScoreInput
-                        maxWholeNumber={2}
+                        maxWholeNumber={1}
                         max={selectedIntlCert?.max}
                         value={state.intlCertScore}
                         onValueChange={state.setIntlCertScore}
@@ -259,7 +259,7 @@ export const HcmutCalculator = () => {
                     </label>
                     <ScoreInput
                       max={10}
-                      maxWholeNumber={2}
+                      maxWholeNumber={1}
                       value={state.thpt[idx]}
                       onValueChange={(value) => handleThptChange(idx, value)}
                       disabled={hasThptQuickTotal}
@@ -276,7 +276,7 @@ export const HcmutCalculator = () => {
                     <div>
                       <ScoreInput
                         max={10}
-                        maxWholeNumber={2}
+                        maxWholeNumber={1}
                         value={state.thpt[2]}
                         onValueChange={(value) => handleThptChange(2, value)}
                         disabled={hasThptQuickTotal}
@@ -413,7 +413,7 @@ export const HcmutCalculator = () => {
                       value={state.thuong}
                       onValueChange={state.setThuong}
                       tone="hcmut"
-                      maxWholeNumber={2}
+                      maxWholeNumber={1}
                     />
                   </div>
                   <div>
@@ -423,7 +423,7 @@ export const HcmutCalculator = () => {
                       value={state.xetThuong}
                       onValueChange={state.setXetThuong}
                       tone="hcmut"
-                      maxWholeNumber={2}
+                      maxWholeNumber={1}
                     />
                   </div>
                   <div>
@@ -433,7 +433,7 @@ export const HcmutCalculator = () => {
                       value={state.khuyenKhich}
                       onValueChange={state.setKhuyenKhich}
                       tone="hcmut"
-                      maxWholeNumber={2}
+                      maxWholeNumber={1}
                     />
                   </div>
                 </div>

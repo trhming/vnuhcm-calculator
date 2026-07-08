@@ -1,4 +1,4 @@
-import { useRef, type ChangeEvent, type InputHTMLAttributes } from 'react';
+import { type ChangeEvent, type InputHTMLAttributes } from 'react';
 import { clampScore } from '../../utils/input';
 
 const toneClass = {
@@ -43,10 +43,9 @@ export const ScoreInput = ({
   integer = false,
   ...props
 }: ScoreInputProps) => {
-  const inputElement = useRef(null);
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (clamp && max !== undefined) {
-      event.target.value = clampScore(event.target.value, max, min, maxWholeNumber, { integer }, document.activeElement === inputElement.current);
+      event.target.value = clampScore(event.target.value, max, min, maxWholeNumber, { integer });
     }
 
     onValueChange?.(event.target.value, event);
@@ -55,7 +54,6 @@ export const ScoreInput = ({
 
   return (
     <input
-      ref={inputElement}
       type="text"
       inputMode={integer ? 'numeric' : 'decimal'}
       pattern={integer ? '[0-9]*' : '[0-9]*[.,]?[0-9]*'}

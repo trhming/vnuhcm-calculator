@@ -6,7 +6,7 @@ export const clampScore = (
   value: string | number,
   max: number,
   min = 0,
-  maxDecimal = -1,
+  maxWholeNumber = -1,
   options: ClampScoreOptions = {},
   isFocusing: boolean
 ) => {
@@ -45,8 +45,8 @@ export const clampScore = (
   if (number > max) {
     const stringtifiedNumber = number.toString();
     if (!isFocusing) {
-      if (maxDecimal < 1) return max.toString();
-      if (stringtifiedNumber.length >= maxDecimal) {
+      if (maxWholeNumber < 1) return max.toString();
+      if (stringtifiedNumber.length >= maxWholeNumber - 1) {
         /**
          * Edge case: 100 --expected--> 10.0
          * But the `Math.pow(10, stringtifiedNumber.length - 1)` will return 100, which divide 100 will return 1, not 10

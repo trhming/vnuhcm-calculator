@@ -37,7 +37,7 @@ type QuickScoreInputProps = {
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   disabled?: boolean;
   max?: number;
-  maxDecimal?: number;
+  maxWholeNummber?: number;
   placeholder?: string;
   tone?: QuickScoreTone;
   className?: string;
@@ -51,7 +51,7 @@ export const QuickScoreInput = ({
   onChange,
   disabled,
   max = 30,
-  maxDecimal = -1,
+  maxWholeNummber = -1,
   placeholder = '0.00',
   tone = 'blue',
   className = '',
@@ -61,7 +61,7 @@ export const QuickScoreInput = ({
   const inputRef = useRef(null);
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target;
-    event.target.value = clampScore(value, max, 0, maxDecimal, { integer }, document.activeElement === inputRef.current);
+    event.target.value = clampScore(value, max, 0, maxWholeNummber, { integer }, document.activeElement === inputRef.current);
     onChange(event);
   };
 

@@ -70,6 +70,7 @@ export const UsshCalculator = () => {
                 step="0.01"
                 placeholder="0.00"
                 tone="emerald"
+                maxIntPartLength={2}
               />
             </div>
           </CardSection>
@@ -79,7 +80,7 @@ export const UsshCalculator = () => {
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               {/* Điểm Thi THPT */}
               <div>
-                <label className="block text-sm font-semibold text-emerald-900 mb-3 flex items-center gap-2">
+                <label className="text-sm font-semibold text-emerald-900 mb-3 flex items-center gap-2">
                   <BookOpen className="w-4 h-4 text-emerald-600" />
                   Kỳ thi tốt nghiệp THPT 2026
                 </label>
@@ -91,6 +92,7 @@ export const UsshCalculator = () => {
                       </label>
                       <ScoreInput
                         max={10}
+                        maxIntPartLength={1}
                         value={state.thpt[idx]}
                         onValueChange={(value) => handleThptChange(idx, value)}
                         disabled={hasThptQuickTotal}
@@ -109,12 +111,13 @@ export const UsshCalculator = () => {
                   placeholder="0.00"
                   tone="emerald"
                   className="mt-4"
+                  maxIntPartLength={2}
                 />
               </div>
 
               {/* Điểm thi ĐGNL */}
               <div>
-                <label className="block text-sm font-semibold text-emerald-900 mb-2 flex items-center gap-2">
+                <label className="text-sm font-semibold text-emerald-900 mb-2 flex items-center gap-2">
                   <Settings className="w-4 h-4 text-emerald-600" />
                   Kỳ thi ĐGNL 2026
                 </label>
@@ -160,6 +163,7 @@ export const UsshCalculator = () => {
                    <label className="block text-sm font-medium text-slate-700 mb-1">Điểm cộng thành tích (Max 10)</label>
                    <ScoreInput
                      max={10}
+                     maxIntPartLength={1}
                      value={state.thanhTich}
                      onValueChange={state.setThanhTich}
                      tone="emerald"

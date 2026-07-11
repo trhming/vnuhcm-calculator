@@ -172,6 +172,7 @@ export const UhsCalculator = () => {
                 step="0.01"
                 placeholder="0.00"
                 tone="teal"
+                maxIntPartLength={2}
               />
             </div>
           </CardSection>
@@ -188,6 +189,7 @@ export const UhsCalculator = () => {
                       <label className="mb-1 block text-sm font-medium text-slate-700">{subject}</label>
                       <ScoreInput
                         max={10}
+                        maxIntPartLength={1}
                         value={state.thpt[index]}
                         onValueChange={(value) => updateScoreArray(state.thpt, state.setThpt, index, value, 10)}
                         disabled={hasThptQuickTotal}
@@ -206,6 +208,7 @@ export const UhsCalculator = () => {
                   step="0.01"
                   placeholder="0.00"
                   tone="teal"
+                  maxIntPartLength={2}
                 />
               </div>
 
@@ -215,6 +218,7 @@ export const UhsCalculator = () => {
                 </label>
                 <ScoreInput
                   max={1200}
+                  maxIntPartLength={1}
                   value={state.dgnl}
                   onValueChange={state.setDgnl}
                   integer
@@ -325,6 +329,7 @@ export const UhsCalculator = () => {
                 {(state.hasSpecialSchool || state.hasGoodAcademic) && (
                   <ScoreInput
                     max={10}
+                    maxIntPartLength={1}
                     value={state.hsgAverage}
                     onValueChange={state.setHsgAverage}
                     tone="teal"

@@ -32,7 +32,7 @@ export const HcmutCalculator = () => {
   };
 
   const handleHocBaQuickAverageChange = (val) => {
-    state.setHocBaQuickAverage(clampScore(val, 10));
+    state.setHocBaQuickAverage(clampScore(val, 10, 0, 1));
   };
 
   const handleThptChange = (index, val) => {
@@ -40,7 +40,7 @@ export const HcmutCalculator = () => {
   };
 
   const handleThptQuickTotalChange = (val) => {
-    state.setThptQuickTotal(clampScore(val, 10));
+    state.setThptQuickTotal(clampScore(val, 10, 0, 1));
   };
 
   const handleDgnlQuickTotalChange = (val) => {
@@ -242,7 +242,7 @@ export const HcmutCalculator = () => {
                 onChange={(e) => handleHocBaQuickAverageChange(e.target.value)}
                 disabled={hasHocBaDetail}
                 max={10}
-                maxIntPartLength={2}
+                maxIntPartLength={1}
                 tone="hcmut"
                 className="mt-4"
               />
@@ -375,7 +375,7 @@ export const HcmutCalculator = () => {
                 onChange={(e) => handleThptQuickTotalChange(e.target.value)}
                 disabled={hasThptDetail}
                 max={10}
-                maxIntPartLength={2}
+                maxIntPartLength={1}
                 tone="hcmut"
               />
             </div>

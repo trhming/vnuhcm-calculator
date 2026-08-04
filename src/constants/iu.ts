@@ -1,10 +1,11 @@
 import { pickCertificates } from './common';
 
 export const IU_COEFFICIENTS = {
-  Hs1: 1.28,
-  Hs2: 1.31,
-  Hs3: 0.78,
+  Hs1: 1.2,
+  Hs2: 1.25,
+  Hs3: 0.83,
   Hs4: 1.02,
+  Hs5: 1,
 };
 
 export const IU_GROUPS = [

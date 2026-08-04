@@ -34,21 +34,12 @@ export const IuCalculator = () => {
   const needsThpt = ['G1_DGNL', 'G1_NO_DGNL', 'G2_BOTH', 'G2_THPT'].includes(state.group);
   const needsDgnl = ['G1_DGNL', 'G2_BOTH', 'G2_DGNL'].includes(state.group);
   const needsHocBa = ['G1_DGNL', 'G1_NO_DGNL'].includes(state.group);
-  const isK3Valid = results.k3 >= 10 && results.k3 <= 20;
   const hasThptDetail = state.thpt.some((value) => value !== '') || state.useEnglishCertificate;
   const hasThptQuickTotal = state.thptQuickTotal !== '';
   const hasHocBaDetail = state.hocBa.some((value) => value !== '');
   const hasHocBaQuickTotal = state.hocBaQuickTotal !== '';
   const selectedEnglishType = findById(IU_ENGLISH_TYPES, state.englishType);
   const setQuickTotal = (setter, value) => setter(clampScore(value, 30));
-
-  const updateK1 = (value) => {
-    state.setK1(clampNumber(value, 30, 40));
-  };
-
-  const updateK2 = (value) => {
-    state.setK2(clampNumber(value, 40, 50));
-  };
 
   const handleHocBaChange = (index, value) => {
     updateScoreArray(state.hocBa, state.setHocBa, index, value, 10);
@@ -102,70 +93,21 @@ export const IuCalculator = () => {
       <div className="flex flex-col gap-8 lg:flex-row">
         <div className="flex-1 space-y-6">
           <CardSection title="1. Trọng số xét tuyển" icon={SlidersHorizontal}>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              <div>
-                <div className="mb-2 flex justify-between text-sm">
-                  <label className="font-semibold text-slate-700">k1 - THPT</label>
-                  <div className="flex items-center gap-1">
-                    <input
-                      type="number"
-                      min="30"
-                      max="40"
-                      step="1"
-                      value={state.k1}
-                      onChange={(event) => updateK1(event.target.value)}
-                      className="w-14 rounded-md border border-red-200 px-2 py-1 text-right text-sm font-bold text-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
-                    />
-                    <span className="font-bold text-red-700">%</span>
-                  </div>
-                </div>
-                <input
-                  type="range"
-                  min="30"
-                  max="40"
-                  step="1"
-                  value={state.k1}
-                  onChange={(event) => updateK1(event.target.value)}
-                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-slate-200 accent-red-700"
-                />
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <div className="rounded-xl border border-red-100 bg-red-50/60 p-4">
+                <div className="text-sm font-semibold text-slate-700">k1 - THPT</div>
+                <div className="mt-1 text-3xl font-extrabold text-red-700">{state.k1}%</div>
+                <div className="mt-1 text-xs text-red-800/70">Trọng số thi THPT</div>
               </div>
-              <div>
-                <div className="mb-2 flex justify-between text-sm">
-                  <label className="font-semibold text-slate-700">k2 - ĐGNL</label>
-                  <div className="flex items-center gap-1">
-                    <input
-                      type="number"
-                      min="40"
-                      max="50"
-                      step="1"
-                      value={state.k2}
-                      onChange={(event) => updateK2(event.target.value)}
-                      className="w-14 rounded-md border border-red-200 px-2 py-1 text-right text-sm font-bold text-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
-                    />
-                    <span className="font-bold text-red-700">%</span>
-                  </div>
-                </div>
-                <input
-                  type="range"
-                  min="40"
-                  max="50"
-                  step="1"
-                  value={state.k2}
-                  onChange={(event) => updateK2(event.target.value)}
-                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-slate-200 accent-red-700"
-                />
+              <div className="rounded-xl border border-red-100 bg-red-50/60 p-4">
+                <div className="text-sm font-semibold text-slate-700">k2 - ĐGNL</div>
+                <div className="mt-1 text-3xl font-extrabold text-red-700">{state.k2}%</div>
+                <div className="mt-1 text-xs text-red-800/70">Trọng số thi ĐGNL</div>
               </div>
-              <div className={`rounded-xl border p-4 ${isK3Valid ? 'border-red-100 bg-red-50' : 'border-amber-200 bg-amber-50'}`}>
-                <div className={`text-sm font-semibold ${isK3Valid ? 'text-red-900' : 'text-amber-900'}`}>k3 - Học bạ</div>
-                <div className={`mt-1 text-3xl font-extrabold ${isK3Valid ? 'text-red-700' : 'text-amber-700'}`}>{results.k3}%</div>
-                <div className={`mt-1 text-xs ${isK3Valid ? 'text-red-800/70' : 'text-amber-800'}`}>
-                  Tự tính = 100 - k1 - k2
-                </div>
-                {!isK3Valid && (
-                  <div className="mt-2 text-xs font-medium text-amber-800">
-                    k3 nên nằm trong khoảng 10% - 20%.
-                  </div>
-                )}
+              <div className="rounded-xl border border-red-100 bg-red-50/60 p-4">
+                <div className="text-sm font-semibold text-slate-700">k3 - Học bạ</div>
+                <div className="mt-1 text-3xl font-extrabold text-red-700">{results.k3}%</div>
+                <div className="mt-1 text-xs text-red-800/70">Trọng số Học bạ (100 - k1 - k2)</div>
               </div>
             </div>
           </CardSection>

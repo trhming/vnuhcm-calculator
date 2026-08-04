@@ -10,8 +10,8 @@ const parseNumber = (value) => {
 const capScore = (value, max) => Math.min(Math.max(value, 0), max);
 
 export const useIuCalculator = () => {
-  const [k1, setK1] = useState(35);
-  const [k2, setK2] = useState(45);
+  const [k1, setK1] = useState(40);
+  const [k2, setK2] = useState(50);
   const [group, setGroup] = useState('G1_DGNL');
 
   const [thpt, setThpt] = useState(['', '', '']);

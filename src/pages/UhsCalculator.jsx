@@ -20,7 +20,7 @@ import { ScoreDetailCard } from '../components/score/ScoreDetailCard';
 import { KHU_VUC, DOI_TUONG } from '../constants/common';
 import { UHS_LANG_TYPES } from '../constants/uhs';
 import { useUhsCalculator } from '../hooks/useUhsCalculator';
-import { clampNumber, clampScore, updateScoreArray } from '../utils/input';
+import { clampScore, updateScoreArray } from '../utils/input';
 import { findById } from '../utils/collection';
 
 export const UhsCalculator = () => {
@@ -28,8 +28,6 @@ export const UhsCalculator = () => {
   const [showMobileResultModal, setShowMobileResultModal] = useState(false);
 
   const subjects = ['Môn 1', 'Môn 2', 'Môn 3'];
-  const computedC = 100 - state.a - state.b;
-  const isWeightValid = computedC >= 0 && computedC <= 25 && state.a >= 40 && state.b <= 35;
   const selectedLanguageType = findById(UHS_LANG_TYPES, state.languageType);
 
   const handleHocBaChange = (index, value) => {
@@ -42,37 +40,31 @@ export const UhsCalculator = () => {
   const hasHocBaQuickTotal = state.hocBaQuickTotal !== '';
   const setQuickTotal = (setter, value) => setter(clampScore(value, 30));
 
-  const updateWeight = (key, value) => {
-    if (key === 'a') state.setA(clampNumber(value, 40, 100));
-    if (key === 'b') state.setB(clampNumber(value, 0, 35));
-  };
-
   const resultCard = (
     <ScoreDetailCard
       theme="teal"
       total={results.total}
-      totalPrecision={1}
-      headerNote="Các điểm thành phần làm tròn 0.1"
-      formula={`ĐHL = ĐGNL x ${state.a}% + THPT x ${state.b}% + Học bạ x ${results.cWeight}%`}
+      totalPrecision={2}
+      formula={`ĐHL = THPT x ${results.w1}% + ĐGNL x ${results.w2}% + Học bạ x 20%`}
       dhl={results.dhl}
-      dhlPrecision={1}
-      dgnlScore={results.dgnl100.toFixed(1)}
-      thptScore={results.thpt100.toFixed(1)}
-      hocBaScore={results.hocBa100.toFixed(1)}
+      dhlPrecision={2}
+      dgnlScore={`${results.dgnl100.toFixed(2)}${results.isDgnlConverted ? ' (Quy đổi)' : ''}`}
+      thptScore={`${results.thpt100.toFixed(2)}${results.isThptConverted ? ' (Quy đổi)' : ''}`}
+      hocBaScore={results.hocBa100.toFixed(2)}
       bonusRows={[
-        { label: 'Cộng ngoại ngữ', value: `+${results.bonusLanguage.toFixed(1)}` },
-        { label: 'Cộng SAT', value: `+${results.bonusSat.toFixed(1)}` },
-        { label: 'Cộng HSG', value: `+${results.bonusHsg.toFixed(1)}` },
+        { label: 'Cộng ngoại ngữ', value: `+${results.bonusLanguage.toFixed(2)}` },
+        { label: 'Cộng SAT', value: `+${results.bonusSat.toFixed(2)}` },
+        { label: 'Cộng HSG', value: `+${results.bonusHsg.toFixed(2)}` },
         {
           label: 'Tổng điểm cộng (Gốc)',
-          value: `+${results.bonusTotal.toFixed(1)}`,
+          value: `+${results.bonusTotal.toFixed(2)}`,
           separatorBefore: true,
         },
-        { label: 'Cộng thực nhận', value: `+${results.bonusEffective.toFixed(1)}`, variant: 'bonusEffective' },
+        { label: 'Cộng thực nhận', value: `+${results.bonusEffective.toFixed(2)}`, variant: 'bonusEffective' },
       ]}
       priorityRows={[
-        { label: 'Ưu tiên KV/ĐT (Gốc)', value: `+${results.priority100.toFixed(1)}` },
-        { label: 'Ưu tiên thực nhận', value: `+${results.priorityAccepted.toFixed(1)}`, variant: 'priorityEffective' },
+        { label: 'Ưu tiên KV/ĐT (Gốc)', value: `+${results.priority100.toFixed(2)}` },
+        { label: 'Ưu tiên thực nhận', value: `+${results.priorityAccepted.toFixed(2)}`, variant: 'priorityEffective' },
       ]}
     />
   );
@@ -85,10 +77,10 @@ export const UhsCalculator = () => {
           Máy tính điểm UHS 2026
         </h1>
         <p className="mt-2 text-slate-500">
-          Phương thức tổng hợp của Trường Đại học Khoa học Sức khỏe - ĐHQG-HCM.
+          Phương thức xét tuyển tổng hợp của Trường Đại học Khoa học Sức khỏe - ĐHQG-HCM.
         </p>
         <a
-          href="https://tuyensinh.uhsvnu.edu.vn/news.php?slug=phuonghuong"
+          href="https://www.uhsvnu.edu.vn/tuyen-sinh-dao-tao/thong-tin-tuyen-sinh/phuong-thuc-tuyen-sinh/thong-tin-tuyen-sinh-nam-2026-dai-hoc-18052026"
           target="_blank"
           rel="noreferrer"
           className="mt-4 inline-flex items-center gap-2 rounded-lg border border-teal-100 bg-teal-50 px-3 py-2 text-sm font-medium text-teal-800 transition-colors hover:border-teal-200 hover:bg-teal-100"
@@ -100,58 +92,83 @@ export const UhsCalculator = () => {
 
       <div className="flex flex-col gap-8 lg:flex-row">
         <div className="flex-1 space-y-6">
-          <CardSection title="1. Trọng số a, b, c" icon={SlidersHorizontal}>
+          <CardSection title="1. Trọng số w1, w2, w3" icon={SlidersHorizontal}>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              {[
-                ['a', 'ĐGNL', state.a, '>= 40%'],
-                ['b', 'THPT', state.b, '<= 35%'],
-              ].map(([key, label, value, note]) => (
-                <div key={key}>
-                  <div className="mb-2 flex justify-between text-sm">
-                    <label className="font-semibold text-slate-700">{key} - {label}</label>
-                    <div className="flex items-center gap-1">
-                      <input
-                        type="number"
-                        min={key === 'a' ? 40 : 0}
-                        max={key === 'a' ? 100 : 35}
-                        step="1"
-                        value={value}
-                        onChange={(event) => updateWeight(key, event.target.value)}
-                        className="w-14 rounded-md border border-teal-200 px-2 py-1 text-right text-sm font-bold text-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-700"
-                      />
-                      <span className="font-bold text-teal-700">%</span>
-                    </div>
+              <div>
+                <div className="mb-2 flex justify-between text-sm">
+                  <label className="font-semibold text-slate-700">w1 - THPT</label>
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="number"
+                      min={30}
+                      max={35}
+                      step="1"
+                      value={state.w1}
+                      onChange={(event) => state.setW1(event.target.value)}
+                      className="w-14 rounded-md border border-teal-200 px-2 py-1 text-right text-sm font-bold text-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-700"
+                    />
+                    <span className="font-bold text-teal-700">%</span>
                   </div>
-                  <input
-                    type="range"
-                    min={key === 'a' ? 40 : 0}
-                    max={key === 'a' ? 100 : 35}
-                    step="1"
-                    value={value}
-                    onChange={(event) => updateWeight(key, event.target.value)}
-                    className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-slate-200 accent-teal-700"
-                  />
-                  <div className="mt-1 text-xs text-slate-500">{note}</div>
                 </div>
-              ))}
-              <div className={`rounded-xl border p-4 ${isWeightValid ? 'border-teal-100 bg-teal-50' : 'border-amber-200 bg-amber-50'}`}>
-                <div className={`text-sm font-semibold ${isWeightValid ? 'text-teal-900' : 'text-amber-900'}`}>c - Học bạ</div>
-                <div className={`mt-1 text-3xl font-extrabold ${isWeightValid ? 'text-teal-700' : 'text-amber-700'}`}>{computedC}%</div>
-                <div className={`mt-1 text-xs ${isWeightValid ? 'text-teal-800/70' : 'text-amber-800'}`}>
-                  Tự tính = 100 - a - b
-                </div>
-                {!isWeightValid && (
-                  <div className="mt-2 text-xs font-medium text-amber-800">
-                    c nên nằm trong khoảng 0% - 25%.
+                <input
+                  type="range"
+                  min={30}
+                  max={35}
+                  step="1"
+                  value={state.w1}
+                  onChange={(event) => state.setW1(event.target.value)}
+                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-slate-200 accent-teal-700"
+                />
+                <div className="mt-1 text-xs text-slate-500">Quy định: 30% - 35%</div>
+              </div>
+
+              <div>
+                <div className="mb-2 flex justify-between text-sm">
+                  <label className="font-semibold text-slate-700">w2 - ĐGNL</label>
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="number"
+                      min={45}
+                      max={50}
+                      step="1"
+                      value={state.w2}
+                      onChange={(event) => state.setW2(event.target.value)}
+                      className="w-14 rounded-md border border-teal-200 px-2 py-1 text-right text-sm font-bold text-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-700"
+                    />
+                    <span className="font-bold text-teal-700">%</span>
                   </div>
-                )}
+                </div>
+                <input
+                  type="range"
+                  min={45}
+                  max={50}
+                  step="1"
+                  value={state.w2}
+                  onChange={(event) => state.setW2(event.target.value)}
+                  className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-slate-200 accent-teal-700"
+                />
+                <div className="mt-1 text-xs text-slate-500">Quy định: 45% - 50%</div>
+              </div>
+
+              <div className="rounded-xl border border-teal-100 bg-teal-50 p-4">
+                <div className="text-sm font-semibold text-teal-900">w3 - Học bạ</div>
+                <div className="mt-1 text-3xl font-extrabold text-teal-700">20%</div>
+                <div className="mt-1 text-xs text-teal-800/70">
+                  Cố định theo quy chế UHS
+                </div>
               </div>
             </div>
-            <div className={`mt-5 flex gap-3 rounded-lg border p-4 text-sm ${isWeightValid ? 'border-teal-100 bg-teal-50 text-teal-900' : 'border-amber-200 bg-amber-50 text-amber-900'}`}>
-              <Info className={`mt-0.5 h-5 w-5 shrink-0 ${isWeightValid ? 'text-teal-700' : 'text-amber-600'}`} />
-              <p>
-                Điều kiện hợp lệ: a &gt;= 40%, b &lt;= 35%, c &lt;= 25%, và a + b + c = 100%.
-              </p>
+            <div className="mt-5 flex gap-3 rounded-lg border border-teal-100 bg-teal-50 p-4 text-sm text-teal-900">
+              <Info className="mt-0.5 h-5 w-5 shrink-0 text-teal-700" />
+              <div>
+                <p className="font-semibold">Công thức xét tuyển tổng hợp (thang điểm 100):</p>
+                <p className="mt-1 font-mono text-xs font-medium text-teal-800">
+                  Điểm tổng hợp = w1 × THPT + w2 × ĐGNL + w3 × HB + Điểm cộng + Điểm ưu tiên
+                </p>
+                <p className="mt-1 text-xs text-teal-700">
+                  Quy định trọng số: w1 trong khoảng 30% đến 35%; w2 trong khoảng 45% đến 50%; w3 = 20%.
+                </p>
+              </div>
             </div>
           </CardSection>
 
@@ -177,11 +194,55 @@ export const UhsCalculator = () => {
             </div>
           </CardSection>
 
-          <CardSection title="3. Điểm thi" icon={PenTool}>
+          <CardSection title="3. Điểm thi & Quy đổi thiếu điểm thành phần" icon={PenTool}>
+            <div className="mb-6 rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <label className="mb-3 block text-sm font-semibold text-slate-800">
+                Trường hợp thiếu điểm thành phần:
+              </label>
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                {[
+                  {
+                    id: 'FULL',
+                    title: 'Đủ điểm THPT & ĐGNL 2026',
+                    desc: 'Dùng điểm thi thực tế',
+                  },
+                  {
+                    id: 'MISSING_DGNL',
+                    title: 'Thi THPT 2026 (Thiếu ĐGNL)',
+                    desc: 'Quy đổi: ĐGNL = THPT × 0,87',
+                  },
+                  {
+                    id: 'MISSING_THPT',
+                    title: 'TN THPT trước 2026 (Thiếu THPT)',
+                    desc: 'Quy đổi: THPT = ĐGNL × 1,15',
+                  },
+                ].map((option) => (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => state.setMissingMode(option.id)}
+                    className={`flex flex-col text-left p-3 rounded-lg border transition-all ${
+                      state.missingMode === option.id
+                        ? 'border-teal-600 bg-teal-50 ring-2 ring-teal-600/20'
+                        : 'border-slate-200 bg-white hover:border-slate-300'
+                    }`}
+                  >
+                    <span className="text-xs font-bold text-teal-900">{option.title}</span>
+                    <span className="mt-1 text-[11px] text-slate-500">{option.desc}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               <div>
                 <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-teal-900">
-                  <BookOpen className="h-4 w-4 text-teal-700" /> Kỳ thi tốt nghiệp THPT 2026
+                  <BookOpen className="h-4 w-4 text-teal-700" /> Kỳ thi tốt nghiệp THPT
+                  {results.isThptConverted && (
+                    <span className="ml-auto rounded bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">
+                      Quy đổi từ ĐGNL × 1,15
+                    </span>
+                  )}
                 </label>
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                   {subjects.map((subject, index) => (
@@ -192,7 +253,7 @@ export const UhsCalculator = () => {
                         maxIntPartLength={1}
                         value={state.thpt[index]}
                         onValueChange={(value) => updateScoreArray(state.thpt, state.setThpt, index, value, 10)}
-                        disabled={hasThptQuickTotal}
+                        disabled={hasThptQuickTotal || results.isThptConverted}
                         tone="teal"
                         placeholder="0.00"
                       />
@@ -202,30 +263,46 @@ export const UhsCalculator = () => {
                 <QuickScoreInput
                   className="mt-4"
                   title="Nhập nhanh tổng THPT"
-                  value={hasThptDetail ? results.thptTotal.toFixed(2) : state.thptQuickTotal}
+                  value={results.isThptConverted ? results.thptTotal.toFixed(2) : (hasThptDetail ? results.thptTotal.toFixed(2) : state.thptQuickTotal)}
                   onChange={(event) => setQuickTotal(state.setThptQuickTotal, event.target.value)}
-                  disabled={hasThptDetail}
+                  disabled={hasThptDetail || results.isThptConverted}
                   step="0.01"
                   placeholder="0.00"
                   tone="teal"
                   maxIntPartLength={2}
                 />
+                {results.isThptConverted && (
+                  <p className="mt-2 text-xs font-medium text-amber-700">
+                    * Đã tự động quy đổi bổ sung THPT (thang 100) = ĐGNL (thang 100) × 1,15 = {results.thpt100.toFixed(2)} điểm.
+                  </p>
+                )}
               </div>
 
               <div>
                 <label className="mb-3 flex items-center gap-2 text-sm font-semibold text-teal-900">
-                  <Settings className="h-4 w-4 text-teal-700" /> Kỳ thi ĐGNL 2026
+                  <Settings className="h-4 w-4 text-teal-700" /> Kỳ thi ĐGNL ĐHQG-HCM
+                  {results.isDgnlConverted && (
+                    <span className="ml-auto rounded bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">
+                      Quy đổi từ THPT × 0,87
+                    </span>
+                  )}
                 </label>
                 <ScoreInput
                   max={1200}
                   maxIntPartLength={1}
-                  value={state.dgnl}
+                  value={results.isDgnlConverted ? String(results.dgnlTotalDisplay) : state.dgnl}
                   onValueChange={state.setDgnl}
+                  disabled={results.isDgnlConverted}
                   integer
                   tone="teal"
                   inputClassName="text-lg font-medium"
                   placeholder="850"
                 />
+                {results.isDgnlConverted && (
+                  <p className="mt-2 text-xs font-medium text-amber-700">
+                    * Đã tự động quy đổi bổ sung ĐGNL (thang 100) = THPT (thang 100) × 0,87 = {results.dgnl100.toFixed(2)} điểm.
+                  </p>
+                )}
               </div>
             </div>
           </CardSection>
@@ -276,12 +353,12 @@ export const UhsCalculator = () => {
                   ) : (
                     <div className="flex items-center gap-2 text-sm font-medium text-emerald-700">
                       <CheckCircle2 className="h-4 w-4" />
-                      +{results.bonusLanguage.toFixed(1)} điểm
+                      +{results.bonusLanguage.toFixed(2)} điểm
                     </div>
                   )}
                   {state.languageType === 'TOEIC' && (
                     <div className="text-sm font-medium text-emerald-700 md:col-span-3">
-                      Điểm cộng ngoại ngữ: +{results.bonusLanguage.toFixed(1)}
+                      Điểm cộng ngoại ngữ: +{results.bonusLanguage.toFixed(2)}
                     </div>
                   )}
                 </div>
@@ -311,22 +388,15 @@ export const UhsCalculator = () => {
                 <label className="flex cursor-pointer items-center gap-3">
                   <input
                     type="checkbox"
-                    checked={state.hasSpecialSchool}
-                    onChange={(event) => state.setHasSpecialSchool(event.target.checked)}
+                    checked={state.hasHsg}
+                    onChange={(event) => state.setHasHsg(event.target.checked)}
                     className="h-4 w-4 rounded text-teal-700 focus:ring-teal-700"
                   />
-                  <span className="text-sm font-medium text-slate-700">Học tập &gt;= 2 năm tại trường Chuyên/PTNK</span>
+                  <span className="text-sm font-medium text-slate-700">
+                    Học sinh giỏi thuộc 149 trường UTXT (Học &ge; 2 năm tại trường Chuyên/PTNK &amp; Học lực 3 năm từ Tốt trở lên)
+                  </span>
                 </label>
-                <label className="mt-3 flex cursor-pointer items-center gap-3">
-                  <input
-                    type="checkbox"
-                    checked={state.hasGoodAcademic}
-                    onChange={(event) => state.setHasGoodAcademic(event.target.checked)}
-                    className="h-4 w-4 rounded text-teal-700 focus:ring-teal-700"
-                  />
-                  <span className="text-sm font-medium text-slate-700">Trung bình học lực 3 năm từ Tốt trở lên</span>
-                </label>
-                {(state.hasSpecialSchool || state.hasGoodAcademic) && (
+                {state.hasHsg && (
                   <ScoreInput
                     max={10}
                     maxIntPartLength={1}
@@ -383,7 +453,7 @@ export const UhsCalculator = () => {
 
       <MobileScoreButton
         score={results.total}
-        precision={1}
+        precision={2}
         tone="teal"
         onClick={() => setShowMobileResultModal(true)}
       />

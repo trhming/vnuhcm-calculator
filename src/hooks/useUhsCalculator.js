@@ -8,8 +8,23 @@ const parseNumber = (value) => {
 };
 
 export const useUhsCalculator = () => {
-  const [a, setA] = useState(40);
-  const [b, setB] = useState(35);
+  const [w1, setW1State] = useState(35);
+  const [w2, setW2State] = useState(45);
+  const w3 = 20;
+
+  const setW1 = (val) => {
+    const num = Math.min(35, Math.max(30, parseNumber(val)));
+    setW1State(num);
+    setW2State(80 - num);
+  };
+
+  const setW2 = (val) => {
+    const num = Math.min(50, Math.max(45, parseNumber(val)));
+    setW2State(num);
+    setW1State(80 - num);
+  };
+
+  const [missingMode, setMissingMode] = useState('FULL');
 
   const [dgnl, setDgnl] = useState('');
   const [thpt, setThpt] = useState(['', '', '']);
@@ -25,19 +40,34 @@ export const useUhsCalculator = () => {
   const [hasSat, setHasSat] = useState(false);
   const [satScore, setSatScore] = useState('');
 
-  const [hasSpecialSchool, setHasSpecialSchool] = useState(false);
-  const [hasGoodAcademic, setHasGoodAcademic] = useState(false);
+  const [hasHsg, setHasHsg] = useState(false);
   const [hsgAverage, setHsgAverage] = useState('');
 
   const [kv, setKv] = useState('KV3');
   const [dt, setDt] = useState('NONE');
 
   const results = useMemo(() => {
-    const dgnl100 = roundUhs((parseNumber(dgnl) / 1200) * 100);
-    const thptTotal = thptQuickTotal !== ''
+    const rawThptTotal = thptQuickTotal !== ''
       ? roundUhs(Math.min(30, parseNumber(thptQuickTotal)))
       : thpt.reduce((total, value) => total + parseNumber(value), 0);
-    const thpt100 = roundUhs((thptTotal / 30) * 100);
+    let thpt100 = roundUhs((rawThptTotal / 30) * 100);
+
+    const rawDgnl = parseNumber(dgnl);
+    let dgnl100 = roundUhs((rawDgnl / 1200) * 100);
+
+    let isDgnlConverted = false;
+    let isThptConverted = false;
+
+    if (missingMode === 'MISSING_DGNL') {
+      dgnl100 = roundUhs(thpt100 * 0.87);
+      isDgnlConverted = true;
+    } else if (missingMode === 'MISSING_THPT') {
+      thpt100 = roundUhs(Math.min(100, dgnl100 * 1.15));
+      isThptConverted = true;
+    }
+
+    const thptTotalDisplay = isThptConverted ? roundUhs((thpt100 / 100) * 30) : rawThptTotal;
+    const dgnlTotalDisplay = isDgnlConverted ? Math.round((dgnl100 / 100) * 1200) : rawDgnl;
 
     const hocBaSubjectAverages = [0, 1, 2].map((subjectIndex) => {
       const startIndex = subjectIndex * 3;
@@ -52,8 +82,11 @@ export const useUhsCalculator = () => {
       : roundUhs(hocBaSubjectAverages.reduce((total, value) => total + value, 0));
     const hocBa100 = roundUhs((hocBaTotal / 30) * 100);
 
-    const cWeight = 100 - a - b;
-    const dhl = roundUhs(dgnl100 * (a / 100) + thpt100 * (b / 100) + hocBa100 * (cWeight / 100));
+    const dhl = roundUhs(
+      thpt100 * (w1 / 100) +
+      dgnl100 * (w2 / 100) +
+      hocBa100 * (w3 / 100)
+    );
 
     const languageConfig = UHS_LANG_TYPES.find((item) => item.id === languageType);
     let bonusLanguage = 0;
@@ -62,12 +95,12 @@ export const useUhsCalculator = () => {
         const lr = parseNumber(languageScore);
         const sw = parseNumber(languageScore2);
         if (lr >= languageConfig.minLr && sw >= languageConfig.minSw) {
-          bonusLanguage = 3 * ((lr + sw) / languageConfig.max);
+          bonusLanguage = 5 * ((lr + sw) / languageConfig.max);
         }
       } else {
         const score = parseNumber(languageScore);
         if (score >= languageConfig.min) {
-          bonusLanguage = 3 * (score / languageConfig.max);
+          bonusLanguage = 5 * (score / languageConfig.max);
         }
       }
     }
@@ -75,15 +108,17 @@ export const useUhsCalculator = () => {
     let bonusSat = 0;
     const sat = parseNumber(satScore);
     if (hasSat && sat >= 1280) {
-      bonusSat = 3 * (sat / 1600);
+      bonusSat = 5 * (sat / 1600);
     }
+
+    const bonusLangSatTotal = Math.min(5, bonusLanguage + bonusSat);
 
     let bonusHsg = 0;
-    if (hasSpecialSchool && hasGoodAcademic) {
-      bonusHsg = 3 * (parseNumber(hsgAverage) / 10);
+    if (hasHsg) {
+      bonusHsg = 5 * (parseNumber(hsgAverage) / 10);
     }
 
-    const bonusTotal = roundUhs(bonusLanguage + bonusSat + bonusHsg);
+    const bonusTotal = roundUhs(bonusLangSatTotal + bonusHsg);
     const bonusEffective = roundUhs(Math.min(bonusTotal, Math.max(0, 100 - dhl)));
 
     const khuvuc = KHU_VUC.find((item) => item.id === kv);
@@ -101,13 +136,19 @@ export const useUhsCalculator = () => {
     const total = roundUhs(Math.min(100, dhl + bonusEffective + priorityAccepted));
 
     return {
+      w1,
+      w2,
+      w3,
       dgnl100,
-      thptTotal,
+      dgnlTotalDisplay,
+      isDgnlConverted,
+      thptTotal: thptTotalDisplay,
       thpt100,
+      isThptConverted,
       hocBaSubjectAverages,
       hocBaTotal,
       hocBa100,
-      cWeight,
+      cWeight: w3,
       dhl,
       bonusLanguage: roundUhs(bonusLanguage),
       bonusSat: roundUhs(bonusSat),
@@ -119,21 +160,22 @@ export const useUhsCalculator = () => {
       total,
     };
   }, [
+    w1,
+    w2,
+    w3,
+    missingMode,
     dgnl,
     thpt,
     thptQuickTotal,
     hocBa,
     hocBaQuickTotal,
-    a,
-    b,
     hasLanguage,
     languageType,
     languageScore,
     languageScore2,
     hasSat,
     satScore,
-    hasSpecialSchool,
-    hasGoodAcademic,
+    hasHsg,
     hsgAverage,
     kv,
     dt,
@@ -141,8 +183,12 @@ export const useUhsCalculator = () => {
 
   return {
     state: {
-      a, setA,
-      b, setB,
+      w1, setW1,
+      w2, setW2,
+      w3,
+      a: w2, setA: setW2,
+      b: w1, setB: setW1,
+      missingMode, setMissingMode,
       dgnl, setDgnl,
       thpt, setThpt, thptQuickTotal, setThptQuickTotal,
       hocBa, setHocBa, hocBaQuickTotal, setHocBaQuickTotal,
@@ -152,8 +198,9 @@ export const useUhsCalculator = () => {
       languageScore2, setLanguageScore2,
       hasSat, setHasSat,
       satScore, setSatScore,
-      hasSpecialSchool, setHasSpecialSchool,
-      hasGoodAcademic, setHasGoodAcademic,
+      hasHsg, setHasHsg,
+      hasSpecialSchool: hasHsg, setHasSpecialSchool: setHasHsg,
+      hasGoodAcademic: hasHsg, setHasGoodAcademic: setHasHsg,
       hsgAverage, setHsgAverage,
       kv, setKv,
       dt, setDt,

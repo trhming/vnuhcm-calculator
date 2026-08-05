@@ -12,4 +12,4 @@ export const UHS_LANG_TYPES = pickCertificates(['IELTS', 'TOEFL_IBT', 'TOEFL_ITP
   return { ...type, ...thresholds };
 });
 
-export const roundUhs = (value) => Math.round(value * 10) / 10;
+export const roundUhs = (value) => Math.round(value * 100) / 100;

@@ -2,12 +2,12 @@ import { type ChangeEvent, type InputHTMLAttributes } from 'react';
 import { clampScore } from '../../utils/input';
 
 const toneClass = {
-  blue: 'focus:ring-blue-500',
-  hcmut: 'focus:ring-blue-800',
-  emerald: 'focus:ring-emerald-600',
-  teal: 'focus:ring-teal-700',
-  indigo: 'focus:ring-indigo-600',
-  red: 'focus:ring-red-500',
+  blue: 'focus-visible:ring-blue-600 dark:focus-visible:ring-blue-400',
+  hcmut: 'focus-visible:ring-blue-700 dark:focus-visible:ring-blue-400',
+  emerald: 'focus-visible:ring-emerald-600 dark:focus-visible:ring-emerald-400',
+  teal: 'focus-visible:ring-teal-600 dark:focus-visible:ring-teal-400',
+  indigo: 'focus-visible:ring-indigo-600 dark:focus-visible:ring-indigo-400',
+  red: 'focus-visible:ring-red-600 dark:focus-visible:ring-red-400',
 };
 
 type ScoreTone = keyof typeof toneClass;
@@ -61,8 +61,13 @@ export const ScoreInput = ({
       onChange={handleChange}
       disabled={disabled}
       placeholder={placeholder}
-      className={`${widthClass} rounded-md border border-slate-200 px-3 py-2 focus:outline-none focus:ring-2 ${toneClass[tone] || toneClass.blue} ${disabled ? 'cursor-not-allowed bg-slate-100 text-slate-400' : ''
-        } ${className} ${inputClassName}`}
+      className={`${widthClass} rounded-control border border-hairline bg-surface px-3 py-2 font-mono text-sm font-medium text-ink tabular-nums transition-[border-color,background-color,box-shadow] duration-150 placeholder:text-ink-muted hover:border-hairline-hover focus:outline-none focus-visible:ring-2 ${
+        toneClass[tone] || toneClass.blue
+      } ${
+        disabled
+          ? 'cursor-not-allowed bg-surface-subtle text-ink-muted opacity-75 hover:border-hairline'
+          : ''
+      } ${className} ${inputClassName}`}
       {...props}
     />
   );

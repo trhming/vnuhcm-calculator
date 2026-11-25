@@ -1,12 +1,23 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { ChevronUp } from 'lucide-react';
 
 const toneClass = {
-  blue: 'bg-blue-700 hover:bg-blue-800 focus:ring-blue-500',
-  hcmut: 'bg-blue-800 hover:bg-blue-900 focus:ring-blue-700',
-  emerald: 'bg-emerald-700 hover:bg-emerald-800 focus:ring-emerald-500',
-  teal: 'bg-teal-700 hover:bg-teal-800 focus:ring-teal-500',
-  indigo: 'bg-indigo-700 hover:bg-indigo-800 focus:ring-indigo-500',
-  red: 'bg-red-700 hover:bg-red-800 focus:ring-red-500',
+  blue: 'border-blue-500/40 bg-zinc-900 text-white hover:bg-zinc-800 focus-visible:ring-blue-500 dark:bg-zinc-800 dark:hover:bg-zinc-700',
+  hcmut: 'border-blue-600/40 bg-zinc-900 text-white hover:bg-zinc-800 focus-visible:ring-blue-500 dark:bg-zinc-800 dark:hover:bg-zinc-700',
+  emerald: 'border-emerald-500/40 bg-zinc-900 text-white hover:bg-zinc-800 focus-visible:ring-emerald-500 dark:bg-zinc-800 dark:hover:bg-zinc-700',
+  teal: 'border-teal-500/40 bg-zinc-900 text-white hover:bg-zinc-800 focus-visible:ring-teal-500 dark:bg-zinc-800 dark:hover:bg-zinc-700',
+  indigo: 'border-indigo-500/40 bg-zinc-900 text-white hover:bg-zinc-800 focus-visible:ring-indigo-500 dark:bg-zinc-800 dark:hover:bg-zinc-700',
+  red: 'border-red-500/40 bg-zinc-900 text-white hover:bg-zinc-800 focus-visible:ring-red-500 dark:bg-zinc-800 dark:hover:bg-zinc-700',
+};
+
+const dotClass = {
+  blue: 'bg-blue-500',
+  hcmut: 'bg-blue-400',
+  emerald: 'bg-emerald-400',
+  teal: 'bg-teal-400',
+  indigo: 'bg-indigo-400',
+  red: 'bg-red-400',
 };
 
 type MobileScoreTone = keyof typeof toneClass;
@@ -25,6 +36,7 @@ export const MobileScoreButton = ({
   onClick,
 }: MobileScoreButtonProps) => {
   const colorClass = toneClass[tone] || toneClass.blue;
+  const accentDot = dotClass[tone] || dotClass.blue;
   const [keyboardInset, setKeyboardInset] = useState(0);
 
   useEffect(() => {
@@ -57,18 +69,31 @@ export const MobileScoreButton = ({
     };
   }, []);
 
-  return (
+  if (typeof document === 'undefined') return null;
+
+  return createPortal(
     <button
       type="button"
       onClick={onClick}
-      className={`fixed right-4 z-40 inline-flex items-center rounded-full px-4 py-3 text-white shadow-2xl shadow-slate-900/20 transition-[background-color,bottom] focus:outline-none focus:ring-2 focus:ring-offset-2 lg:hidden ${colorClass}`}
+      className={`fixed inset-x-4 z-40 flex min-h-[54px] items-center justify-between gap-4 rounded-card border px-4 py-2.5 shadow-2xl transition-[background-color,bottom,transform] duration-150 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:left-auto sm:right-6 sm:min-w-[270px] lg:hidden ${colorClass}`}
       style={{ bottom: `calc(1rem + ${keyboardInset}px)` }}
       aria-label="Xem chi tiết điểm xét tuyển"
     >
-      <span className="text-xl font-extrabold leading-none">
-        {score.toFixed(precision)}
-        <span className="ml-1 text-xs font-semibold text-white/75">/100</span>
-      </span>
-    </button>
+      <div className="flex items-center gap-2.5 text-left">
+        <span className={`h-2.5 w-2.5 shrink-0 rounded-full ${accentDot}`} aria-hidden="true" />
+        <span className="text-xs font-semibold text-white">
+          Điểm xét tuyển
+        </span>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <span className="font-mono text-xl font-bold leading-none tabular-nums">
+          {score.toFixed(precision)}
+          <span className="ml-1 text-xs font-medium text-zinc-400">/100</span>
+        </span>
+        <ChevronUp className="h-4 w-4 text-zinc-400" />
+      </div>
+    </button>,
+    document.body
   );
 };

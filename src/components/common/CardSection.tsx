@@ -1,21 +1,30 @@
-import type { ComponentType, ReactNode, SVGProps } from 'react';
+import type { ReactNode } from 'react';
+
+export type CardTone = 'blue' | 'hcmut' | 'emerald' | 'teal' | 'indigo' | 'red';
 
 type CardSectionProps = {
   title: ReactNode;
-  icon?: ComponentType<SVGProps<SVGSVGElement>>;
+  tone?: CardTone;
+  action?: ReactNode;
   children: ReactNode;
 };
 
-export const CardSection = ({ title, icon: Icon, children }: CardSectionProps) => {
+export const CardSection = ({
+  title,
+  action,
+  children,
+}: CardSectionProps) => {
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden mb-6">
-      <div className="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center gap-3">
-        {Icon && <Icon className="w-5 h-5 text-blue-700" />}
-        <h3 className="font-bold text-slate-800 text-lg">{title}</h3>
+    <section className="overflow-hidden rounded-card border border-hairline bg-surface transition-colors duration-150">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-hairline px-5 py-4 sm:px-6">
+        <h2 className="text-base font-semibold tracking-tight text-ink sm:text-lg">
+          {title}
+        </h2>
+        {action && <div className="flex items-center gap-2">{action}</div>}
       </div>
-      <div className="p-6">
+      <div className="p-5 sm:p-6">
         {children}
       </div>
-    </div>
+    </section>
   );
 };

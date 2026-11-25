@@ -15,11 +15,16 @@
 
 ## 🚀 Công nghệ sử dụng
 
-- **Frontend:** ReactJS 18
-- **Build Tool:** Vite
-- **CSS Framework:** Tailwind CSS 
+- **Frontend:** React 19
+- **Điều hướng:** React Router 7 (`react-router-dom`)
+- **Ngôn ngữ:** JavaScript (JSX) cho trang và hook tính điểm, TypeScript (TSX) cho component dùng chung, kiểm tra kiểu bằng `tsc --noEmit`
+- **Build Tool:** Vite 8 (`@vitejs/plugin-react`)
+- **CSS Framework:** Tailwind CSS 3 (PostCSS + Autoprefixer), hỗ trợ giao diện sáng/tối bằng CSS variables
+- **Font:** Be Vietnam Pro và JetBrains Mono (Google Fonts)
 - **Icons:** Lucide React
-- **Logic Engine:** Custom React Hooks cho việc quản lý trạng thái và tính toán đa luồng.
+- **Lưu trữ:** `localStorage` của trình duyệt (tự động lưu điểm theo từng trường, không cần backend)
+- **Chất lượng mã:** ESLint 9 (`typescript-eslint`, `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh`)
+- **Logic Engine:** Custom React Hooks cho việc quản lý trạng thái và tính toán điểm của từng trường.
 
 ## ⚙️ Logic cốt lõi (Core Engine)
 
@@ -41,6 +46,10 @@ cd vnuhcm-calculator
 npm install
 # 4. Khởi chạy môi trường phát triển
 npm run dev
+# 5. (Tùy chọn) Kiểm tra mã nguồn và build production
+npm run lint
+npm run typecheck
+npm run build
 ```
 Sau đó, truy cập địa chỉ `http://localhost:5173` trên trình duyệt của bạn.
 

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
 import { useUelCalculator } from '../hooks/useUelCalculator';
 import { useCalculatorPersistence } from '../hooks/useCalculatorPersistence';
 import { CalculatorPageHeader } from '../components/common/CalculatorPageHeader';
@@ -181,7 +181,17 @@ export const UelCalculator = () => {
     ]
   );
 
-  const { importSources, importFromSchool, resetSchool } =
+  const baseId = useId();
+  const {
+    importSources,
+    importFromSchool,
+    resetSchool,
+    buildShareUrl,
+    presets,
+    savePreset,
+    loadPreset,
+    deletePreset,
+  } =
     useCalculatorPersistence({
       schoolId: 'uel',
       schoolAcronym: 'UEL',
@@ -203,6 +213,10 @@ export const UelCalculator = () => {
           hasMeaningfulInput={hasMeaningfulInput}
           onImportFromSchool={importFromSchool}
           onReset={resetSchool}
+          presets={presets}
+          onSavePreset={savePreset}
+          onLoadPreset={loadPreset}
+          onDeletePreset={deletePreset}
         />
 
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
@@ -348,6 +362,7 @@ export const UelCalculator = () => {
                   <TranscriptScoreTable
                     values={state.hocBa}
                     onChange={handleHocBaChange}
+                    onBulkChange={state.setHocBa}
                     disabled={hasHocBaQuickTotal}
                     tone="indigo"
                     onClear={() => state.setHocBa(EMPTY_HOC_BA)}
@@ -378,8 +393,14 @@ export const UelCalculator = () => {
                       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                         {[0, 1, 2].map((idx) => (
                           <div key={`thpt-${idx}`}>
-                            <label className="mb-1.5 block text-sm font-medium text-ink">Môn {idx + 1}</label>
+                            <label
+                              htmlFor={`${baseId}-thpt-${idx}`}
+                              className="mb-1.5 block text-sm font-medium text-ink"
+                            >
+                              Môn {idx + 1}
+                            </label>
                             <ScoreInput
+                              id={`${baseId}-thpt-${idx}`}
                               max={10}
                               value={state.thpt[idx]}
                               onValueChange={(value) => handleThptChange(idx, value)}
@@ -410,10 +431,14 @@ export const UelCalculator = () => {
                       <h3 className="mb-3 text-sm font-semibold text-ink">ĐGNL</h3>
                       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:items-end">
                         <div>
-                          <label className="mb-1.5 block text-sm font-medium text-ink">
+                          <label
+                            htmlFor={`${baseId}-dgnl`}
+                            className="mb-1.5 block text-sm font-medium text-ink"
+                          >
                             Điểm ĐGNL (thang 1200)
                           </label>
                           <ScoreInput
+                            id={`${baseId}-dgnl`}
                             max={1200}
                             value={state.dgnl}
                             onValueChange={state.setDgnl}
@@ -441,10 +466,14 @@ export const UelCalculator = () => {
               <CardSection title={`${stepCcqt}. Chứng chỉ quốc tế`} tone="indigo">
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-ink">
+                    <label
+                      htmlFor={`${baseId}-ccqt-type`}
+                      className="mb-2 block text-sm font-medium text-ink"
+                    >
                       Loại chứng chỉ
                     </label>
                     <select
+                      id={`${baseId}-ccqt-type`}
                       value={state.loaiCCQT}
                       onChange={(e) => {
                         state.setLoaiCCQT(e.target.value);
@@ -460,13 +489,17 @@ export const UelCalculator = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="mb-2 block text-sm font-medium text-ink">
+                    <label
+                      htmlFor={`${baseId}-ccqt-score`}
+                      className="mb-2 block text-sm font-medium text-ink"
+                    >
                       Điểm / Hạng
                     </label>
                     <div className="flex gap-2">
                       <div className="flex-1">
                         {state.loaiCCQT === 'A_LEVEL' ? (
                           <select
+                            id={`${baseId}-ccqt-score`}
                             value={state.diemCCQT}
                             onChange={(e) => state.setDiemCCQT(e.target.value)}
                             className="select-control focus-visible:ring-indigo-600"
@@ -479,6 +512,7 @@ export const UelCalculator = () => {
                           </select>
                         ) : (
                           <ScoreInput
+                            id={`${baseId}-ccqt-score`}
                             max={selectedCcqtType?.max}
                             value={state.diemCCQT}
                             onValueChange={state.setDiemCCQT}
@@ -491,7 +525,7 @@ export const UelCalculator = () => {
                       <button
                         type="button"
                         onClick={() => setShowCcqtConversionTable(true)}
-                        className="btn-tactile whitespace-nowrap px-2.5 py-2 text-xs font-semibold text-indigo-700 hover:bg-indigo-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 dark:text-indigo-400"
+                        className="btn-tactile min-h-[36px] whitespace-nowrap px-2.5 py-2 text-xs font-semibold text-indigo-700 hover:bg-indigo-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 sm:min-h-[30px] dark:text-indigo-400"
                       >
                         Bảng quy đổi
                       </button>
@@ -530,10 +564,14 @@ export const UelCalculator = () => {
                       <div className="mt-3 space-y-2 border-t border-hairline pt-3">
                         <div className="flex flex-col gap-3 sm:flex-row">
                           <div className="flex-1">
-                            <label className="mb-1 block text-xs font-medium text-ink-secondary">
+                            <label
+                              htmlFor={`${baseId}-eng-type`}
+                              className="mb-1 block text-xs font-medium text-ink-secondary"
+                            >
                               Loại chứng chỉ
                             </label>
                             <select
+                              id={`${baseId}-eng-type`}
                               value={state.loaiNgoaiNgu}
                               onChange={(e) => {
                                 state.setLoaiNgoaiNgu(e.target.value);
@@ -553,10 +591,14 @@ export const UelCalculator = () => {
                             {state.loaiNgoaiNgu === 'TOEIC' ? (
                               <>
                                 <div className="flex-1">
-                                  <label className="mb-1 block text-xs font-medium text-ink-secondary">
+                                  <label
+                                    htmlFor={`${baseId}-eng-lr`}
+                                    className="mb-1 block text-xs font-medium text-ink-secondary"
+                                  >
                                     Nghe-Đọc
                                   </label>
                                   <ScoreInput
+                                    id={`${baseId}-eng-lr`}
                                     step="5"
                                     max={selectedEnglishCertType?.maxLr}
                                     value={state.diemNgoaiNgu}
@@ -567,10 +609,14 @@ export const UelCalculator = () => {
                                   />
                                 </div>
                                 <div className="flex-1">
-                                  <label className="mb-1 block text-xs font-medium text-ink-secondary">
+                                  <label
+                                    htmlFor={`${baseId}-eng-sw`}
+                                    className="mb-1 block text-xs font-medium text-ink-secondary"
+                                  >
                                     Nói-Viết
                                   </label>
                                   <ScoreInput
+                                    id={`${baseId}-eng-sw`}
                                     step="5"
                                     max={selectedEnglishCertType?.maxSw}
                                     value={state.diemNgoaiNgu2}
@@ -583,10 +629,14 @@ export const UelCalculator = () => {
                               </>
                             ) : (
                               <div className="flex-1">
-                                <label className="mb-1 block text-xs font-medium text-ink-secondary">
+                                <label
+                                  htmlFor={`${baseId}-eng-score`}
+                                  className="mb-1 block text-xs font-medium text-ink-secondary"
+                                >
                                   Điểm
                                 </label>
                                 <ScoreInput
+                                  id={`${baseId}-eng-score`}
                                   max={selectedEnglishCertType?.max}
                                   value={state.diemNgoaiNgu}
                                   onValueChange={state.setDiemNgoaiNgu}
@@ -601,7 +651,7 @@ export const UelCalculator = () => {
                             <button
                               type="button"
                               onClick={() => setShowConversionTable(true)}
-                              className="btn-tactile whitespace-nowrap px-2.5 py-2 text-xs font-semibold text-indigo-700 hover:bg-indigo-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 dark:text-indigo-400"
+                              className="btn-tactile min-h-[36px] whitespace-nowrap px-2.5 py-2 text-xs font-semibold text-indigo-700 hover:bg-indigo-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-600 sm:min-h-[30px] dark:text-indigo-400"
                             >
                               Bảng quy đổi
                             </button>
@@ -653,6 +703,7 @@ export const UelCalculator = () => {
               theme="indigo"
               schoolAcronym="UEL"
               total={results.total}
+              getShareUrl={buildShareUrl}
               formula={
                 learningWeights
                   ? `ĐHL = ĐGNL × ${learningWeights.dgnl}% + THPT × ${learningWeights.thpt}% + Học bạ × ${learningWeights.hocBa}%`

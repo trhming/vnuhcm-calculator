@@ -1,8 +1,18 @@
 import { isValidElement, useState, type ReactNode } from 'react';
-import { Check, Copy, Share2 } from 'lucide-react';
+import { Check, Copy, ImageDown, Link2, Share2 } from 'lucide-react';
 import { useToast } from '../../hooks/useToast';
+import { exportScoreCardPng } from '../../utils/exportScoreImage';
 
 type ScoreTheme = 'blue' | 'hcmut' | 'emerald' | 'indigo' | 'red' | 'teal';
+
+const THEME_ACCENT_HEX: Record<ScoreTheme, string> = {
+  blue: '#2563eb',
+  hcmut: '#1d4ed8',
+  emerald: '#059669',
+  indigo: '#4f46e5',
+  red: '#dc2626',
+  teal: '#0d9488',
+};
 type ScoreRowVariant = 'plain' | 'bonusEffective' | 'priorityEffective';
 
 type ScoreRowData = {
@@ -22,6 +32,7 @@ type ScoreDetailCardProps = {
   total: number | string;
   totalPrecision?: number;
   headerNote?: ReactNode;
+  emptyHint?: string;
   formula?: ReactNode;
   formulaDetail?: ReactNode;
   dhl?: number | string;
@@ -34,6 +45,7 @@ type ScoreDetailCardProps = {
   extraLearningRows?: ScoreRowData[];
   bonusRows?: ScoreRowData[];
   priorityRows?: ScoreRowData[];
+  getShareUrl?: () => string;
   headerClassName?: string;
   className?: string;
 };
@@ -68,10 +80,12 @@ const isReductionApplied = (rows: ScoreRowData[], effectiveVariant: ScoreRowVari
 };
 
 export const ScoreDetailCard = ({
+  theme = 'blue',
   schoolAcronym,
   total,
   totalPrecision = 2,
   headerNote,
+  emptyHint,
   formula,
   formulaDetail,
   dhl,
@@ -84,11 +98,16 @@ export const ScoreDetailCard = ({
   extraLearningRows = [],
   bonusRows = [],
   priorityRows = [],
+  getShareUrl,
   headerClassName,
   className = '',
 }: ScoreDetailCardProps) => {
   const { showToast } = useToast();
   const [copied, setCopied] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
+  const [exportingImage, setExportingImage] = useState(false);
+
+  const numericTotal = typeof total === 'number' ? total : parseFloat(String(total)) || 0;
 
   const resolvedLearningRows = learningRows.length > 0
     ? learningRows
@@ -156,17 +175,96 @@ export const ScoreDetailCard = ({
     }
   };
 
+  const handleCopyLink = async () => {
+    if (!getShareUrl) return;
+    const shareUrl = getShareUrl();
+    if (!shareUrl) return;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setLinkCopied(true);
+      window.setTimeout(() => setLinkCopied(false), 2000);
+      showToast({
+        type: 'success',
+        title: 'Đã sao chép liên kết',
+      });
+    } catch {
+      showToast({
+        type: 'warning',
+        title: 'Không thể sao chép liên kết',
+        description: 'Trình duyệt chưa cấp quyền truy cập clipboard.',
+      });
+    }
+  };
+
   const canNativeShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
 
   const handleShareSummary = async () => {
     if (!canNativeShare) return;
     try {
+      const shareUrl = getShareUrl?.();
       await navigator.share({
         title: `Kết quả xét tuyển${schoolAcronym ? ` ${schoolAcronym}` : ''} 2026`,
         text: buildSummaryText(),
+        ...(shareUrl ? { url: shareUrl } : {}),
       });
     } catch {
       // Ignore user cancellation
+    }
+  };
+
+  const handleExportImage = async () => {
+    if (exportingImage || numericTotal <= 0) return;
+    setExportingImage(true);
+    try {
+      const isDark = typeof document !== 'undefined' && document.documentElement.classList.contains('dark');
+      const ok = await exportScoreCardPng({
+        schoolAcronym,
+        totalText: formatValue(total, totalPrecision),
+        headerNote: extractText(headerNote).trim() || undefined,
+        formula: extractText(formula).trim() || undefined,
+        formulaDetail: extractText(formulaDetail).trim() || undefined,
+        dhlText: dhl !== undefined ? formatValue(dhl, dhlPrecision) : undefined,
+        learningRows: resolvedLearningRows.map((row) => ({
+          label: row.label,
+          value: extractText(row.value).trim(),
+        })),
+        extraRows: [...bonusRows, ...priorityRows].map((row) => {
+          const secondary = extractText(row.secondaryValue).trim();
+          const isEmphasis =
+            row.emphasis ||
+            row.label === 'Điểm cộng (Gốc)' ||
+            row.label === 'Tổng điểm cộng (Gốc)' ||
+            row.label === 'Ưu tiên KV/ĐT (Gốc)';
+          return {
+            label: row.label,
+            value: `${extractText(row.value).trim()}${secondary ? ` ${secondary}` : ''}`,
+            emphasis: isEmphasis,
+            separatorBefore: row.separatorBefore,
+          };
+        }),
+        isDark,
+        accentHex: THEME_ACCENT_HEX[theme] || THEME_ACCENT_HEX.blue,
+      });
+      if (ok) {
+        showToast({
+          type: 'success',
+          title: 'Đã tải ảnh bảng điểm',
+        });
+      } else {
+        showToast({
+          type: 'warning',
+          title: 'Không thể xuất ảnh',
+          description: 'Trình duyệt không hỗ trợ tạo tệp PNG.',
+        });
+      }
+    } catch {
+      showToast({
+        type: 'warning',
+        title: 'Không thể xuất ảnh',
+        description: 'Vui lòng thử lại hoặc dùng nút Sao chép.',
+      });
+    } finally {
+      setExportingImage(false);
     }
   };
 
@@ -186,6 +284,12 @@ export const ScoreDetailCard = ({
           <div className="mt-2.5 text-sm font-medium text-ink-secondary">
             {headerNote}
           </div>
+        )}
+
+        {emptyHint && numericTotal <= 0 && (
+          <p className="mt-2 text-xs text-ink-muted">
+            {emptyHint}
+          </p>
         )}
       </div>
 
@@ -244,7 +348,7 @@ export const ScoreDetailCard = ({
 
         <Divider />
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 print:hidden">
           <button
             type="button"
             onClick={handleCopySummary}
@@ -261,6 +365,44 @@ export const ScoreDetailCard = ({
                 <span>Sao chép</span>
               </>
             )}
+          </button>
+
+          {getShareUrl && (
+            <button
+              type="button"
+              onClick={handleCopyLink}
+              aria-label="Sao chép liên kết bảng điểm"
+              title="Sao chép liên kết bảng điểm"
+              className="btn-tactile inline-flex min-h-[40px] items-center justify-center gap-1.5 border border-hairline bg-surface-subtle px-3 py-2 text-xs font-semibold text-ink-secondary hover:border-hairline-hover hover:bg-surface hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
+            >
+              {linkCopied ? (
+                <>
+                  <Check className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                  <span>Đã chép link</span>
+                </>
+              ) : (
+                <>
+                  <Link2 className="h-4 w-4" />
+                  <span>Link</span>
+                </>
+              )}
+            </button>
+          )}
+
+          <button
+            type="button"
+            onClick={handleExportImage}
+            disabled={exportingImage || numericTotal <= 0}
+            aria-label="Tải ảnh bảng điểm PNG"
+            title={numericTotal <= 0 ? 'Nhập điểm để tải ảnh bảng điểm' : 'Tải ảnh bảng điểm (PNG)'}
+            className={`btn-tactile inline-flex min-h-[40px] items-center justify-center gap-1.5 border border-hairline bg-surface-subtle px-3 py-2 text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
+              numericTotal > 0 && !exportingImage
+                ? 'text-ink-secondary hover:border-hairline-hover hover:bg-surface hover:text-ink'
+                : 'cursor-not-allowed text-ink-muted opacity-55'
+            }`}
+          >
+            <ImageDown className="h-4 w-4" />
+            <span>Ảnh</span>
           </button>
 
           {canNativeShare && (

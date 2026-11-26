@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useLocation } from 'react-router-dom';
-import { ChevronDown, ExternalLink, Home, Menu, Moon, Sun, X } from 'lucide-react';
+import { ChevronDown, ExternalLink, Home, Menu, Monitor, Moon, Sun, X } from 'lucide-react';
 import { SCHOOLS } from '../../constants/common';
 import { SCHOOL_UI_META, type SchoolId } from '../../constants/schoolUiMeta';
 import { useTheme } from '../../hooks/useTheme';
@@ -9,7 +9,7 @@ import { useScoresSummary } from '../../hooks/useScoresSummary';
 
 export const Navbar = () => {
   const { pathname } = useLocation();
-  const { isDark, toggleTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const summary = useScoresSummary();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -206,11 +206,29 @@ export const Navbar = () => {
             <button
               type="button"
               onClick={toggleTheme}
-              aria-label={isDark ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối'}
-              title={isDark ? 'Chế độ sáng' : 'Chế độ tối'}
+              aria-label={
+                theme === 'light'
+                  ? 'Giao diện sáng, bấm để chuyển sang tối'
+                  : theme === 'dark'
+                  ? 'Giao diện tối, bấm để chuyển theo hệ thống'
+                  : 'Giao diện theo hệ thống, bấm để chuyển sang sáng'
+              }
+              title={
+                theme === 'light'
+                  ? 'Giao diện: Sáng'
+                  : theme === 'dark'
+                  ? 'Giao diện: Tối'
+                  : 'Giao diện: Hệ thống'
+              }
               className="btn-tactile inline-flex h-11 w-11 items-center justify-center border border-hairline bg-surface text-ink-secondary hover:border-hairline-hover hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 sm:h-9 sm:w-9"
             >
-              {isDark ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4" />}
+              {theme === 'light' ? (
+                <Sun className="h-4 w-4 text-amber-500" />
+              ) : theme === 'dark' ? (
+                <Moon className="h-4 w-4 text-blue-400" />
+              ) : (
+                <Monitor className="h-4 w-4" />
+              )}
             </button>
 
             <button

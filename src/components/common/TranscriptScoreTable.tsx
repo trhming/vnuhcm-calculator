@@ -1,6 +1,7 @@
-import { useRef, type KeyboardEvent, type ReactNode } from 'react';
+import { useRef, type ClipboardEvent, type KeyboardEvent, type ReactNode } from 'react';
 import { LockOpen, Trash2 } from 'lucide-react';
 import { ScoreInput } from '../score/ScoreInput';
+import { clampScore } from '../../utils/input';
 
 type TranscriptCellContext = {
   cellIndex: number;
@@ -32,6 +33,7 @@ type TranscriptScoreTableProps = {
   renderSubjectNote?: (context: { subjectIndex: number }) => ReactNode;
   onClear?: () => void;
   onUnlockQuick?: () => void;
+  onBulkChange?: (nextValues: string[]) => void;
 };
 
 export const TranscriptScoreTable = ({
@@ -51,6 +53,7 @@ export const TranscriptScoreTable = ({
   renderSubjectNote,
   onClear,
   onUnlockQuick,
+  onBulkChange,
 }: TranscriptScoreTableProps) => {
   const tableContainerRef = useRef<HTMLDivElement | null>(null);
   const hasAnyValue = values.some((value) => value !== '');
@@ -100,6 +103,72 @@ export const TranscriptScoreTable = ({
     ) {
       event.preventDefault();
       focusCell(subjectIndex, yearIndex - 1);
+    }
+  };
+
+  const handleCellPaste = (
+    event: ClipboardEvent<HTMLInputElement>,
+    subjectIndex: number,
+    yearIndex: number
+  ) => {
+    const rawText = event.clipboardData.getData('text');
+    if (!rawText) return;
+
+    const lines = rawText
+      .trim()
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+
+    if (lines.length === 0) return;
+
+    const isMultiValue = lines.length > 1 || /[\t;\s]+/.test(lines[0]);
+    if (!isMultiValue) return;
+
+    event.preventDefault();
+    const nextValues = [...values];
+    let hasUpdate = false;
+
+    const applyCellValue = (cellIdx: number, rawToken: string) => {
+      const targetSubject = Math.floor(cellIdx / totalCols);
+      const targetYear = cellIdx % totalCols;
+      const cellMeta = getCellMeta?.({
+        cellIndex: cellIdx,
+        subjectIndex: targetSubject,
+        yearIndex: targetYear,
+      });
+      if (disabled || cellMeta?.disabled) return;
+      const clamped = clampScore(rawToken, 10, 0, 1);
+      if (clamped !== '') {
+        nextValues[cellIdx] = clamped;
+        hasUpdate = true;
+      }
+    };
+
+    if (lines.length === 1) {
+      const tokens = lines[0].split(/[\t;\s]+/).filter(Boolean);
+      const startIndex = subjectIndex * totalCols + yearIndex;
+      const totalCells = totalRows * totalCols;
+      for (let i = 0; i < tokens.length && startIndex + i < totalCells; i++) {
+        applyCellValue(startIndex + i, tokens[i]);
+      }
+    } else {
+      for (let r = 0; r < lines.length && subjectIndex + r < totalRows; r++) {
+        const cols = lines[r].split(/[\t;\s]+/).filter(Boolean);
+        for (let c = 0; c < cols.length && yearIndex + c < totalCols; c++) {
+          const targetIdx = (subjectIndex + r) * totalCols + (yearIndex + c);
+          applyCellValue(targetIdx, cols[c]);
+        }
+      }
+    }
+
+    if (!hasUpdate) return;
+    if (onBulkChange) {
+      onBulkChange(nextValues);
+    } else {
+      nextValues.forEach((val, idx) => {
+        if (val !== values[idx]) onChange(idx, val);
+      });
     }
   };
 
@@ -188,7 +257,9 @@ export const TranscriptScoreTable = ({
                           disabled={disabled || meta.disabled}
                           tone={tone}
                           data-transcript-cell={cellIndex}
+                          aria-label={`${label} - ${yearLabels[yearIndex]}`}
                           onKeyDown={(event) => handleCellKeyDown(event, subjectIndex, yearIndex)}
+                          onPaste={(event) => handleCellPaste(event, subjectIndex, yearIndex)}
                           className="px-1.5 text-center sm:px-3"
                           inputClassName={meta.className || 'text-ink'}
                           placeholder={meta.placeholder || '0.0'}

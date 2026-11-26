@@ -2,13 +2,22 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { SchoolId } from '../constants/schoolUiMeta';
 import { useToast } from './useToast';
 import {
+  PRESETS_UPDATED_EVENT,
   SNAPSHOTS_UPDATED_EVENT,
   clearSchoolSnapshot,
+  decodeSharePayload,
+  deleteSchoolPreset,
+  encodeSharePayload,
   listImportSources,
+  loadSchoolPresets,
   loadSchoolSnapshot,
+  loadScoresSummary,
+  restoreSchoolPresets,
+  saveSchoolPreset,
   saveSchoolSnapshot,
   updateSchoolSummary,
   type SchoolImportSource,
+  type SchoolPreset,
 } from '../utils/calculatorStorage';
 
 export type PersistenceField = {
@@ -57,15 +66,6 @@ const isCompatibleFieldValue = (candidate: unknown, defaultValue: unknown): bool
 
 const cloneValue = (value: unknown) => (Array.isArray(value) ? [...value] : value);
 
-const convertScaleScore = (raw: string, fromScale: 10 | 30, toScale: 10 | 30): string => {
-  if (fromScale === toScale) return raw;
-  const parsed = parseFloat(raw.replace(/,/g, '.'));
-  if (Number.isNaN(parsed)) return '';
-  const scaled = (parsed / fromScale) * toScale;
-  const bounded = Math.min(toScale, Math.max(0, scaled));
-  return Number(bounded.toFixed(2)).toString();
-};
-
 export const useCalculatorPersistence = ({
   schoolId,
   fields,
@@ -78,6 +78,7 @@ export const useCalculatorPersistence = ({
   const [importSources, setImportSources] = useState<SchoolImportSource[]>(() =>
     listImportSources(schoolId)
   );
+  const [presets, setPresets] = useState<SchoolPreset[]>(() => loadSchoolPresets(schoolId));
 
   const snapshot = useMemo(() => {
     const record: Record<string, unknown> = {};
@@ -103,20 +104,59 @@ export const useCalculatorPersistence = ({
 
   useEffect(() => {
     const syncSources = () => setImportSources(listImportSources(schoolId));
+    const syncPresets = () => setPresets(loadSchoolPresets(schoolId));
     syncSources();
+    syncPresets();
     window.addEventListener(SNAPSHOTS_UPDATED_EVENT, syncSources);
+    window.addEventListener(PRESETS_UPDATED_EVENT, syncPresets);
     window.addEventListener('storage', syncSources);
+    window.addEventListener('storage', syncPresets);
     return () => {
       window.removeEventListener(SNAPSHOTS_UPDATED_EVENT, syncSources);
+      window.removeEventListener(PRESETS_UPDATED_EVENT, syncPresets);
       window.removeEventListener('storage', syncSources);
+      window.removeEventListener('storage', syncPresets);
     };
   }, [schoolId]);
 
-  // Hydrate saved school state on mount / school switch without overwriting storage on initial render
+  // Hydrate from URL ?s=... if present, otherwise from saved school snapshot
   useEffect(() => {
-    const saved = loadSchoolSnapshot(schoolId);
     const currentFields = fieldsRef.current;
+    const shareParam =
+      typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('s') : null;
+    const sharedPayload = shareParam ? decodeSharePayload(shareParam) : null;
 
+    if (sharedPayload) {
+      const normalized: Record<string, unknown> = {};
+      let hasCompatibleKey = false;
+
+      for (const field of currentFields) {
+        const candidate = sharedPayload[field.key];
+        if (candidate !== undefined && isCompatibleFieldValue(candidate, field.defaultValue)) {
+          normalized[field.key] = cloneValue(candidate);
+          hasCompatibleKey = true;
+        } else {
+          normalized[field.key] = cloneValue(field.defaultValue);
+        }
+      }
+
+      if (hasCompatibleKey) {
+        pendingExpectedJsonRef.current = JSON.stringify(normalized);
+        saveSchoolSnapshot(schoolId, normalized);
+        for (const field of currentFields) {
+          field.apply(cloneValue(normalized[field.key]));
+        }
+        window.history.replaceState(null, '', window.location.pathname);
+        showToast({
+          type: 'info',
+          title: 'Đã mở bảng điểm từ liên kết',
+        });
+        hydratedSchoolRef.current = schoolId;
+        return;
+      }
+    }
+
+    const saved = loadSchoolSnapshot(schoolId);
     if (saved) {
       const normalized: Record<string, unknown> = {};
       let needsUpdate = false;
@@ -148,7 +188,7 @@ export const useCalculatorPersistence = ({
     }
 
     hydratedSchoolRef.current = schoolId;
-  }, [schoolId]);
+  }, [schoolId, showToast]);
 
   // Persist current school snapshot & summary (strictly isolated per school)
   useEffect(() => {
@@ -195,37 +235,28 @@ export const useCalculatorPersistence = ({
         currentShared.setHocBaQuick('');
         currentShared.setHocBa([...source.hocBa]);
         appliedParts.push('Học bạ');
-      } else if (source.hocBaQuick) {
-        const converted = convertScaleScore(
-          source.hocBaQuick.value,
-          source.hocBaQuick.scale,
-          currentShared.hocBaQuickScale
-        );
-        if (converted !== '') {
-          currentShared.setHocBa([...EMPTY_HOC_BA]);
-          currentShared.setHocBaQuick(converted);
-          appliedParts.push('Học bạ');
-        }
+      } else if (
+        source.hocBaQuick &&
+        source.hocBaQuick.scale === currentShared.hocBaQuickScale
+      ) {
+        currentShared.setHocBa([...EMPTY_HOC_BA]);
+        currentShared.setHocBaQuick(source.hocBaQuick.value);
+        appliedParts.push('Học bạ');
       }
 
       if (source.thpt) {
         currentShared.setThptQuick('');
         currentShared.setThpt([...source.thpt]);
         appliedParts.push('THPT');
-      } else if (source.thptQuick) {
-        const converted = convertScaleScore(
-          source.thptQuick.value,
-          source.thptQuick.scale,
-          currentShared.thptQuickScale
-        );
-        if (converted !== '') {
-          currentShared.setThpt([...EMPTY_THPT]);
-          currentShared.setThptQuick(converted);
-          appliedParts.push('THPT');
-        }
+      } else if (
+        source.thptQuick &&
+        source.thptQuick.scale === currentShared.thptQuickScale
+      ) {
+        currentShared.setThpt([...EMPTY_THPT]);
+        currentShared.setThptQuick(source.thptQuick.value);
+        appliedParts.push('THPT');
       }
 
-      let dgnlNote = '';
       if (currentShared.setDgnl && source.dgnl1200) {
         let nextDgnl = source.dgnl1200;
         if (currentShared.maxDgnl) {
@@ -236,8 +267,6 @@ export const useCalculatorPersistence = ({
         }
         currentShared.setDgnl(nextDgnl);
         appliedParts.push('ĐGNL');
-      } else if (!currentShared.setDgnl && source.dgnl1200) {
-        dgnlNote = ' (ĐGNL Bách Khoa tính riêng)';
       }
 
       if (source.kv) {
@@ -250,31 +279,181 @@ export const useCalculatorPersistence = ({
         appliedParts.push('Ưu tiên');
       }
 
+      const notes: string[] = [];
+      if (source.hasSkippedQuick) {
+        notes.push('bỏ qua ô nhập nhanh');
+      }
+      if (source.hasSkippedDgnl) {
+        notes.push('ĐGNL Bách Khoa tính riêng');
+      }
+      const noteSuffix = notes.length > 0 ? ` (${notes.join(', ')})` : '';
+
       showToast({
         type: 'success',
         title: `Đã lấy điểm từ ${source.acronym}`,
-        description: `${appliedParts.join(', ')}${dgnlNote}`,
+        description: `${appliedParts.join(', ')}${noteSuffix}`,
       });
     },
     [schoolId, showToast]
   );
 
   const resetSchool = useCallback(() => {
+    const prevSnapshot: Record<string, unknown> = {};
+    for (const field of fieldsRef.current) {
+      prevSnapshot[field.key] = cloneValue(field.value);
+    }
+    const prevSummary = loadScoresSummary()[schoolId] ?? null;
+
     pendingExpectedJsonRef.current = null;
     for (const field of fieldsRef.current) {
       field.apply(cloneValue(field.defaultValue));
     }
     clearSchoolSnapshot(schoolId);
     updateSchoolSummary(schoolId, null);
+
     showToast({
       type: 'info',
       title: 'Đã làm mới bảng điểm',
+      duration: 5000,
+      action: {
+        label: 'Hoàn tác',
+        onClick: () => {
+          pendingExpectedJsonRef.current = JSON.stringify(prevSnapshot);
+          for (const field of fieldsRef.current) {
+            if (field.key in prevSnapshot) {
+              field.apply(cloneValue(prevSnapshot[field.key]));
+            }
+          }
+          saveSchoolSnapshot(schoolId, prevSnapshot);
+          if (prevSummary) {
+            updateSchoolSummary(schoolId, prevSummary);
+          }
+        },
+      },
     });
   }, [schoolId, showToast]);
+
+  const buildShareUrl = useCallback(() => {
+    if (typeof window === 'undefined') return '';
+    const diff: Record<string, unknown> = {};
+    for (const field of fieldsRef.current) {
+      if (JSON.stringify(field.value) !== JSON.stringify(field.defaultValue)) {
+        diff[field.key] = field.value;
+      }
+    }
+    const base = `${window.location.origin}${window.location.pathname}`;
+    if (Object.keys(diff).length === 0) return base;
+    return `${base}?s=${encodeSharePayload(diff)}`;
+  }, []);
+
+  const savePreset = useCallback(
+    (rawName: string) => {
+      const snapshotData: Record<string, unknown> = {};
+      for (const field of fieldsRef.current) {
+        snapshotData[field.key] = cloneValue(field.value);
+      }
+      const currentList = loadSchoolPresets(schoolId);
+      const name = rawName.trim().slice(0, 28) || `Kịch bản ${currentList.length + 1}`;
+      const updated = saveSchoolPreset(schoolId, {
+        name,
+        total,
+        base30,
+        snapshot: snapshotData,
+      });
+      setPresets(updated);
+      showToast({
+        type: 'success',
+        title: `Đã lưu kịch bản "${name}"`,
+      });
+    },
+    [schoolId, total, base30, showToast]
+  );
+
+  const loadPreset = useCallback(
+    (presetId: string) => {
+      const target = loadSchoolPresets(schoolId).find((item) => item.id === presetId);
+      if (!target) return;
+
+      const prevSnapshot: Record<string, unknown> = {};
+      for (const field of fieldsRef.current) {
+        prevSnapshot[field.key] = cloneValue(field.value);
+      }
+      const prevSummary = loadScoresSummary()[schoolId] ?? null;
+
+      const normalized: Record<string, unknown> = {};
+      for (const field of fieldsRef.current) {
+        const candidate = target.snapshot[field.key];
+        if (candidate !== undefined && isCompatibleFieldValue(candidate, field.defaultValue)) {
+          normalized[field.key] = cloneValue(candidate);
+        } else {
+          normalized[field.key] = cloneValue(field.defaultValue);
+        }
+      }
+
+      pendingExpectedJsonRef.current = JSON.stringify(normalized);
+      for (const field of fieldsRef.current) {
+        field.apply(cloneValue(normalized[field.key]));
+      }
+      saveSchoolSnapshot(schoolId, normalized);
+
+      showToast({
+        type: 'info',
+        title: `Đã nạp kịch bản "${target.name}"`,
+        duration: 5000,
+        action: {
+          label: 'Hoàn tác',
+          onClick: () => {
+            pendingExpectedJsonRef.current = JSON.stringify(prevSnapshot);
+            for (const field of fieldsRef.current) {
+              if (field.key in prevSnapshot) {
+                field.apply(cloneValue(prevSnapshot[field.key]));
+              }
+            }
+            saveSchoolSnapshot(schoolId, prevSnapshot);
+            if (prevSummary) {
+              updateSchoolSummary(schoolId, prevSummary);
+            } else {
+              updateSchoolSummary(schoolId, null);
+            }
+          },
+        },
+      });
+    },
+    [schoolId, showToast]
+  );
+
+  const deletePreset = useCallback(
+    (presetId: string) => {
+      const prevPresets = loadSchoolPresets(schoolId);
+      const target = prevPresets.find((item) => item.id === presetId);
+      if (!target) return;
+
+      const updated = deleteSchoolPreset(schoolId, presetId);
+      setPresets(updated);
+
+      showToast({
+        type: 'info',
+        title: `Đã xóa kịch bản "${target.name}"`,
+        duration: 5000,
+        action: {
+          label: 'Hoàn tác',
+          onClick: () => {
+            setPresets(restoreSchoolPresets(schoolId, prevPresets));
+          },
+        },
+      });
+    },
+    [schoolId, showToast]
+  );
 
   return {
     importSources,
     importFromSchool,
     resetSchool,
+    buildShareUrl,
+    presets,
+    savePreset,
+    loadPreset,
+    deletePreset,
   };
 };

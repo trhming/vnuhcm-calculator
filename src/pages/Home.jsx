@@ -4,7 +4,11 @@ import { SCHOOLS } from '../constants/common';
 import { SCHOOL_UI_META } from '../constants/schoolUiMeta';
 import { useScoresSummary } from '../hooks/useScoresSummary';
 import { useToast } from '../hooks/useToast';
-import { clearAllCalculatorData } from '../utils/calculatorStorage';
+import {
+  backupAllCalculatorData,
+  clearAllCalculatorData,
+  restoreAllCalculatorData,
+} from '../utils/calculatorStorage';
 
 export const Home = () => {
   const summary = useScoresSummary();
@@ -24,10 +28,16 @@ export const Home = () => {
     }));
 
   const handleClearAllSaved = () => {
+    const backup = backupAllCalculatorData();
     clearAllCalculatorData();
     showToast({
       type: 'info',
       title: 'Đã xóa dữ liệu đã lưu',
+      duration: 5000,
+      action: {
+        label: 'Hoàn tác',
+        onClick: () => restoreAllCalculatorData(backup),
+      },
     });
   };
 
@@ -194,13 +204,6 @@ export const Home = () => {
                 <p className="text-sm leading-relaxed text-ink-secondary">
                   Chọn một trường bên trái để bắt đầu tính. Điểm sẽ tự động lưu tại đây khi bạn quay lại.
                 </p>
-                <Link
-                  to="/hcmus"
-                  className="mt-3.5 inline-flex items-center gap-1.5 rounded-control text-xs font-semibold text-blue-700 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 dark:text-blue-400"
-                >
-                  Bắt đầu với HCMUS
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
               </div>
             )}
           </section>

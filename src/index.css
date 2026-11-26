@@ -226,3 +226,36 @@
     transform: none !important;
   }
 }
+
+@media print {
+  :root,
+  html.dark {
+    --bg-canvas: #ffffff;
+    --bg-surface: #ffffff;
+    --bg-surface-subtle: #f4f4f5;
+    --bg-surface-elevated: #ffffff;
+    --border-subtle: #d4d4d8;
+    --border-hover: #a1a1aa;
+    --text-primary: #09090b;
+    --text-secondary: #3f3f46;
+    --text-muted: #52525b;
+    color-scheme: light;
+  }
+
+  body {
+    background-color: #ffffff !important;
+    color: #09090b !important;
+  }
+
+  nav,
+  footer,
+  [role='status'],
+  [role='alert'],
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .rounded-card {
+    break-inside: avoid;
+  }
+}

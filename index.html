@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f6f6f7" />
     <meta
@@ -15,6 +17,16 @@
       content="Tính điểm xét tuyển đại học năm 2026 theo phương thức tổng hợp của các trường thành viên ĐHQG-HCM. Cập nhật real-time, lưu tự động và quy đổi chứng chỉ chi tiết."
     />
     <meta property="og:type" content="website" />
+    <meta property="og:image" content="/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Web Tính Điểm ĐHQG-HCM 2026" />
+    <meta
+      name="twitter:description"
+      content="Tính điểm xét tuyển đại học năm 2026 theo phương thức tổng hợp của các trường thành viên ĐHQG-HCM. Cập nhật real-time, lưu tự động và quy đổi chứng chỉ chi tiết."
+    />
+    <meta name="twitter:image" content="/og-image.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -26,7 +38,7 @@
         try {
           var saved = localStorage.getItem('vnuhcm_theme');
           var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var isDark = saved ? saved === 'dark' : prefersDark;
+          var isDark = saved === 'dark' || ((saved === 'system' || !saved) && prefersDark);
           document.documentElement.classList.toggle('dark', isDark);
           var meta = document.querySelector('meta[name="theme-color"]');
           if (meta) {

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
 import { useUsshCalculator } from '../hooks/useUsshCalculator';
 import { useCalculatorPersistence } from '../hooks/useCalculatorPersistence';
 import { CalculatorPageHeader } from '../components/common/CalculatorPageHeader';
@@ -111,7 +111,17 @@ export const UsshCalculator = () => {
     ]
   );
 
-  const { importSources, importFromSchool, resetSchool } =
+  const baseId = useId();
+  const {
+    importSources,
+    importFromSchool,
+    resetSchool,
+    buildShareUrl,
+    presets,
+    savePreset,
+    loadPreset,
+    deletePreset,
+  } =
     useCalculatorPersistence({
       schoolId: 'hcmussh',
       schoolAcronym: 'HCMUSSH',
@@ -132,6 +142,10 @@ export const UsshCalculator = () => {
         hasMeaningfulInput={hasMeaningfulInput}
         onImportFromSchool={importFromSchool}
         onReset={resetSchool}
+        presets={presets}
+        onSavePreset={savePreset}
+        onLoadPreset={loadPreset}
+        onDeletePreset={deletePreset}
       />
 
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
@@ -143,6 +157,7 @@ export const UsshCalculator = () => {
               <TranscriptScoreTable
                 values={state.hocBa}
                 onChange={handleHocBaChange}
+                onBulkChange={state.setHocBa}
                 disabled={hasHocBaQuickTotal}
                 tone="emerald"
                 onClear={() => state.setHocBa(EMPTY_HOC_BA)}
@@ -171,10 +186,14 @@ export const UsshCalculator = () => {
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   {[0, 1, 2].map((idx) => (
                     <div key={`thpt-${idx}`}>
-                      <label className="mb-1.5 block text-sm font-medium text-ink">
+                      <label
+                        htmlFor={`${baseId}-thpt-${idx}`}
+                        className="mb-1.5 block text-sm font-medium text-ink"
+                      >
                         Môn {idx + 1}
                       </label>
                       <ScoreInput
+                        id={`${baseId}-thpt-${idx}`}
                         max={10}
                         maxIntPartLength={1}
                         value={state.thpt[idx]}
@@ -204,10 +223,14 @@ export const UsshCalculator = () => {
                 <h3 className="mb-3 text-sm font-semibold text-ink">ĐGNL</h3>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:items-end">
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium text-ink">
+                    <label
+                      htmlFor={`${baseId}-dgnl`}
+                      className="mb-1.5 block text-sm font-medium text-ink"
+                    >
                       Điểm ĐGNL (thang 1200)
                     </label>
                     <ScoreInput
+                      id={`${baseId}-dgnl`}
                       max={1200}
                       value={state.dgnl}
                       onValueChange={state.setDgnl}
@@ -241,10 +264,14 @@ export const UsshCalculator = () => {
 
               <div className="border-t border-hairline pt-5">
                 <div className="sm:max-w-xs">
-                  <label className="mb-2 block text-sm font-medium text-ink">
+                  <label
+                    htmlFor={`${baseId}-bonus`}
+                    className="mb-2 block text-sm font-medium text-ink"
+                  >
                     Điểm cộng thành tích (tối đa 10)
                   </label>
                   <ScoreInput
+                    id={`${baseId}-bonus`}
                     max={10}
                     maxIntPartLength={1}
                     value={state.thanhTich}
@@ -267,6 +294,12 @@ export const UsshCalculator = () => {
             theme="emerald"
             schoolAcronym="HCMUSSH"
             total={results.total}
+            getShareUrl={buildShareUrl}
+            emptyHint={
+              hasMeaningfulInput && !hasHocBaDetail && !hasHocBaQuickTotal
+                ? 'Nhập thêm điểm Học bạ để tính kết quả 3 kịch bản.'
+                : undefined
+            }
             beforeLearning={
               <div className="space-y-2.5">
                 {[

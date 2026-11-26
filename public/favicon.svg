@@ -1,14 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
-  <title id="title">Calculator</title>
+  <title id="title">Tính điểm ĐHQG-HCM 2026</title>
   <rect width="64" height="64" rx="14" fill="#1d4ed8"/>
-  <rect x="17" y="10" width="30" height="44" rx="5" fill="#ffffff"/>
-  <rect x="22" y="16" width="20" height="9" rx="2" fill="#bfdbfe"/>
-  <rect x="22" y="31" width="6" height="6" rx="1.5" fill="#1d4ed8"/>
-  <rect x="29" y="31" width="6" height="6" rx="1.5" fill="#1d4ed8"/>
-  <rect x="36" y="31" width="6" height="6" rx="1.5" fill="#1d4ed8"/>
-  <rect x="22" y="39" width="6" height="6" rx="1.5" fill="#1d4ed8"/>
-  <rect x="29" y="39" width="6" height="6" rx="1.5" fill="#1d4ed8"/>
-  <rect x="36" y="39" width="6" height="6" rx="1.5" fill="#059669"/>
-  <rect x="22" y="47" width="13" height="5" rx="1.5" fill="#1d4ed8"/>
-  <rect x="37" y="47" width="5" height="5" rx="1.5" fill="#059669"/>
+  <rect x="14" y="11" width="31" height="41" rx="5" fill="#ffffff"/>
+  <rect x="19" y="16.5" width="21" height="6" rx="2.5" fill="#bfdbfe"/>
+  <rect x="19" y="27.5" width="17" height="3.6" rx="1.8" fill="#1d4ed8"/>
+  <rect x="19" y="34" width="19" height="3.6" rx="1.8" fill="#1d4ed8"/>
+  <rect x="19" y="40.5" width="13" height="3.6" rx="1.8" fill="#bfdbfe"/>
+  <circle cx="44" cy="44" r="12.5" fill="#1d4ed8"/>
+  <circle cx="44" cy="44" r="10" fill="#10b981"/>
+  <line x1="39.2" y1="41.6" x2="48.8" y2="41.6" stroke="#ffffff" stroke-width="2.8" stroke-linecap="round"/>
+  <line x1="39.2" y1="46.4" x2="48.8" y2="46.4" stroke="#ffffff" stroke-width="2.8" stroke-linecap="round"/>
 </svg>

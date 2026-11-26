@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
 import { convertDgnlToThptScale, useHcmusCalculator } from '../hooks/useHcmusCalculator';
 import { useCalculatorPersistence } from '../hooks/useCalculatorPersistence';
 import { CalculatorPageHeader } from '../components/common/CalculatorPageHeader';
@@ -176,7 +176,17 @@ export const HcmusCalculator = () => {
     ]
   );
 
-  const { importSources, importFromSchool, resetSchool } =
+  const baseId = useId();
+  const {
+    importSources,
+    importFromSchool,
+    resetSchool,
+    buildShareUrl,
+    presets,
+    savePreset,
+    loadPreset,
+    deletePreset,
+  } =
     useCalculatorPersistence({
       schoolId: 'hcmus',
       schoolAcronym: 'HCMUS',
@@ -244,6 +254,10 @@ export const HcmusCalculator = () => {
         hasMeaningfulInput={hasMeaningfulInput}
         onImportFromSchool={importFromSchool}
         onReset={resetSchool}
+        presets={presets}
+        onSavePreset={savePreset}
+        onLoadPreset={loadPreset}
+        onDeletePreset={deletePreset}
       />
 
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
@@ -255,6 +269,7 @@ export const HcmusCalculator = () => {
               <TranscriptScoreTable
                 values={state.hocBa}
                 onChange={handleHocBaChange}
+                onBulkChange={state.setHocBa}
                 disabled={hasHocBaQuickTotal}
                 tone="blue"
                 showNoteColumn
@@ -324,10 +339,14 @@ export const HcmusCalculator = () => {
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   {[0, 1, 2].map((idx) => (
                     <div key={`thpt-${idx}`}>
-                      <label className="mb-1.5 block text-sm font-medium text-ink">
+                      <label
+                        htmlFor={`${baseId}-thpt-${idx}`}
+                        className="mb-1.5 block text-sm font-medium text-ink"
+                      >
                         Môn {idx + 1}
                       </label>
                       <ScoreInput
+                        id={`${baseId}-thpt-${idx}`}
                         max={10}
                         maxIntPartLength={1}
                         value={state.thpt[idx]}
@@ -354,7 +373,7 @@ export const HcmusCalculator = () => {
                     <button
                       type="button"
                       onClick={() => setShowConversionTable(true)}
-                      className="btn-tactile px-2 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 dark:text-blue-400"
+                      className="btn-tactile min-h-[36px] px-2 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 sm:min-h-[30px] dark:text-blue-400"
                     >
                       Bảng quy đổi
                     </button>
@@ -363,6 +382,7 @@ export const HcmusCalculator = () => {
                   {state.isNgoaiNgu && (
                     <div className="mt-3 grid grid-cols-1 gap-2 border-t border-hairline pt-3 sm:grid-cols-3">
                       <select
+                        aria-label="Loại chứng chỉ ngoại ngữ"
                         value={state.chungChiType}
                         onChange={(e) => {
                           state.setChungChiType(e.target.value);
@@ -377,6 +397,7 @@ export const HcmusCalculator = () => {
                         ))}
                       </select>
                       <ScoreInput
+                        aria-label="Điểm chứng chỉ ngoại ngữ"
                         max={selectedEnglishType?.max}
                         value={state.diemChungChi}
                         onValueChange={state.setDiemChungChi}
@@ -415,7 +436,7 @@ export const HcmusCalculator = () => {
                   <button
                     type="button"
                     onClick={() => setShowDgnlConversionTable(true)}
-                    className="btn-tactile px-2 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 dark:text-blue-400"
+                    className="btn-tactile min-h-[36px] px-2 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 sm:min-h-[30px] dark:text-blue-400"
                   >
                     Bảng quy đổi
                   </button>
@@ -423,10 +444,14 @@ export const HcmusCalculator = () => {
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:items-end">
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium text-ink">
+                    <label
+                      htmlFor={`${baseId}-dgnl`}
+                      className="mb-1.5 block text-sm font-medium text-ink"
+                    >
                       Điểm ĐGNL (tối đa {state.maxDgnl})
                     </label>
                     <ScoreInput
+                      id={`${baseId}-dgnl`}
                       max={parseFloat(state.maxDgnl) || 1139}
                       value={state.dgnl}
                       onValueChange={state.setDgnl}
@@ -460,10 +485,14 @@ export const HcmusCalculator = () => {
 
               <div className="border-t border-hairline pt-5">
                 <div className="sm:max-w-xs">
-                  <label className="mb-2 block text-sm font-medium text-ink">
+                  <label
+                    htmlFor={`${baseId}-bonus`}
+                    className="mb-2 block text-sm font-medium text-ink"
+                  >
                     Điểm cộng (tối đa 1.5)
                   </label>
                   <ScoreInput
+                    id={`${baseId}-bonus`}
                     max={1.5}
                     maxIntPartLength={1}
                     value={state.khuyenKhich}
@@ -487,6 +516,7 @@ export const HcmusCalculator = () => {
             schoolAcronym="HCMUS"
             className="relative"
             total={results.base100}
+            getShareUrl={buildShareUrl}
             headerClassName={results.hocBaStatus === 3 ? 'bg-red-500/10' : undefined}
             headerNote={
               <>

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
 import {
   AlertTriangle,
   CheckCircle2,
@@ -144,7 +144,17 @@ export const UhsCalculator = () => {
     ]
   );
 
-  const { importSources, importFromSchool, resetSchool } =
+  const baseId = useId();
+  const {
+    importSources,
+    importFromSchool,
+    resetSchool,
+    buildShareUrl,
+    presets,
+    savePreset,
+    loadPreset,
+    deletePreset,
+  } =
     useCalculatorPersistence({
       schoolId: 'uhs',
       schoolAcronym: 'UHS',
@@ -171,6 +181,7 @@ export const UhsCalculator = () => {
       theme="teal"
       schoolAcronym="UHS"
       total={results.total}
+      getShareUrl={buildShareUrl}
       totalPrecision={2}
       formula={`ĐHL = THPT × ${results.w1}% + ĐGNL × ${results.w2}% + Học bạ × 20%`}
       dhl={results.dhl}
@@ -207,6 +218,10 @@ export const UhsCalculator = () => {
         hasMeaningfulInput={hasMeaningfulInput}
         onImportFromSchool={importFromSchool}
         onReset={resetSchool}
+        presets={presets}
+        onSavePreset={savePreset}
+        onLoadPreset={loadPreset}
+        onDeletePreset={deletePreset}
       />
 
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
@@ -233,9 +248,12 @@ export const UhsCalculator = () => {
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               <div>
                 <div className="mb-2 flex justify-between text-sm">
-                  <label className="font-semibold text-ink">w1 - THPT</label>
+                  <label htmlFor={`${baseId}-w1`} className="font-semibold text-ink">
+                    w1 - THPT
+                  </label>
                   <div className="flex items-center gap-1 font-mono">
                     <input
+                      id={`${baseId}-w1`}
                       type="number"
                       min={30}
                       max={35}
@@ -249,6 +267,7 @@ export const UhsCalculator = () => {
                 </div>
                 <input
                   type="range"
+                  aria-label="Thanh trượt trọng số THPT w1"
                   min={30}
                   max={35}
                   step="1"
@@ -261,9 +280,12 @@ export const UhsCalculator = () => {
 
               <div>
                 <div className="mb-2 flex justify-between text-sm">
-                  <label className="font-semibold text-ink">w2 - ĐGNL</label>
+                  <label htmlFor={`${baseId}-w2`} className="font-semibold text-ink">
+                    w2 - ĐGNL
+                  </label>
                   <div className="flex items-center gap-1 font-mono">
                     <input
+                      id={`${baseId}-w2`}
                       type="number"
                       min={45}
                       max={50}
@@ -277,6 +299,7 @@ export const UhsCalculator = () => {
                 </div>
                 <input
                   type="range"
+                  aria-label="Thanh trượt trọng số ĐGNL w2"
                   min={45}
                   max={50}
                   step="1"
@@ -302,6 +325,7 @@ export const UhsCalculator = () => {
               <TranscriptScoreTable
                 values={state.hocBa}
                 onChange={handleHocBaChange}
+                onBulkChange={state.setHocBa}
                 disabled={hasHocBaQuickTotal}
                 tone="teal"
                 subjectLabels={subjects}
@@ -362,10 +386,14 @@ export const UhsCalculator = () => {
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   {subjects.map((subject, index) => (
                     <div key={`thpt-${subject}`}>
-                      <label className="mb-1.5 block text-sm font-medium text-ink">
+                      <label
+                        htmlFor={`${baseId}-thpt-${index}`}
+                        className="mb-1.5 block text-sm font-medium text-ink"
+                      >
                         {subject}
                       </label>
                       <ScoreInput
+                        id={`${baseId}-thpt-${index}`}
                         max={10}
                         maxIntPartLength={1}
                         value={state.thpt[index]}
@@ -405,10 +433,14 @@ export const UhsCalculator = () => {
                 <h3 className="mb-3 text-sm font-semibold text-ink">ĐGNL</h3>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:items-end">
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium text-ink">
+                    <label
+                      htmlFor={`${baseId}-dgnl`}
+                      className="mb-1.5 block text-sm font-medium text-ink"
+                    >
                       Điểm ĐGNL (thang 1200)
                     </label>
                     <ScoreInput
+                      id={`${baseId}-dgnl`}
                       max={1200}
                       maxIntPartLength={1}
                       value={results.isDgnlConverted ? String(results.dgnlTotalDisplay) : state.dgnl}
@@ -464,6 +496,7 @@ export const UhsCalculator = () => {
                     <div className="mt-3 space-y-3 border-t border-hairline pt-3">
                       <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
                         <select
+                          aria-label="Loại chứng chỉ ngoại ngữ"
                           value={state.languageType}
                           onChange={(event) => {
                             state.setLanguageType(event.target.value);
@@ -479,6 +512,7 @@ export const UhsCalculator = () => {
                           ))}
                         </select>
                         <ScoreInput
+                          aria-label={state.languageType === 'TOEIC' ? 'Điểm TOEIC Nghe và Đọc' : 'Điểm chứng chỉ ngoại ngữ'}
                           max={state.languageType === 'TOEIC' ? selectedLanguageType?.maxLr : selectedLanguageType?.max}
                           value={state.languageScore}
                           onValueChange={state.setLanguageScore}
@@ -487,6 +521,7 @@ export const UhsCalculator = () => {
                         />
                         {state.languageType === 'TOEIC' ? (
                           <ScoreInput
+                            aria-label="Điểm TOEIC Nói và Viết"
                             max={selectedLanguageType?.maxSw}
                             value={state.languageScore2}
                             onValueChange={state.setLanguageScore2}
@@ -539,6 +574,7 @@ export const UhsCalculator = () => {
                   {state.hasSat && (
                     <div className="space-y-2 border-t border-hairline pt-3">
                       <ScoreInput
+                        aria-label="Điểm SAT"
                         max={1600}
                         value={state.satScore}
                         onValueChange={state.setSatScore}
@@ -570,6 +606,7 @@ export const UhsCalculator = () => {
                   </label>
                   {state.hasHsg && (
                     <ScoreInput
+                      aria-label="Điểm trung bình 3 năm HSG"
                       max={10}
                       maxIntPartLength={1}
                       value={state.hsgAverage}

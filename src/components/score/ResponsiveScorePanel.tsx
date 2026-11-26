@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode, type TouchEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { useBodyScrollLock } from '../../hooks/useBodyScrollLock';
@@ -21,6 +21,8 @@ export const ResponsiveScorePanel = ({
   backdropClassName = 'bg-black/55 dark:bg-black/75',
 }: ResponsiveScorePanelProps) => {
   useBodyScrollLock(isOpen);
+  const [dragOffsetY, setDragOffsetY] = useState(0);
+  const touchStartYRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!isOpen) return undefined;
@@ -33,6 +35,25 @@ export const ResponsiveScorePanel = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onClose]);
 
+  const handleTouchStart = (event: TouchEvent<HTMLDivElement>) => {
+    touchStartYRef.current = event.touches[0].clientY;
+  };
+
+  const handleTouchMove = (event: TouchEvent<HTMLDivElement>) => {
+    if (touchStartYRef.current === null) return;
+    const delta = Math.max(0, event.touches[0].clientY - touchStartYRef.current);
+    setDragOffsetY(delta);
+  };
+
+  const handleTouchEnd = () => {
+    const shouldClose = dragOffsetY > 72;
+    touchStartYRef.current = null;
+    setDragOffsetY(0);
+    if (shouldClose) {
+      onClose();
+    }
+  };
+
   const mobileSheet = isOpen && typeof document !== 'undefined'
     ? createPortal(
         <div
@@ -44,10 +65,21 @@ export const ResponsiveScorePanel = ({
         >
           <div
             className="relative flex max-h-[88vh] w-full flex-col overflow-hidden rounded-t-card border border-hairline bg-surface shadow-2xl animate-in slide-in-from-bottom-full duration-200 sm:max-w-md sm:rounded-card sm:zoom-in-95"
+            style={
+              dragOffsetY > 0
+                ? { transform: `translateY(${dragOffsetY}px)`, transition: 'none' }
+                : undefined
+            }
             onClick={(event) => event.stopPropagation()}
           >
-            <div className="pointer-events-none absolute inset-x-0 top-2 z-20 flex justify-center sm:hidden">
-              <span className="h-1 w-10 rounded-full bg-ink-muted/30" aria-hidden="true" />
+            <div
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              className="flex h-7 shrink-0 touch-none items-center justify-center sm:hidden"
+              aria-hidden="true"
+            >
+              <span className="h-1 w-10 rounded-full bg-ink-muted/30" />
             </div>
             <CloseButton onClose={onClose} />
             <div className="min-h-0 flex-1 overflow-y-auto [&>div]:rounded-none [&>div]:border-0 [&>div]:shadow-none">

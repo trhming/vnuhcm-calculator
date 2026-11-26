@@ -34,9 +34,9 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const showToast = useCallback(
-    ({ title, description, type = 'info', duration = 3200 }: ToastOptions) => {
+    ({ title, description, type = 'info', duration = 3200, action }: ToastOptions) => {
       const id = nextIdRef.current++;
-      setToasts((prev) => [...prev.slice(-2), { id, title, description, type, duration }]);
+      setToasts((prev) => [...prev.slice(-2), { id, title, description, type, duration, action }]);
 
       if (duration > 0) {
         const timer = window.setTimeout(() => {
@@ -83,6 +83,18 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
                   <p className="mt-0.5 text-xs leading-relaxed text-ink-secondary">
                     {toast.description}
                   </p>
+                )}
+                {toast.action && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      toast.action?.onClick();
+                      dismissToast(toast.id);
+                    }}
+                    className="btn-tactile mt-2 inline-flex min-h-[30px] items-center border border-hairline bg-surface-subtle px-2.5 py-1 text-xs font-semibold text-blue-700 hover:border-hairline-hover hover:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 dark:text-blue-400"
+                  >
+                    {toast.action.label}
+                  </button>
                 )}
               </div>
               <button

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
 import { useHcmutCalculator } from '../hooks/useHcmutCalculator';
 import { useCalculatorPersistence } from '../hooks/useCalculatorPersistence';
 import { CalculatorPageHeader } from '../components/common/CalculatorPageHeader';
@@ -195,7 +195,17 @@ export const HcmutCalculator = () => {
     ]
   );
 
-  const { importSources, importFromSchool, resetSchool } =
+  const baseId = useId();
+  const {
+    importSources,
+    importFromSchool,
+    resetSchool,
+    buildShareUrl,
+    presets,
+    savePreset,
+    loadPreset,
+    deletePreset,
+  } =
     useCalculatorPersistence({
       schoolId: 'hcmut',
       schoolAcronym: 'HCMUT',
@@ -216,6 +226,10 @@ export const HcmutCalculator = () => {
         hasMeaningfulInput={hasMeaningfulInput}
         onImportFromSchool={importFromSchool}
         onReset={resetSchool}
+        presets={presets}
+        onSavePreset={savePreset}
+        onLoadPreset={loadPreset}
+        onDeletePreset={deletePreset}
       />
 
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
@@ -267,8 +281,11 @@ export const HcmutCalculator = () => {
                   </div>
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                      <label className="mb-1 block text-xs font-medium text-ink-secondary">Tiếng Việt</label>
+                      <label htmlFor={`${baseId}-dgnl-tv`} className="mb-1 block text-xs font-medium text-ink-secondary">
+                        Tiếng Việt
+                      </label>
                       <ScoreInput
+                        id={`${baseId}-dgnl-tv`}
                         max={300}
                         maxIntPartLength={1}
                         value={state.dgnlTv}
@@ -280,8 +297,11 @@ export const HcmutCalculator = () => {
                       />
                     </div>
                     <div>
-                      <label className="mb-1 block text-xs font-medium text-ink-secondary">Tiếng Anh</label>
+                      <label htmlFor={`${baseId}-dgnl-ta`} className="mb-1 block text-xs font-medium text-ink-secondary">
+                        Tiếng Anh
+                      </label>
                       <ScoreInput
+                        id={`${baseId}-dgnl-ta`}
                         max={300}
                         maxIntPartLength={1}
                         value={state.dgnlTa}
@@ -293,10 +313,11 @@ export const HcmutCalculator = () => {
                       />
                     </div>
                     <div>
-                      <label className="mb-1 block text-xs font-medium text-ink-secondary">
+                      <label htmlFor={`${baseId}-dgnl-toan`} className="mb-1 block text-xs font-medium text-ink-secondary">
                         Toán <span className="font-mono font-bold text-blue-700 dark:text-blue-400">(×2)</span>
                       </label>
                       <ScoreInput
+                        id={`${baseId}-dgnl-toan`}
                         max={300}
                         maxIntPartLength={1}
                         value={state.dgnlToan}
@@ -308,10 +329,11 @@ export const HcmutCalculator = () => {
                       />
                     </div>
                     <div>
-                      <label className="mb-1 block text-xs font-medium text-ink-secondary">
+                      <label htmlFor={`${baseId}-dgnl-kh`} className="mb-1 block text-xs font-medium text-ink-secondary">
                         Tư duy khoa học
                       </label>
                       <ScoreInput
+                        id={`${baseId}-dgnl-kh`}
                         max={300}
                         maxIntPartLength={1}
                         value={state.dgnlKh}
@@ -345,13 +367,14 @@ export const HcmutCalculator = () => {
                     <button
                       type="button"
                       onClick={() => setShowIntlCertTable(true)}
-                      className="btn-tactile px-2 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 dark:text-blue-400"
+                      className="btn-tactile min-h-[36px] px-2 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 sm:min-h-[30px] dark:text-blue-400"
                     >
                       Bảng quy đổi
                     </button>
                   </div>
                   <div className="flex flex-col gap-3 sm:flex-row">
                     <select
+                      aria-label="Loại chứng chỉ quốc tế"
                       value={state.intlCertType}
                       onChange={(e) => {
                         state.setIntlCertType(e.target.value);
@@ -367,6 +390,7 @@ export const HcmutCalculator = () => {
                     </select>
                     {state.intlCertType === 'A_LEVEL' ? (
                       <select
+                        aria-label="Hạng chứng chỉ quốc tế"
                         value={state.intlCertScore}
                         onChange={(e) => state.setIntlCertScore(e.target.value)}
                         className="select-control flex-1 font-mono font-bold focus-visible:ring-blue-700"
@@ -379,6 +403,7 @@ export const HcmutCalculator = () => {
                       </select>
                     ) : (
                       <ScoreInput
+                        aria-label="Điểm chứng chỉ quốc tế"
                         maxIntPartLength={1}
                         max={selectedIntlCert?.max}
                         value={state.intlCertScore}
@@ -402,6 +427,7 @@ export const HcmutCalculator = () => {
               <TranscriptScoreTable
                 values={state.hocBa}
                 onChange={handleHocBaChange}
+                onBulkChange={state.setHocBa}
                 disabled={hasHocBaQuickAverage}
                 tone="hcmut"
                 subjectWeights={[2, 1, 1]}
@@ -429,7 +455,10 @@ export const HcmutCalculator = () => {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 {[0, 1, 2].map((idx) => (
                   <div key={`thpt-${idx}`}>
-                    <label className="mb-1.5 block text-sm font-medium text-ink">
+                    <label
+                      htmlFor={`${baseId}-thpt-${idx}`}
+                      className="mb-1.5 block text-sm font-medium text-ink"
+                    >
                       Môn {idx + 1}{' '}
                       {idx === 0 && (
                         <span className="font-mono text-xs font-bold text-blue-700 dark:text-blue-400">
@@ -438,6 +467,7 @@ export const HcmutCalculator = () => {
                       )}
                     </label>
                     <ScoreInput
+                      id={`${baseId}-thpt-${idx}`}
                       max={10}
                       maxIntPartLength={1}
                       value={state.thpt[idx]}
@@ -464,7 +494,7 @@ export const HcmutCalculator = () => {
                   <button
                     type="button"
                     onClick={() => setShowConversionTable(true)}
-                    className="btn-tactile px-2 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 dark:text-blue-400"
+                    className="btn-tactile min-h-[36px] px-2 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 sm:min-h-[30px] dark:text-blue-400"
                   >
                     Bảng quy đổi
                   </button>
@@ -473,6 +503,7 @@ export const HcmutCalculator = () => {
                 {state.isNgoaiNgu && (
                   <div className="mt-3 grid grid-cols-1 gap-2 border-t border-hairline pt-3 sm:grid-cols-3">
                     <select
+                      aria-label="Loại chứng chỉ ngoại ngữ"
                       value={state.ngoaiNguType}
                       onChange={(e) => {
                         state.setNgoaiNguType(e.target.value);
@@ -492,6 +523,7 @@ export const HcmutCalculator = () => {
                     {state.ngoaiNguType === 'TOEIC' ? (
                       <>
                         <ScoreInput
+                          aria-label="Điểm TOEIC Nghe đọc"
                           max={selectedEnglishType?.maxLr}
                           value={state.toeicLr}
                           onValueChange={state.setToeicLr}
@@ -500,6 +532,7 @@ export const HcmutCalculator = () => {
                           placeholder="Nghe đọc"
                         />
                         <ScoreInput
+                          aria-label="Điểm TOEIC Nói viết"
                           max={selectedEnglishType?.maxSw}
                           value={state.toeicSw}
                           onValueChange={state.setToeicSw}
@@ -510,6 +543,7 @@ export const HcmutCalculator = () => {
                       </>
                     ) : (
                       <ScoreInput
+                        aria-label={`Điểm ${state.ngoaiNguType}`}
                         max={selectedEnglishType?.max}
                         value={state.diemNgoaiNgu}
                         onValueChange={state.setDiemNgoaiNgu}
@@ -567,10 +601,11 @@ export const HcmutCalculator = () => {
                 </h4>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6">
                   <div>
-                    <label className="mb-1.5 block text-xs text-ink-secondary">
+                    <label htmlFor={`${baseId}-thuong`} className="mb-1.5 block text-xs text-ink-secondary">
                       Điểm thưởng (≤ 10)
                     </label>
                     <ScoreInput
+                      id={`${baseId}-thuong`}
                       max={10}
                       value={state.thuong}
                       onValueChange={state.setThuong}
@@ -579,10 +614,11 @@ export const HcmutCalculator = () => {
                     />
                   </div>
                   <div>
-                    <label className="mb-1.5 block text-xs text-ink-secondary">
+                    <label htmlFor={`${baseId}-xet-thuong`} className="mb-1.5 block text-xs text-ink-secondary">
                       Xét thưởng (≤ 5)
                     </label>
                     <ScoreInput
+                      id={`${baseId}-xet-thuong`}
                       max={5}
                       value={state.xetThuong}
                       onValueChange={state.setXetThuong}
@@ -591,10 +627,11 @@ export const HcmutCalculator = () => {
                     />
                   </div>
                   <div>
-                    <label className="mb-1.5 block text-xs text-ink-secondary">
+                    <label htmlFor={`${baseId}-khuyen-khich`} className="mb-1.5 block text-xs text-ink-secondary">
                       Khuyến khích (≤ 5)
                     </label>
                     <ScoreInput
+                      id={`${baseId}-khuyen-khich`}
                       max={5}
                       value={state.khuyenKhich}
                       onValueChange={state.setKhuyenKhich}
@@ -617,6 +654,7 @@ export const HcmutCalculator = () => {
             theme="hcmut"
             schoolAcronym="HCMUT"
             total={results.total}
+            getShareUrl={buildShareUrl}
             formula={`ĐHL = ĐGNL × ${(state.wNL * 100).toFixed(0)}% + THPT × ${(state.wTHPT * 100).toFixed(0)}% + Học bạ × ${(state.wHB * 100).toFixed(0)}%`}
             dhl={results.diemHL}
             dgnlScore={results.diemNangLuc.toFixed(2)}

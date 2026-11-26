@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
 import {
   AlertTriangle,
   CheckCircle2,
@@ -147,7 +147,17 @@ export const IuCalculator = () => {
     ]
   );
 
-  const { importSources, importFromSchool, resetSchool } =
+  const baseId = useId();
+  const {
+    importSources,
+    importFromSchool,
+    resetSchool,
+    buildShareUrl,
+    presets,
+    savePreset,
+    loadPreset,
+    deletePreset,
+  } =
     useCalculatorPersistence({
       schoolId: 'iu',
       schoolAcronym: 'IU',
@@ -162,6 +172,7 @@ export const IuCalculator = () => {
       theme="red"
       schoolAcronym="IU"
       total={results.total}
+      getShareUrl={buildShareUrl}
       formula={`ĐHL = ĐGNL × ${state.k2}% + THPT × ${state.k1}% + Học bạ × ${results.k3}%`}
       formulaDetail={results.interpolation}
       dhl={results.dhl}
@@ -193,6 +204,10 @@ export const IuCalculator = () => {
         hasMeaningfulInput={hasMeaningfulInput}
         onImportFromSchool={importFromSchool}
         onReset={resetSchool}
+        presets={presets}
+        onSavePreset={savePreset}
+        onLoadPreset={loadPreset}
+        onDeletePreset={deletePreset}
       />
 
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
@@ -229,10 +244,11 @@ export const IuCalculator = () => {
               </div>
 
               <div className="space-y-2.5 border-t border-hairline pt-4">
-                <label className="block text-sm font-semibold text-ink">
+                <label htmlFor={`${baseId}-group`} className="block text-sm font-semibold text-ink">
                   Nhóm đối tượng
                 </label>
                 <select
+                  id={`${baseId}-group`}
                   value={state.group}
                   onChange={(event) => state.setGroup(event.target.value)}
                   className="select-control focus-visible:ring-red-600"
@@ -258,6 +274,7 @@ export const IuCalculator = () => {
                 <TranscriptScoreTable
                   values={state.hocBa}
                   onChange={handleHocBaChange}
+                  onBulkChange={state.setHocBa}
                   disabled={hasHocBaQuickTotal}
                   tone="red"
                   onClear={() => state.setHocBa(EMPTY_HOC_BA)}
@@ -286,10 +303,14 @@ export const IuCalculator = () => {
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                       {[0, 1].map((index) => (
                         <div key={`thpt-${index}`}>
-                          <label className="mb-1.5 block text-sm font-medium text-ink">
+                          <label
+                            htmlFor={`${baseId}-thpt-${index}`}
+                            className="mb-1.5 block text-sm font-medium text-ink"
+                          >
                             Môn {index + 1}
                           </label>
                           <ScoreInput
+                            id={`${baseId}-thpt-${index}`}
                             max={10}
                             value={state.thpt[index]}
                             onValueChange={(value) => updateScoreArray(state.thpt, state.setThpt, index, value, 10)}
@@ -300,8 +321,11 @@ export const IuCalculator = () => {
                         </div>
                       ))}
                       <div>
-                        <label className="mb-1.5 block text-sm font-medium text-ink">Môn 3</label>
+                        <label htmlFor={`${baseId}-thpt-2`} className="mb-1.5 block text-sm font-medium text-ink">
+                          Môn 3
+                        </label>
                         <ScoreInput
+                          id={`${baseId}-thpt-2`}
                           max={10}
                           maxIntPartLength={1}
                           value={state.useEnglishCertificate ? results.englishConvertedScore : state.thpt[2]}
@@ -327,7 +351,7 @@ export const IuCalculator = () => {
                         <button
                           type="button"
                           onClick={() => setShowEnglishConversionTable(true)}
-                          className="btn-tactile px-2 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 dark:text-blue-400"
+                          className="btn-tactile min-h-[36px] px-2 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 sm:min-h-[30px] dark:text-blue-400"
                         >
                           Bảng quy đổi
                         </button>
@@ -336,6 +360,7 @@ export const IuCalculator = () => {
                       {state.useEnglishCertificate && (
                         <div className="mt-3 grid grid-cols-1 gap-2 border-t border-hairline pt-3 sm:grid-cols-3">
                           <select
+                            aria-label="Loại chứng chỉ ngoại ngữ"
                             value={state.englishType}
                             onChange={(event) => {
                               state.setEnglishType(event.target.value);
@@ -351,6 +376,7 @@ export const IuCalculator = () => {
                             ))}
                           </select>
                           <ScoreInput
+                            aria-label={state.englishType === 'TOEIC' ? 'Điểm TOEIC Nghe đọc' : 'Điểm chứng chỉ ngoại ngữ'}
                             max={state.englishType === 'TOEIC' ? selectedEnglishType?.maxLr : selectedEnglishType?.max}
                             value={state.englishScore}
                             onValueChange={state.setEnglishScore}
@@ -360,6 +386,7 @@ export const IuCalculator = () => {
                           />
                           {state.englishType === 'TOEIC' ? (
                             <ScoreInput
+                              aria-label="Điểm TOEIC Nói viết"
                               max={selectedEnglishType?.maxSw}
                               value={state.englishScore2}
                               onValueChange={state.setEnglishScore2}
@@ -402,10 +429,14 @@ export const IuCalculator = () => {
                     <h3 className="mb-3 text-sm font-semibold text-ink">ĐGNL</h3>
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:items-end">
                       <div>
-                        <label className="mb-1.5 block text-sm font-medium text-ink">
+                        <label
+                          htmlFor={`${baseId}-dgnl`}
+                          className="mb-1.5 block text-sm font-medium text-ink"
+                        >
                           Điểm ĐGNL (thang 1200)
                         </label>
                         <ScoreInput
+                          id={`${baseId}-dgnl`}
                           max={1200}
                           value={state.dgnl}
                           onValueChange={state.setDgnl}
@@ -442,10 +473,14 @@ export const IuCalculator = () => {
                 <h4 className="mb-4 text-sm font-semibold text-ink">Điểm cộng (tối đa 10)</h4>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6">
                   <div>
-                    <label className="mb-2 block text-xs font-medium text-ink-secondary">
+                    <label
+                      htmlFor={`${baseId}-achievement`}
+                      className="mb-2 block text-xs font-medium text-ink-secondary"
+                    >
                       Điểm thưởng (≤ 10)
                     </label>
                     <ScoreInput
+                      id={`${baseId}-achievement`}
                       max={10}
                       maxIntPartLength={1}
                       value={state.achievementBonus}
@@ -455,10 +490,14 @@ export const IuCalculator = () => {
                     />
                   </div>
                   <div>
-                    <label className="mb-2 block text-xs font-medium text-ink-secondary">
+                    <label
+                      htmlFor={`${baseId}-award`}
+                      className="mb-2 block text-xs font-medium text-ink-secondary"
+                    >
                       Xét thưởng (≤ 5)
                     </label>
                     <ScoreInput
+                      id={`${baseId}-award`}
                       max={5}
                       value={state.awardBonus}
                       onValueChange={state.setAwardBonus}
@@ -467,10 +506,14 @@ export const IuCalculator = () => {
                     />
                   </div>
                   <div>
-                    <label className="mb-2 block text-xs font-medium text-ink-secondary">
+                    <label
+                      htmlFor={`${baseId}-eng-bonus`}
+                      className="mb-2 block text-xs font-medium text-ink-secondary"
+                    >
                       Khuyến khích NN (≤ 5)
                     </label>
                     <ScoreInput
+                      id={`${baseId}-eng-bonus`}
                       max={5}
                       maxIntPartLength={1}
                       value={state.englishBonus}

@@ -1,16 +1,52 @@
+import { Suspense, lazy } from 'react';
 import { BrowserRouter, Link, Routes, Route } from 'react-router-dom';
 import { Home as HomeIcon } from 'lucide-react';
 import { ThemeProvider } from './context/ThemeProvider';
 import { ToastProvider } from './context/ToastProvider';
 import { Layout } from './components/layout/Layout';
+import { RouteErrorBoundary } from './components/common/ErrorBoundary';
 import { Home } from './pages/Home';
-import { HcmusCalculator } from './pages/HcmusCalculator';
-import { HcmutCalculator } from './pages/HcmutCalculator';
-import { UsshCalculator } from './pages/UsshCalculator';
-import { UelCalculator } from './pages/UelCalculator';
-import { IuCalculator } from './pages/IuCalculator';
-import { UhsCalculator } from './pages/UhsCalculator';
 import { SCHOOLS } from './constants/common';
+
+const HcmusCalculator = lazy(() =>
+  import('./pages/HcmusCalculator').then((m) => ({ default: m.HcmusCalculator }))
+);
+const HcmutCalculator = lazy(() =>
+  import('./pages/HcmutCalculator').then((m) => ({ default: m.HcmutCalculator }))
+);
+const UsshCalculator = lazy(() =>
+  import('./pages/UsshCalculator').then((m) => ({ default: m.UsshCalculator }))
+);
+const UelCalculator = lazy(() =>
+  import('./pages/UelCalculator').then((m) => ({ default: m.UelCalculator }))
+);
+const IuCalculator = lazy(() =>
+  import('./pages/IuCalculator').then((m) => ({ default: m.IuCalculator }))
+);
+const UhsCalculator = lazy(() =>
+  import('./pages/UhsCalculator').then((m) => ({ default: m.UhsCalculator }))
+);
+
+const PageSkeleton = () => (
+  <div
+    className="mx-auto max-w-7xl animate-pulse space-y-6 pb-20"
+    aria-busy="true"
+    aria-label="Đang tải trang tính điểm"
+  >
+    <div className="space-y-3 border-b border-hairline pb-5">
+      <div className="h-4 w-24 rounded-control bg-surface-subtle" />
+      <div className="h-8 w-72 max-w-full rounded-control bg-surface-subtle" />
+      <div className="h-4 w-96 max-w-full rounded-control bg-surface-subtle" />
+    </div>
+    <div className="flex flex-col gap-6 lg:flex-row lg:gap-8">
+      <div className="flex-1 space-y-6">
+        <div className="h-56 rounded-card border border-hairline bg-surface" />
+        <div className="h-48 rounded-card border border-hairline bg-surface" />
+      </div>
+      <div className="hidden h-80 w-80 shrink-0 rounded-card border border-hairline bg-surface lg:block xl:w-96" />
+    </div>
+  </div>
+);
 
 const NotFound = () => (
   <div className="mx-auto flex min-h-[58vh] max-w-xl flex-col items-center justify-center py-12 text-center animate-in fade-in">
@@ -26,7 +62,7 @@ const NotFound = () => (
     <div className="mt-6">
       <Link
         to="/"
-        className="btn-tactile inline-flex min-h-[44px] items-center gap-2 bg-blue-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 dark:bg-blue-600 dark:hover:bg-blue-500"
+        className="btn-tactile inline-flex min-h-[44px] items-center gap-2 bg-blue-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 dark:bg-blue-600 dark:hover:bg-blue-500 dark:focus-visible:ring-offset-zinc-950"
       >
         <HomeIcon className="h-4 w-4" />
         Quay lại trang chủ
@@ -57,18 +93,22 @@ function App() {
     <ThemeProvider>
       <ToastProvider>
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Layout />}>
-              <Route index element={<Home />} />
-              <Route path="hcmus" element={<HcmusCalculator />} />
-              <Route path="hcmut" element={<HcmutCalculator />} />
-              <Route path="hcmussh" element={<UsshCalculator />} />
-              <Route path="uel" element={<UelCalculator />} />
-              <Route path="iu" element={<IuCalculator />} />
-              <Route path="uhs" element={<UhsCalculator />} />
-              <Route path="*" element={<NotFound />} />
-            </Route>
-          </Routes>
+          <RouteErrorBoundary>
+            <Suspense fallback={<PageSkeleton />}>
+              <Routes>
+                <Route path="/" element={<Layout />}>
+                  <Route index element={<Home />} />
+                  <Route path="hcmus" element={<HcmusCalculator />} />
+                  <Route path="hcmut" element={<HcmutCalculator />} />
+                  <Route path="hcmussh" element={<UsshCalculator />} />
+                  <Route path="uel" element={<UelCalculator />} />
+                  <Route path="iu" element={<IuCalculator />} />
+                  <Route path="uhs" element={<UhsCalculator />} />
+                  <Route path="*" element={<NotFound />} />
+                </Route>
+              </Routes>
+            </Suspense>
+          </RouteErrorBoundary>
         </BrowserRouter>
       </ToastProvider>
     </ThemeProvider>

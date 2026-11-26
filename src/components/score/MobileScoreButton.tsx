@@ -77,7 +77,7 @@ export const MobileScoreButton = ({
     <button
       type="button"
       onClick={onClick}
-      className={`fixed inset-x-4 z-40 flex min-h-[54px] items-center justify-between gap-4 rounded-card border px-4 py-2.5 shadow-2xl transition-[background-color,bottom,transform] duration-150 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 sm:left-auto sm:right-6 sm:min-w-[270px] lg:hidden ${colorClass}`}
+      className={`fixed inset-x-4 z-40 flex min-h-[54px] items-center justify-between gap-4 rounded-card border px-4 py-2.5 shadow-2xl transition-[background-color,bottom,transform] duration-150 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 print:hidden dark:focus-visible:ring-offset-zinc-950 sm:left-auto sm:right-6 sm:min-w-[270px] lg:hidden ${colorClass}`}
       style={{ bottom: `calc(1rem + ${keyboardInset}px)` }}
       aria-label="Xem chi tiết điểm xét tuyển"
     >
